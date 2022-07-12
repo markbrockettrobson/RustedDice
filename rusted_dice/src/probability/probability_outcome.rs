@@ -1,5 +1,5 @@
 use std::cmp::{Ord, Eq, PartialOrd};
-use std::ops::{Add, Sub, Mul, Div, BitOr, BitXor, BitAnd};
+use std::ops::{Add, Sub, Mul, Div, BitOr, BitXor, BitAnd, Not};
 
 #[derive(Copy, Clone, Debug, Eq, Ord, PartialOrd, PartialEq)]
 pub struct ProbabilityOutcome {
@@ -59,6 +59,14 @@ impl BitAnd for ProbabilityOutcome {
 
     fn bitand(self, other: Self) -> Self {
         Self { value: self.value & other.value }
+    }
+}
+
+impl Not for ProbabilityOutcome {
+    type Output = Self;
+
+    fn not(self) -> Self {
+        Self { value: !self.value }
     }
 }
 
@@ -299,6 +307,14 @@ mod tests {
             let probability_outcome_one = ProbabilityOutcome {value: value_one};
             let probability_outcome_two = ProbabilityOutcome {value: value_two};
             let result = probability_outcome_one & probability_outcome_two;
+            assert_eq!(result.value, expected_value);
+        }
+        
+        #[test]
+        fn test_not(value_one: i32) {
+            let expected_value = !value_one;
+            let probability_outcome = ProbabilityOutcome {value: value_one};
+            let result = !probability_outcome;
             assert_eq!(result.value, expected_value);
         }
     }
