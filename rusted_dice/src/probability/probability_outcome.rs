@@ -1,5 +1,5 @@
 use std::cmp::{Ord, Eq, PartialOrd};
-use std::ops::{Add, Sub, Mul, Div};
+use std::ops::{Add, Sub, Mul, Div, BitOr};
 
 #[derive(Copy, Clone, Debug, Eq, Ord, PartialOrd, PartialEq)]
 pub struct ProbabilityOutcome {
@@ -35,6 +35,14 @@ impl Div for ProbabilityOutcome {
 
     fn div(self, other: Self) -> Self {
         Self { value: self.value / other.value }
+    }
+}
+
+impl BitOr for ProbabilityOutcome {
+    type Output = Self;
+
+    fn bitor(self, other: Self) -> Self {
+        Self { value: self.value | other.value }
     }
 }
 
@@ -242,12 +250,21 @@ mod tests {
         }
 
         #[test]
-        fn test_div(value_one: i16, value_two: i16) {
+        fn test_div(value_one: i32, value_two: i16) {
             prop_assume!(value_two != 0);
-            let expected_value = i32::from(value_one) / i32::from(value_two);
-            let probability_outcome_one = ProbabilityOutcome {value: i32::from(value_one)};
+            let expected_value = value_one / i32::from(value_two);
+            let probability_outcome_one = ProbabilityOutcome {value: value_one};
             let probability_outcome_two = ProbabilityOutcome {value: i32::from(value_two)};
             let result = probability_outcome_one / probability_outcome_two;
+            assert_eq!(result.value, expected_value);
+        }
+
+        #[test]
+        fn test_bitor(value_one: i32, value_two: i32) {
+            let expected_value = value_one | value_two;
+            let probability_outcome_one = ProbabilityOutcome {value: value_one};
+            let probability_outcome_two = ProbabilityOutcome {value: value_two};
+            let result = probability_outcome_one | probability_outcome_two;
             assert_eq!(result.value, expected_value);
         }
     }
