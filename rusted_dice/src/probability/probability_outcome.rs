@@ -1,8 +1,17 @@
 use std::cmp::{Ord, Eq, PartialOrd};
+use std::ops::{Add};
 
 #[derive(Copy, Clone, Debug, Eq, Ord, PartialOrd, PartialEq)]
 pub struct ProbabilityOutcome {
     pub value: i32,
+}
+
+impl Add for ProbabilityOutcome {
+    type Output = Self;
+
+    fn add(self, other: Self) -> Self {
+        Self { value: self.value + other.value }
+    }
 }
 
 #[cfg(test)]
@@ -180,8 +189,15 @@ mod tests {
             let probability_outcome = ProbabilityOutcome {value};
             assert_eq!(format!("{probability_outcome:?}"), format!("ProbabilityOutcome {{ value: {} }}", value));
         }
-    
-    
+                
+        #[test]
+        fn test_add(value_one: i16, value_two: i16) {
+            let expected_value = i32::from(value_one) + i32::from(value_two);
+            let probability_outcome_one = ProbabilityOutcome {value: i32::from(value_one)};
+            let probability_outcome_two = ProbabilityOutcome {value: i32::from(value_two)};
+            let result = probability_outcome_one + probability_outcome_two;
+            assert_eq!(result.value, expected_value);
+        }
     }
 
     #[test]
@@ -208,5 +224,13 @@ mod tests {
         let probability_outcome_one = ProbabilityOutcome {value: 10};
         probability_outcome_two.clone_from(&probability_outcome_one);
         assert_ne!(probability_outcome_two.value, 2);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_add_overflow() {
+        let probability_outcome_one = ProbabilityOutcome {value: i32::MAX};
+        let probability_outcome_two = ProbabilityOutcome {value: 1};
+        let _ = probability_outcome_one + probability_outcome_two;
     }
 }
