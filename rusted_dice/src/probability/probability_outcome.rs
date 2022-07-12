@@ -1,5 +1,5 @@
 use std::cmp::{Ord, Eq, PartialOrd};
-use std::ops::{Add, Sub};
+use std::ops::{Add, Sub, Mul};
 
 #[derive(Copy, Clone, Debug, Eq, Ord, PartialOrd, PartialEq)]
 pub struct ProbabilityOutcome {
@@ -19,6 +19,14 @@ impl Sub for ProbabilityOutcome {
 
     fn sub(self, other: Self) -> Self {
         Self { value: self.value - other.value }
+    }
+}
+
+impl Mul for ProbabilityOutcome {
+    type Output = Self;
+
+    fn mul(self, other: Self) -> Self {
+        Self { value: self.value * other.value }
     }
 }
 
@@ -215,6 +223,15 @@ mod tests {
             let result = probability_outcome_one - probability_outcome_two;
             assert_eq!(result.value, expected_value);
         }
+
+        #[test]
+        fn test_mul(value_one: i16, value_two: i16) {
+            let expected_value = i32::from(value_one) * i32::from(value_two);
+            let probability_outcome_one = ProbabilityOutcome {value: i32::from(value_one)};
+            let probability_outcome_two = ProbabilityOutcome {value: i32::from(value_two)};
+            let result = probability_outcome_one * probability_outcome_two;
+            assert_eq!(result.value, expected_value);
+        }
     }
 
     #[test]
@@ -273,6 +290,22 @@ mod tests {
         let probability_outcome_one = ProbabilityOutcome {value: i32::MIN};
         let probability_outcome_two = ProbabilityOutcome {value: 1};
         let _ = probability_outcome_one - probability_outcome_two;
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_mul_overflow() {
+        let probability_outcome_one = ProbabilityOutcome {value: i32::MAX};
+        let probability_outcome_two = ProbabilityOutcome {value: 2};
+        let _ = probability_outcome_one * probability_outcome_two;
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_mul_underflow() {
+        let probability_outcome_one = ProbabilityOutcome {value: i32::MIN};
+        let probability_outcome_two = ProbabilityOutcome {value: -2};
+        let _ = probability_outcome_one * probability_outcome_two;
     }
 
 }
