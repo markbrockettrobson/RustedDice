@@ -1,5 +1,5 @@
 use std::cmp::{Ord, Eq, PartialOrd};
-use std::ops::{Add, Sub, Mul, Div, BitOr, BitXor};
+use std::ops::{Add, Sub, Mul, Div, BitOr, BitXor, BitAnd};
 
 #[derive(Copy, Clone, Debug, Eq, Ord, PartialOrd, PartialEq)]
 pub struct ProbabilityOutcome {
@@ -51,6 +51,14 @@ impl BitXor for ProbabilityOutcome {
 
     fn bitxor(self, other: Self) -> Self {
         Self { value: self.value ^ other.value }
+    }
+}
+
+impl BitAnd for ProbabilityOutcome {
+    type Output = Self;
+
+    fn bitand(self, other: Self) -> Self {
+        Self { value: self.value & other.value }
     }
 }
 
@@ -282,6 +290,15 @@ mod tests {
             let probability_outcome_one = ProbabilityOutcome {value: value_one};
             let probability_outcome_two = ProbabilityOutcome {value: value_two};
             let result = probability_outcome_one ^ probability_outcome_two;
+            assert_eq!(result.value, expected_value);
+        }
+
+        #[test]
+        fn test_bitand(value_one: i32, value_two: i32) {
+            let expected_value = value_one & value_two;
+            let probability_outcome_one = ProbabilityOutcome {value: value_one};
+            let probability_outcome_two = ProbabilityOutcome {value: value_two};
+            let result = probability_outcome_one & probability_outcome_two;
             assert_eq!(result.value, expected_value);
         }
     }
