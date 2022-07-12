@@ -1,5 +1,5 @@
 use std::cmp::{Ord, Eq, PartialOrd};
-use std::ops::{Add, Sub, Mul};
+use std::ops::{Add, Sub, Mul, Div};
 
 #[derive(Copy, Clone, Debug, Eq, Ord, PartialOrd, PartialEq)]
 pub struct ProbabilityOutcome {
@@ -27,6 +27,14 @@ impl Mul for ProbabilityOutcome {
 
     fn mul(self, other: Self) -> Self {
         Self { value: self.value * other.value }
+    }
+}
+
+impl Div for ProbabilityOutcome {
+    type Output = Self;
+
+    fn div(self, other: Self) -> Self {
+        Self { value: self.value / other.value }
     }
 }
 
@@ -232,6 +240,16 @@ mod tests {
             let result = probability_outcome_one * probability_outcome_two;
             assert_eq!(result.value, expected_value);
         }
+
+        #[test]
+        fn test_div(value_one: i16, value_two: i16) {
+            prop_assume!(value_two != 0);
+            let expected_value = i32::from(value_one) / i32::from(value_two);
+            let probability_outcome_one = ProbabilityOutcome {value: i32::from(value_one)};
+            let probability_outcome_two = ProbabilityOutcome {value: i32::from(value_two)};
+            let result = probability_outcome_one / probability_outcome_two;
+            assert_eq!(result.value, expected_value);
+        }
     }
 
     #[test]
@@ -307,5 +325,12 @@ mod tests {
         let probability_outcome_two = ProbabilityOutcome {value: -2};
         let _ = probability_outcome_one * probability_outcome_two;
     }
-
+    
+    #[test]
+    #[should_panic]
+    fn test_div_by_zero() {
+        let probability_outcome_one = ProbabilityOutcome {value: i32::MAX};
+        let probability_outcome_two = ProbabilityOutcome {value: 0};
+        let _ = probability_outcome_one / probability_outcome_two;
+    }
 }
