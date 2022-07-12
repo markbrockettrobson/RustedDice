@@ -279,7 +279,7 @@ mod tests {
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "attempt to add with overflow")]
     fn test_add_overflow() {
         let probability_outcome_one = ProbabilityOutcome {value: i32::MAX};
         let probability_outcome_two = ProbabilityOutcome {value: 1};
@@ -287,7 +287,7 @@ mod tests {
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "attempt to add with overflow")]
     fn test_add_underflow() {
         let probability_outcome_one = ProbabilityOutcome {value: i32::MIN};
         let probability_outcome_two = ProbabilityOutcome {value: -1};
@@ -295,7 +295,7 @@ mod tests {
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "attempt to subtract with overflow")]
     fn test_sub_overflow() {
         let probability_outcome_one = ProbabilityOutcome {value: i32::MAX};
         let probability_outcome_two = ProbabilityOutcome {value: -1};
@@ -303,7 +303,7 @@ mod tests {
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "attempt to subtract with overflow")]
     fn test_sub_underflow() {
         let probability_outcome_one = ProbabilityOutcome {value: i32::MIN};
         let probability_outcome_two = ProbabilityOutcome {value: 1};
@@ -311,7 +311,7 @@ mod tests {
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "attempt to multiply with overflow")]
     fn test_mul_overflow() {
         let probability_outcome_one = ProbabilityOutcome {value: i32::MAX};
         let probability_outcome_two = ProbabilityOutcome {value: 2};
@@ -319,7 +319,7 @@ mod tests {
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "attempt to multiply with overflow")]
     fn test_mul_underflow() {
         let probability_outcome_one = ProbabilityOutcome {value: i32::MIN};
         let probability_outcome_two = ProbabilityOutcome {value: -2};
@@ -327,7 +327,7 @@ mod tests {
     }
     
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "attempt to divide by zero")]
     fn test_div_by_zero() {
         let probability_outcome_one = ProbabilityOutcome {value: i32::MAX};
         let probability_outcome_two = ProbabilityOutcome {value: 0};
