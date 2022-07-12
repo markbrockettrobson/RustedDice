@@ -1,5 +1,5 @@
 use std::cmp::{Ord, Eq, PartialOrd};
-use std::ops::{Add, Sub, Mul, Div, BitOr, BitXor, BitAnd, Not, Neg};
+use std::ops::{Add, Sub, Mul, Div, BitOr, BitXor, BitAnd, Not, Neg, Rem};
 
 #[derive(Copy, Clone, Debug, Eq, Ord, PartialOrd, PartialEq)]
 pub struct ProbabilityOutcome {
@@ -35,6 +35,14 @@ impl Div for ProbabilityOutcome {
 
     fn div(self, other: Self) -> Self {
         Self { value: self.value / other.value }
+    }
+}
+
+impl Rem for ProbabilityOutcome {
+    type Output = Self;
+
+    fn rem(self, other: Self) -> Self {
+        Self { value: self.value % other.value }
     }
 }
 
@@ -292,6 +300,16 @@ mod tests {
         }
 
         #[test]
+        fn test_rem(value_one: i32, value_two: i16) {
+            prop_assume!(value_two != 0);
+            let expected_value = value_one % i32::from(value_two);
+            let probability_outcome_one = ProbabilityOutcome {value: value_one};
+            let probability_outcome_two = ProbabilityOutcome {value: i32::from(value_two)};
+            let result = probability_outcome_one % probability_outcome_two;
+            assert_eq!(result.value, expected_value);
+        }
+
+        #[test]
         fn test_bitor(value_one: i32, value_two: i32) {
             let expected_value = value_one | value_two;
             let probability_outcome_one = ProbabilityOutcome {value: value_one};
@@ -415,5 +433,13 @@ mod tests {
         let probability_outcome_one = ProbabilityOutcome {value: i32::MAX};
         let probability_outcome_two = ProbabilityOutcome {value: 0};
         let _ = probability_outcome_one / probability_outcome_two;
+    }
+        
+    #[test]
+    #[should_panic(expected = "attempt to calculate the remainder with a divisor of zero")]
+    fn test_rem_by_zero() {
+        let probability_outcome_one = ProbabilityOutcome {value: i32::MAX};
+        let probability_outcome_two = ProbabilityOutcome {value: 0};
+        let _ = probability_outcome_one % probability_outcome_two;
     }
 }
