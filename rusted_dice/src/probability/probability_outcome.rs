@@ -38,6 +38,22 @@ impl Sub for ProbabilityOutcome {
     }
 }
 
+impl Sub<i32> for ProbabilityOutcome {
+    type Output = Self;
+
+    fn sub(self, other: i32) -> Self {
+        Self { value: self.value - other }
+    }
+}
+
+impl Sub<ProbabilityOutcome> for i32 {
+    type Output = ProbabilityOutcome;
+
+    fn sub(self, other: ProbabilityOutcome) -> ProbabilityOutcome {
+        ProbabilityOutcome { value: self - other.value }
+    }
+}
+
 impl Mul for ProbabilityOutcome {
     type Output = Self;
 
@@ -290,16 +306,16 @@ mod tests {
         #[test]
         fn test_add_i32(value_one: i16, value_two: i16) {
             let expected_value = i32::from(value_one) + i32::from(value_two);
-            let probability_outcome_one = ProbabilityOutcome {value: i32::from(value_one)};
-            let result = probability_outcome_one + i32::from(value_two);
+            let probability_outcome = ProbabilityOutcome {value: i32::from(value_one)};
+            let result = probability_outcome + i32::from(value_two);
             assert_eq!(result.value, expected_value);
         }
 
         #[test]
         fn test_i32_add(value_one: i16, value_two: i16) {
             let expected_value = i32::from(value_one) + i32::from(value_two);
-            let probability_outcome_one = ProbabilityOutcome {value: i32::from(value_one)};
-            let result = i32::from(value_two) + probability_outcome_one ;
+            let probability_outcome = ProbabilityOutcome {value: i32::from(value_one)};
+            let result = i32::from(value_two) + probability_outcome ;
             assert_eq!(result.value, expected_value);
         }
 
@@ -309,6 +325,22 @@ mod tests {
             let probability_outcome_one = ProbabilityOutcome {value: i32::from(value_one)};
             let probability_outcome_two = ProbabilityOutcome {value: i32::from(value_two)};
             let result = probability_outcome_one - probability_outcome_two;
+            assert_eq!(result.value, expected_value);
+        }
+
+        #[test]
+        fn test_sub_i32(value_one: i16, value_two: i16) {
+            let expected_value = i32::from(value_one) - i32::from(value_two);
+            let probability_outcome = ProbabilityOutcome {value: i32::from(value_one)};
+            let result = probability_outcome - i32::from(value_two);
+            assert_eq!(result.value, expected_value);
+        }
+
+        #[test]
+        fn test_i32_sub(value_one: i16, value_two: i16) {
+            let expected_value = i32::from(value_one) - i32::from(value_two);
+            let probability_outcome = ProbabilityOutcome {value: i32::from(value_two)};
+            let result = i32::from(value_one) - probability_outcome;
             assert_eq!(result.value, expected_value);
         }
 
@@ -430,29 +462,29 @@ mod tests {
     #[test]
     #[should_panic(expected = "attempt to add with overflow")]
     fn test_add_i32_overflow() {
-        let probability_outcome_one = ProbabilityOutcome {value: i32::MAX};
-        let _ = probability_outcome_one + 1;
+        let probability_outcome = ProbabilityOutcome {value: i32::MAX};
+        let _ = probability_outcome + 1;
     }
 
     #[test]
     #[should_panic(expected = "attempt to add with overflow")]
     fn test_add_i32_underflow() {
-        let probability_outcome_one = ProbabilityOutcome {value: i32::MIN};
-        let _ = probability_outcome_one + -1;
+        let probability_outcome = ProbabilityOutcome {value: i32::MIN};
+        let _ = probability_outcome + -1;
     }
 
     #[test]
     #[should_panic(expected = "attempt to add with overflow")]
     fn test_i32_add_overflow() {
-        let probability_outcome_one = ProbabilityOutcome {value: i32::MAX};
-        let _ = 1 + probability_outcome_one;
+        let probability_outcome = ProbabilityOutcome {value: i32::MAX};
+        let _ = 1 + probability_outcome;
     }
 
     #[test]
     #[should_panic(expected = "attempt to add with overflow")]
     fn test_i32_add_underflow() {
-        let probability_outcome_one = ProbabilityOutcome {value: i32::MIN};
-        let _ = -1 + probability_outcome_one ;
+        let probability_outcome = ProbabilityOutcome {value: i32::MIN};
+        let _ = -1 + probability_outcome ;
     }
 
     #[test]
@@ -469,6 +501,35 @@ mod tests {
         let probability_outcome_one = ProbabilityOutcome {value: i32::MIN};
         let probability_outcome_two = ProbabilityOutcome {value: 1};
         let _ = probability_outcome_one - probability_outcome_two;
+    }
+
+    #[test]
+    #[should_panic(expected = "attempt to subtract with overflow")]
+    fn test_sub_i32_overflow() {
+        let probability_outcome = ProbabilityOutcome {value: i32::MAX};
+        let _ = probability_outcome - -1;
+    }
+
+    #[test]
+    #[should_panic(expected = "attempt to subtract with overflow")]
+    fn test_sub_i32_underflow() {
+        let probability_outcome = ProbabilityOutcome {value: i32::MIN};
+        let _ = probability_outcome - 1;
+    }
+
+
+    #[test]
+    #[should_panic(expected = "attempt to subtract with overflow")]
+    fn test_i32_sub_overflow() {
+        let probability_outcome = ProbabilityOutcome {value: -1};
+        let _ = i32::MAX - probability_outcome;
+    }
+
+    #[test]
+    #[should_panic(expected = "attempt to subtract with overflow")]
+    fn test_132_sub_underflow() {
+        let probability_outcome = ProbabilityOutcome {value: 1};
+        let _ = i32::MIN - probability_outcome;
     }
 
     #[test]
