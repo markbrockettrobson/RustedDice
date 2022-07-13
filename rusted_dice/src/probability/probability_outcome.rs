@@ -62,11 +62,43 @@ impl Mul for ProbabilityOutcome {
     }
 }
 
+impl Mul<i32> for ProbabilityOutcome {
+    type Output = Self;
+
+    fn mul(self, other: i32) -> Self {
+        Self { value: self.value * other }
+    }
+}
+
+impl Mul<ProbabilityOutcome> for i32 {
+    type Output = ProbabilityOutcome;
+
+    fn mul(self, other: ProbabilityOutcome) -> ProbabilityOutcome {
+        ProbabilityOutcome { value: self * other.value }
+    }
+}
+
 impl Div for ProbabilityOutcome {
     type Output = Self;
 
     fn div(self, other: Self) -> Self {
         Self { value: self.value / other.value }
+    }
+}
+
+impl Div<i32> for ProbabilityOutcome {
+    type Output = Self;
+
+    fn div(self, other: i32) -> Self {
+        Self { value: self.value / other }
+    }
+}
+
+impl Div<ProbabilityOutcome> for i32 {
+    type Output = ProbabilityOutcome;
+
+    fn div(self, other: ProbabilityOutcome) -> ProbabilityOutcome {
+        ProbabilityOutcome { value: self / other.value }
     }
 }
 
@@ -78,11 +110,43 @@ impl Rem for ProbabilityOutcome {
     }
 }
 
+impl Rem<i32> for ProbabilityOutcome {
+    type Output = Self;
+
+    fn rem(self, other: i32) -> Self {
+        Self { value: self.value % other }
+    }
+}
+
+impl Rem<ProbabilityOutcome> for i32 {
+    type Output = ProbabilityOutcome;
+
+    fn rem(self, other: ProbabilityOutcome) -> ProbabilityOutcome {
+        ProbabilityOutcome { value: self % other.value }
+    }
+}
+
 impl BitOr for ProbabilityOutcome {
     type Output = Self;
 
     fn bitor(self, other: Self) -> Self {
         Self { value: self.value | other.value }
+    }
+}
+
+impl BitOr<i32> for ProbabilityOutcome {
+    type Output = Self;
+
+    fn bitor(self, other: i32) -> Self {
+        Self { value: self.value | other }
+    }
+}
+
+impl BitOr<ProbabilityOutcome> for i32 {
+    type Output = ProbabilityOutcome;
+
+    fn bitor(self, other: ProbabilityOutcome) -> ProbabilityOutcome {
+        ProbabilityOutcome { value: self | other.value }
     }
 }
 
@@ -94,11 +158,43 @@ impl BitXor for ProbabilityOutcome {
     }
 }
 
+impl BitXor<i32> for ProbabilityOutcome {
+    type Output = Self;
+
+    fn bitxor(self, other: i32) -> Self {
+        Self { value: self.value ^ other }
+    }
+}
+
+impl BitXor<ProbabilityOutcome> for i32 {
+    type Output = ProbabilityOutcome;
+
+    fn bitxor(self, other: ProbabilityOutcome) -> ProbabilityOutcome {
+        ProbabilityOutcome { value: self ^ other.value }
+    }
+}
+
 impl BitAnd for ProbabilityOutcome {
     type Output = Self;
 
     fn bitand(self, other: Self) -> Self {
         Self { value: self.value & other.value }
+    }
+}
+
+impl BitAnd<i32> for ProbabilityOutcome {
+    type Output = Self;
+
+    fn bitand(self, other: i32) -> Self {
+        Self { value: self.value & other }
+    }
+}
+
+impl BitAnd<ProbabilityOutcome> for i32 {
+    type Output = ProbabilityOutcome;
+
+    fn bitand(self, other: ProbabilityOutcome) -> ProbabilityOutcome {
+        ProbabilityOutcome { value: self & other.value }
     }
 }
 
@@ -354,12 +450,46 @@ mod tests {
         }
 
         #[test]
+        fn test_mul_i32(value_one: i16, value_two: i16) {
+            let expected_value = i32::from(value_one) * i32::from(value_two);
+            let probability_outcome = ProbabilityOutcome {value: i32::from(value_one)};
+            let result = probability_outcome * i32::from(value_two);
+            assert_eq!(result.value, expected_value);
+        }
+
+        #[test]
+        fn test_i32_mul(value_one: i16, value_two: i16) {
+            let expected_value = i32::from(value_one) * i32::from(value_two);
+            let probability_outcome = ProbabilityOutcome {value: i32::from(value_two)};
+            let result = i32::from(value_one) * probability_outcome;
+            assert_eq!(result.value, expected_value);
+        }
+
+        #[test]
         fn test_div(value_one: i32, value_two: i16) {
             prop_assume!(value_two != 0);
             let expected_value = value_one / i32::from(value_two);
             let probability_outcome_one = ProbabilityOutcome {value: value_one};
             let probability_outcome_two = ProbabilityOutcome {value: i32::from(value_two)};
             let result = probability_outcome_one / probability_outcome_two;
+            assert_eq!(result.value, expected_value);
+        }
+
+        #[test]
+        fn test_div_i32(value_one: i16, value_two: i16) {
+            prop_assume!(value_two != 0);
+            let expected_value = i32::from(value_one) / i32::from(value_two);
+            let probability_outcome = ProbabilityOutcome {value: i32::from(value_one)};
+            let result = probability_outcome / i32::from(value_two);
+            assert_eq!(result.value, expected_value);
+        }
+
+        #[test]
+        fn test_i32_div(value_one: i16, value_two: i16) {
+            prop_assume!(value_two != 0);
+            let expected_value = i32::from(value_one) / i32::from(value_two);
+            let probability_outcome = ProbabilityOutcome {value: i32::from(value_two)};
+            let result = i32::from(value_one) / probability_outcome;
             assert_eq!(result.value, expected_value);
         }
 
@@ -374,11 +504,45 @@ mod tests {
         }
 
         #[test]
+        fn test_rem_i32(value_one: i16, value_two: i16) {
+            prop_assume!(value_two != 0);
+            let expected_value = i32::from(value_one) % i32::from(value_two);
+            let probability_outcome = ProbabilityOutcome {value: i32::from(value_one)};
+            let result = probability_outcome % i32::from(value_two);
+            assert_eq!(result.value, expected_value);
+        }
+
+        #[test]
+        fn test_i32_rem(value_one: i16, value_two: i16) {
+            prop_assume!(value_two != 0);
+            let expected_value = i32::from(value_one) % i32::from(value_two);
+            let probability_outcome = ProbabilityOutcome {value: i32::from(value_two)};
+            let result = i32::from(value_one) % probability_outcome;
+            assert_eq!(result.value, expected_value);
+        }
+
+        #[test]
         fn test_bitor(value_one: i32, value_two: i32) {
             let expected_value = value_one | value_two;
             let probability_outcome_one = ProbabilityOutcome {value: value_one};
             let probability_outcome_two = ProbabilityOutcome {value: value_two};
             let result = probability_outcome_one | probability_outcome_two;
+            assert_eq!(result.value, expected_value);
+        }
+
+        #[test]
+        fn test_bitor_i32(value_one: i16, value_two: i16) {
+            let expected_value = i32::from(value_one) | i32::from(value_two);
+            let probability_outcome = ProbabilityOutcome {value: i32::from(value_one)};
+            let result = probability_outcome | i32::from(value_two);
+            assert_eq!(result.value, expected_value);
+        }
+
+        #[test]
+        fn test_i32_bitor(value_one: i16, value_two: i16) {
+            let expected_value = i32::from(value_one) | i32::from(value_two);
+            let probability_outcome = ProbabilityOutcome {value: i32::from(value_two)};
+            let result = i32::from(value_one) | probability_outcome;
             assert_eq!(result.value, expected_value);
         }
 
@@ -392,6 +556,22 @@ mod tests {
         }
 
         #[test]
+        fn test_bitxor_i32(value_one: i16, value_two: i16) {
+            let expected_value = i32::from(value_one) ^ i32::from(value_two);
+            let probability_outcome = ProbabilityOutcome {value: i32::from(value_one)};
+            let result = probability_outcome ^ i32::from(value_two);
+            assert_eq!(result.value, expected_value);
+        }
+
+        #[test]
+        fn test_i32_bitxor(value_one: i16, value_two: i16) {
+            let expected_value = i32::from(value_one) ^ i32::from(value_two);
+            let probability_outcome = ProbabilityOutcome {value: i32::from(value_two)};
+            let result = i32::from(value_one) ^ probability_outcome;
+            assert_eq!(result.value, expected_value);
+        }
+
+        #[test]
         fn test_bitand(value_one: i32, value_two: i32) {
             let expected_value = value_one & value_two;
             let probability_outcome_one = ProbabilityOutcome {value: value_one};
@@ -399,7 +579,23 @@ mod tests {
             let result = probability_outcome_one & probability_outcome_two;
             assert_eq!(result.value, expected_value);
         }
-        
+
+        #[test]
+        fn test_bitand_i32(value_one: i16, value_two: i16) {
+            let expected_value = i32::from(value_one) & i32::from(value_two);
+            let probability_outcome = ProbabilityOutcome {value: i32::from(value_one)};
+            let result = probability_outcome & i32::from(value_two);
+            assert_eq!(result.value, expected_value);
+        }
+
+        #[test]
+        fn test_i32_bitand(value_one: i16, value_two: i16) {
+            let expected_value = i32::from(value_one) & i32::from(value_two);
+            let probability_outcome = ProbabilityOutcome {value: i32::from(value_two)};
+            let result = i32::from(value_one) & probability_outcome;
+            assert_eq!(result.value, expected_value);
+        }
+
         #[test]
         fn test_not(value_one: i32) {
             let expected_value = !value_one;
@@ -549,11 +745,53 @@ mod tests {
     }
     
     #[test]
+    #[should_panic(expected = "attempt to multiply with overflow")]
+    fn test_mul_i32_overflow() {
+        let probability_outcome = ProbabilityOutcome {value: i32::MAX};
+        let _ = probability_outcome * 2;
+    }
+
+    #[test]
+    #[should_panic(expected = "attempt to multiply with overflow")]
+    fn test_mul_i32_underflow() {
+        let probability_outcome = ProbabilityOutcome {value: i32::MIN};
+        let _ = probability_outcome * -2;
+    }
+
+    #[test]
+    #[should_panic(expected = "attempt to multiply with overflow")]
+    fn test_i32_mul_overflow() {
+        let probability_outcome = ProbabilityOutcome {value: 2};
+        let _ = i32::MAX * probability_outcome;
+    }
+
+    #[test]
+    #[should_panic(expected = "attempt to multiply with overflow")]
+    fn test_132_mul_underflow() {
+        let probability_outcome = ProbabilityOutcome {value: -2};
+        let _ = i32::MIN * probability_outcome;
+    }
+
+    #[test]
     #[should_panic(expected = "attempt to divide by zero")]
     fn test_div_by_zero() {
         let probability_outcome_one = ProbabilityOutcome {value: i32::MAX};
         let probability_outcome_two = ProbabilityOutcome {value: 0};
         let _ = probability_outcome_one / probability_outcome_two;
+    }
+    
+    #[test]
+    #[should_panic(expected = "attempt to divide by zero")]
+    fn test_div_i32_by_zero() {
+        let probability_outcome = ProbabilityOutcome {value: i32::MAX};
+        let _ = probability_outcome / 0;
+    }
+    
+    #[test]
+    #[should_panic(expected = "attempt to divide by zero")]
+    fn test_i32_div_by_zero() {
+        let probability_outcome = ProbabilityOutcome {value: 0};
+        let _ = i32::MAX / probability_outcome;
     }
         
     #[test]
@@ -563,4 +801,19 @@ mod tests {
         let probability_outcome_two = ProbabilityOutcome {value: 0};
         let _ = probability_outcome_one % probability_outcome_two;
     }
+       
+    #[test]
+    #[should_panic(expected = "attempt to calculate the remainder with a divisor of zero")]
+    fn test_rem_i32_by_zero() {
+        let probability_outcome = ProbabilityOutcome {value: i32::MAX};
+        let _ = probability_outcome % 0;
+    }
+    
+    #[test]
+    #[should_panic(expected = "attempt to calculate the remainder with a divisor of zero")]
+    fn test_i32_rem_by_zero() {
+        let probability_outcome = ProbabilityOutcome {value: 0};
+        let _ = i32::MAX % probability_outcome;
+    }
+
 }
