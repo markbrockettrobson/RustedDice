@@ -6,11 +6,34 @@ pub struct ProbabilityOutcome {
     pub value: i32,
 }
 
+type BinaryOperation = fn(i32, i32) -> i32;
+
+trait Combine {
+    fn combine(&self, other: Self, binary_operation: BinaryOperation) -> Self;
+    fn combinei32(&self, other: i32, binary_operation: BinaryOperation) -> Self;
+    fn i32combine(&self, other: i32, binary_operation: BinaryOperation) -> Self;
+}
+
+impl Combine for ProbabilityOutcome {
+    fn combine(&self, other: Self, binary_operation: BinaryOperation) -> Self {
+        ProbabilityOutcome {value: binary_operation(self.value, other.value)}
+    }
+    fn combinei32(&self, other: i32, binary_operation: BinaryOperation) -> Self {
+        ProbabilityOutcome {value: binary_operation(self.value, other)}
+    }
+    fn i32combine(&self, other: i32, binary_operation: BinaryOperation) -> Self {
+        ProbabilityOutcome {value: binary_operation(other, self.value)}
+    }
+}
+
 impl Add for ProbabilityOutcome {
     type Output = Self;
 
     fn add(self, other: Self) -> Self {
-        Self { value: self.value + other.value }
+        fn _add(lhs: i32, rhs: i32) -> i32{
+            lhs + rhs
+        }
+        self.combine(other, _add)
     }
 }
 
@@ -18,7 +41,10 @@ impl Add<i32> for ProbabilityOutcome {
     type Output = Self;
 
     fn add(self, other: i32) -> Self {
-        Self { value: self.value + other }
+        fn _add(lhs: i32, rhs: i32) -> i32{
+            lhs + rhs
+        }
+        self.combinei32(other, _add)
     }
 }
 
@@ -26,7 +52,10 @@ impl Add<ProbabilityOutcome> for i32 {
     type Output = ProbabilityOutcome;
 
     fn add(self, other: ProbabilityOutcome) -> ProbabilityOutcome {
-        ProbabilityOutcome { value: self + other.value }
+        fn _add(lhs: i32, rhs: i32) -> i32{
+            lhs + rhs
+        }
+        other.i32combine(self, _add)
     }
 }
 
@@ -34,7 +63,10 @@ impl Sub for ProbabilityOutcome {
     type Output = Self;
 
     fn sub(self, other: Self) -> Self {
-        Self { value: self.value - other.value }
+        fn _sub(lhs: i32, rhs: i32) -> i32{
+            lhs - rhs
+        }
+        self.combine(other, _sub)
     }
 }
 
@@ -42,7 +74,10 @@ impl Sub<i32> for ProbabilityOutcome {
     type Output = Self;
 
     fn sub(self, other: i32) -> Self {
-        Self { value: self.value - other }
+        fn _sub(lhs: i32, rhs: i32) -> i32{
+            lhs - rhs
+        }
+        self.combinei32(other, _sub)
     }
 }
 
@@ -50,7 +85,10 @@ impl Sub<ProbabilityOutcome> for i32 {
     type Output = ProbabilityOutcome;
 
     fn sub(self, other: ProbabilityOutcome) -> ProbabilityOutcome {
-        ProbabilityOutcome { value: self - other.value }
+        fn _sub(lhs: i32, rhs: i32) -> i32{
+            lhs - rhs
+        }
+        other.i32combine(self, _sub)
     }
 }
 
@@ -58,7 +96,10 @@ impl Mul for ProbabilityOutcome {
     type Output = Self;
 
     fn mul(self, other: Self) -> Self {
-        Self { value: self.value * other.value }
+        fn _mul(lhs: i32, rhs: i32) -> i32{
+            lhs * rhs
+        }
+        self.combine(other, _mul)
     }
 }
 
@@ -66,7 +107,10 @@ impl Mul<i32> for ProbabilityOutcome {
     type Output = Self;
 
     fn mul(self, other: i32) -> Self {
-        Self { value: self.value * other }
+        fn _mul(lhs: i32, rhs: i32) -> i32{
+            lhs * rhs
+        }
+        self.combinei32(other, _mul)
     }
 }
 
@@ -74,7 +118,10 @@ impl Mul<ProbabilityOutcome> for i32 {
     type Output = ProbabilityOutcome;
 
     fn mul(self, other: ProbabilityOutcome) -> ProbabilityOutcome {
-        ProbabilityOutcome { value: self * other.value }
+        fn _mul(lhs: i32, rhs: i32) -> i32{
+            lhs * rhs
+        }
+        other.i32combine(self, _mul)
     }
 }
 
@@ -82,7 +129,10 @@ impl Div for ProbabilityOutcome {
     type Output = Self;
 
     fn div(self, other: Self) -> Self {
-        Self { value: self.value / other.value }
+        fn _div(lhs: i32, rhs: i32) -> i32{
+            lhs / rhs
+        }
+        self.combine(other, _div)
     }
 }
 
@@ -90,7 +140,10 @@ impl Div<i32> for ProbabilityOutcome {
     type Output = Self;
 
     fn div(self, other: i32) -> Self {
-        Self { value: self.value / other }
+        fn _div(lhs: i32, rhs: i32) -> i32{
+            lhs / rhs
+        }
+        self.combinei32(other, _div)
     }
 }
 
@@ -98,7 +151,10 @@ impl Div<ProbabilityOutcome> for i32 {
     type Output = ProbabilityOutcome;
 
     fn div(self, other: ProbabilityOutcome) -> ProbabilityOutcome {
-        ProbabilityOutcome { value: self / other.value }
+        fn _div(lhs: i32, rhs: i32) -> i32{
+            lhs / rhs
+        }
+        other.i32combine(self, _div)
     }
 }
 
@@ -106,7 +162,10 @@ impl Rem for ProbabilityOutcome {
     type Output = Self;
 
     fn rem(self, other: Self) -> Self {
-        Self { value: self.value % other.value }
+        fn _rem(lhs: i32, rhs: i32) -> i32{
+            lhs % rhs
+        }
+        self.combine(other, _rem)
     }
 }
 
@@ -114,7 +173,10 @@ impl Rem<i32> for ProbabilityOutcome {
     type Output = Self;
 
     fn rem(self, other: i32) -> Self {
-        Self { value: self.value % other }
+        fn _rem(lhs: i32, rhs: i32) -> i32{
+            lhs % rhs
+        }
+        self.combinei32(other, _rem)
     }
 }
 
@@ -122,7 +184,10 @@ impl Rem<ProbabilityOutcome> for i32 {
     type Output = ProbabilityOutcome;
 
     fn rem(self, other: ProbabilityOutcome) -> ProbabilityOutcome {
-        ProbabilityOutcome { value: self % other.value }
+        fn _rem(lhs: i32, rhs: i32) -> i32{
+            lhs % rhs
+        }
+        other.i32combine(self, _rem)
     }
 }
 
@@ -130,7 +195,10 @@ impl BitOr for ProbabilityOutcome {
     type Output = Self;
 
     fn bitor(self, other: Self) -> Self {
-        Self { value: self.value | other.value }
+        fn _bitor(lhs: i32, rhs: i32) -> i32{
+            lhs | rhs
+        }
+        self.combine(other, _bitor)
     }
 }
 
@@ -138,7 +206,10 @@ impl BitOr<i32> for ProbabilityOutcome {
     type Output = Self;
 
     fn bitor(self, other: i32) -> Self {
-        Self { value: self.value | other }
+        fn _bitor(lhs: i32, rhs: i32) -> i32{
+            lhs | rhs
+        }
+        self.combinei32(other, _bitor)
     }
 }
 
@@ -146,7 +217,10 @@ impl BitOr<ProbabilityOutcome> for i32 {
     type Output = ProbabilityOutcome;
 
     fn bitor(self, other: ProbabilityOutcome) -> ProbabilityOutcome {
-        ProbabilityOutcome { value: self | other.value }
+        fn _bitor(lhs: i32, rhs: i32) -> i32{
+            lhs | rhs
+        }
+        other.i32combine(self, _bitor)
     }
 }
 
@@ -154,7 +228,10 @@ impl BitXor for ProbabilityOutcome {
     type Output = Self;
 
     fn bitxor(self, other: Self) -> Self {
-        Self { value: self.value ^ other.value }
+        fn _bitxor(lhs: i32, rhs: i32) -> i32{
+            lhs ^ rhs
+        }
+        self.combine(other, _bitxor)
     }
 }
 
@@ -162,7 +239,10 @@ impl BitXor<i32> for ProbabilityOutcome {
     type Output = Self;
 
     fn bitxor(self, other: i32) -> Self {
-        Self { value: self.value ^ other }
+        fn _bitxor(lhs: i32, rhs: i32) -> i32{
+            lhs ^ rhs
+        }
+        self.combinei32(other, _bitxor)
     }
 }
 
@@ -170,7 +250,10 @@ impl BitXor<ProbabilityOutcome> for i32 {
     type Output = ProbabilityOutcome;
 
     fn bitxor(self, other: ProbabilityOutcome) -> ProbabilityOutcome {
-        ProbabilityOutcome { value: self ^ other.value }
+        fn _bitxor(lhs: i32, rhs: i32) -> i32{
+            lhs ^ rhs
+        }
+        other.i32combine(self, _bitxor)
     }
 }
 
@@ -178,7 +261,10 @@ impl BitAnd for ProbabilityOutcome {
     type Output = Self;
 
     fn bitand(self, other: Self) -> Self {
-        Self { value: self.value & other.value }
+        fn _bitand(lhs: i32, rhs: i32) -> i32{
+            lhs & rhs
+        }
+        self.combine(other, _bitand)
     }
 }
 
@@ -186,7 +272,10 @@ impl BitAnd<i32> for ProbabilityOutcome {
     type Output = Self;
 
     fn bitand(self, other: i32) -> Self {
-        Self { value: self.value & other }
+        fn _bitand(lhs: i32, rhs: i32) -> i32{
+            lhs & rhs
+        }
+        self.combinei32(other, _bitand)
     }
 }
 
@@ -194,7 +283,10 @@ impl BitAnd<ProbabilityOutcome> for i32 {
     type Output = ProbabilityOutcome;
 
     fn bitand(self, other: ProbabilityOutcome) -> ProbabilityOutcome {
-        ProbabilityOutcome { value: self & other.value }
+        fn _bitand(lhs: i32, rhs: i32) -> i32{
+            lhs & rhs
+        }
+        other.i32combine(self, _bitand)
     }
 }
 
