@@ -709,6 +709,8 @@ mod tests {
     fn test_copy() {
         let mut probability_outcome_one = ProbabilityOutcome {value: 10};
         let probability_outcome_two = probability_outcome_one;
+
+        assert_eq!(probability_outcome_one, probability_outcome_two);
         probability_outcome_one.value = 20;
         assert_ne!(probability_outcome_one, probability_outcome_two);
     }
@@ -718,6 +720,8 @@ mod tests {
     fn test_clone() {
         let mut probability_outcome_one = ProbabilityOutcome {value: 10};
         let probability_outcome_two = probability_outcome_one.clone();
+        
+        assert_eq!(probability_outcome_one, probability_outcome_two);
         probability_outcome_one.value = 20;
         assert_ne!(probability_outcome_one, probability_outcome_two);
     }
