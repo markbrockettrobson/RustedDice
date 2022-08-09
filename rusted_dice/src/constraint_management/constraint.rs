@@ -1,31 +1,36 @@
-use std::collections::HashSet;
-
-type I32Set = HashSet<i32>;
+use std::{collections::HashSet, ops::Add};
 
 #[allow(dead_code)]
-#[derive(Debug)]
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct Constraint {
     pub id: u16,
-    pub valid_values: I32Set,
+    pub valid_values: HashSet<i32>,
 }
 
-trait IsPossable {
-    fn is_possable(&self) -> bool;
+pub trait IsConstraintCompiledWith {
+    fn is_compiled_with(&self, value: i32) -> bool;
 }
 
-impl IsPossable for Constraint {
-    fn is_possable(&self) -> bool {
+impl IsConstraintCompiledWith for Constraint {
+    fn is_compiled_with(&self, value: i32) -> bool {
+        self.valid_values.contains(&value)
+    }
+}
+
+pub trait IsTheoreticallyPossible {
+    fn is_theoretically_possible(&self) -> bool;
+}
+
+impl IsTheoreticallyPossible for Constraint {
+    fn is_theoretically_possible(&self) -> bool {
         !self.valid_values.is_empty()
     }
 }
 
-pub trait Combine {
-    fn combine(&self, other: Self) -> Self;
-}
+impl Add for Constraint {
+    type Output = Self;
 
-impl Combine for Constraint {
-    fn combine(&self, other: Self) -> Self {
+    fn add(self, other: Self) -> Self {
         if self.id != other.id {
             panic!("Can not combine Constraints with different ids.");
         }
@@ -39,11 +44,29 @@ mod tests {
     use proptest::prelude::*;
     
     #[test]
+    fn is_theoretically_possible_true() {
+        let test_valid_values: HashSet<i32> = vec![1, 2, 3].into_iter().collect();
+        let constraint = Constraint {id: 0, valid_values: test_valid_values };
+
+        assert!(constraint.is_theoretically_possible());
+    }
+    
+    #[test]
+    fn is_theoretically_possible_false() {
+        let test_valid_values: HashSet<i32> = vec![].into_iter().collect();
+        let constraint = Constraint {id: 0, valid_values: test_valid_values };
+
+        assert!(!constraint.is_theoretically_possible());
+    }
+
+    #[test]
     fn is_possable_true() {
         let test_valid_values: HashSet<i32> = vec![1, 2, 3].into_iter().collect();
         let constraint = Constraint {id: 0, valid_values: test_valid_values };
 
-        assert!(constraint.is_possable());
+        assert!(constraint.is_compiled_with(1));
+        assert!(constraint.is_compiled_with(2));
+        assert!(constraint.is_compiled_with(3));
     }
     
     #[test]
@@ -51,7 +74,8 @@ mod tests {
         let test_valid_values: HashSet<i32> = vec![].into_iter().collect();
         let constraint = Constraint {id: 0, valid_values: test_valid_values };
 
-        assert!(!constraint.is_possable());
+        assert!(!constraint.is_compiled_with(1));
+        assert!(!constraint.is_compiled_with(2));
     }
 
     #[test]
@@ -61,7 +85,7 @@ mod tests {
         let test_valid_value_two: HashSet<i32> = vec![].into_iter().collect();
         let constraint_one = Constraint {id: 0, valid_values: test_valid_value_one };
         let constraint_two = Constraint {id: 1, valid_values: test_valid_value_two };
-        constraint_one.combine(constraint_two);
+        let _ = constraint_one + constraint_two;
     }
 
     #[test]
@@ -72,7 +96,7 @@ mod tests {
         let constraint_one = Constraint {id: 1234, valid_values: test_valid_value_one };
         let constraint_two = Constraint {id: 1234, valid_values: test_valid_value_two };
         
-        let constraint_three = constraint_one.combine(constraint_two);
+        let constraint_three = constraint_one + constraint_two;
         
         assert_eq!(constraint_three.valid_values.difference(&expected_value).count(), 0);
         assert_eq!(constraint_three.id, 1234);
