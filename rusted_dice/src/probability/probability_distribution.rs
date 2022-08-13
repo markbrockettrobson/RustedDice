@@ -10,29 +10,33 @@ struct ProbabilityDistribution {
 
 #[cfg(test)]
 mod tests {
+    use std::collections::HashMap;
+
+    use crate::constraint_management::constraint_map::ConstraintMap;
+
     use super::*;
 
     #[test]
     fn outcome_counts_set() {
-        let test_outcome = ProbabilityOutcome {value: 12345};
+        let test_outcome = ProbabilityOutcome {value: 12345,  constraint_map: ConstraintMap {map: HashMap::new()}};
 
         let mut b_tree_map = BTreeMap::new();
-        b_tree_map.insert(test_outcome, 67890);
+        b_tree_map.insert(test_outcome.clone(), 67890);
 
         let result = ProbabilityDistribution {outcome_counts: b_tree_map};
         assert!(result.outcome_counts.get(&test_outcome) == Some(&67890));
     }
     #[test]
     fn test_fmt() {
-        let test_outcome_one = ProbabilityOutcome {value: 1111};
-        let test_outcome_two = ProbabilityOutcome {value: 2222};
-        let test_outcome_three = ProbabilityOutcome {value: 3333};
+        let test_outcome_one = ProbabilityOutcome {value: 1111,  constraint_map: ConstraintMap {map: HashMap::new()}};
+        let test_outcome_two = ProbabilityOutcome {value: 2222,  constraint_map: ConstraintMap {map: HashMap::new()}};
+        let test_outcome_three = ProbabilityOutcome {value: 3333,  constraint_map: ConstraintMap {map: HashMap::new()}};
 
         
         let mut b_tree_map = BTreeMap::new();
-        b_tree_map.insert(test_outcome_one, 1);
-        b_tree_map.insert(test_outcome_two, 2);
-        b_tree_map.insert(test_outcome_three, 3);
+        b_tree_map.insert(test_outcome_one.clone(), 1);
+        b_tree_map.insert(test_outcome_two.clone(), 2);
+        b_tree_map.insert(test_outcome_three.clone(), 3);
 
         let result = ProbabilityDistribution {outcome_counts: b_tree_map};
         
