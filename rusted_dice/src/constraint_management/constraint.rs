@@ -1,7 +1,7 @@
-use std::{collections::HashSet, ops::Add};
+use std::{collections::HashSet, ops::Add, cmp::Ordering};
 
 #[allow(dead_code)]
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Eq, PartialEq)]
 pub struct Constraint {
     pub id: u16,
     pub valid_values: HashSet<i32>,
@@ -24,6 +24,18 @@ pub trait IsTheoreticallyPossible {
 impl IsTheoreticallyPossible for Constraint {
     fn is_theoretically_possible(&self) -> bool {
         !self.valid_values.is_empty()
+    }
+}
+
+impl Ord for Constraint {
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.id.cmp(&other.id).then(self.valid_values.iter().max().cmp(&other.valid_values.iter().max()))
+    }
+}
+
+impl PartialOrd for Constraint {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
     }
 }
 
@@ -127,7 +139,86 @@ mod tests {
         assert_eq!(constraint_one.valid_values, constraint_two.valid_values);
     }
 
-    proptest! {                        
+    #[test]
+    fn test_eq_true() {
+        let test_valid_value_one: HashSet<i32> = vec![2, 4, 6].into_iter().collect();
+        let test_valid_value_two: HashSet<i32> = vec![2, 4, 6].into_iter().collect();
+        let constraint_one = Constraint {id: 2, valid_values: test_valid_value_two };
+        let constraint_two = Constraint {id: 2, valid_values: test_valid_value_one };
+        assert!(constraint_one == constraint_two);
+    }
+
+    #[test]
+    #[allow(clippy::nonminimal_bool)]
+    fn test_eq_false_id() {
+        let test_valid_value_one: HashSet<i32> = vec![2, 4, 6].into_iter().collect();
+        let test_valid_value_two: HashSet<i32> = vec![2, 4, 6].into_iter().collect();
+        let constraint_one = Constraint {id: 1234, valid_values: test_valid_value_two };
+        let constraint_two = Constraint {id: 2, valid_values: test_valid_value_one };
+        assert!(constraint_one != constraint_two);
+    }
+
+    #[test]
+    #[allow(clippy::nonminimal_bool)]
+    fn test_eq_false_hashset() {
+        let test_valid_value_one: HashSet<i32> = vec![2, 4, 6].into_iter().collect();
+        let test_valid_value_two: HashSet<i32> = vec![1, 4, 6].into_iter().collect();
+        let constraint_one = Constraint {id: 1234, valid_values: test_valid_value_two };
+        let constraint_two = Constraint {id: 1234, valid_values: test_valid_value_one };
+        assert!(constraint_one != constraint_two);
+    }
+   
+    #[test]
+    fn test_cmp_less() {
+        let test_valid_value_one: HashSet<i32> = vec![2, 4, 6].into_iter().collect();
+        let test_valid_value_two: HashSet<i32> = vec![2, 4].into_iter().collect();
+        let constraint_one = Constraint {id: 1, valid_values: test_valid_value_two };
+        let constraint_two = Constraint {id: 2, valid_values: test_valid_value_one };
+        let result = constraint_one.cmp(&constraint_two);
+        assert_eq!(result, Ordering::Less);
+    }   
+
+    #[test]
+    fn test_cmp_less_valid_values() {
+        let test_valid_value_one: HashSet<i32> = vec![2, 4, 6].into_iter().collect();
+        let test_valid_value_two: HashSet<i32> = vec![2, 4].into_iter().collect();
+        let constraint_one = Constraint {id: 2, valid_values: test_valid_value_two };
+        let constraint_two = Constraint {id: 2, valid_values: test_valid_value_one };
+        let result = constraint_one.cmp(&constraint_two);
+        assert_eq!(result, Ordering::Less);
+    }
+        
+    #[test]
+    fn test_cmp_greater() {
+        let test_valid_value_one: HashSet<i32> = vec![2, 4, 6].into_iter().collect();
+        let test_valid_value_two: HashSet<i32> = vec![2, 4, 6, 8].into_iter().collect();
+        let constraint_one = Constraint {id: 3, valid_values: test_valid_value_two };
+        let constraint_two = Constraint {id: 2, valid_values: test_valid_value_one };
+        let result = constraint_one.cmp(&constraint_two);
+        assert_eq!(result, Ordering::Greater);
+    }
+  
+    #[test]
+    fn test_cmp_greater_valid_values() {
+        let test_valid_value_one: HashSet<i32> = vec![2, 4, 6].into_iter().collect();
+        let test_valid_value_two: HashSet<i32> = vec![2, 4, 6, 8].into_iter().collect();
+        let constraint_one = Constraint {id: 3, valid_values: test_valid_value_two };
+        let constraint_two = Constraint {id: 3, valid_values: test_valid_value_one };
+        let result = constraint_one.cmp(&constraint_two);
+        assert_eq!(result, Ordering::Greater);
+    }
+        
+    #[test]
+    fn test_cmp_equal() {
+        let test_valid_value_one: HashSet<i32> = vec![2, 4, 6].into_iter().collect();
+        let test_valid_value_two: HashSet<i32> = vec![2, 4, 6].into_iter().collect();
+        let constraint_one = Constraint {id: 3, valid_values: test_valid_value_two };
+        let constraint_two = Constraint {id: 3, valid_values: test_valid_value_one };
+        let result = constraint_one.cmp(&constraint_two);
+        assert_eq!(result, Ordering::Equal);
+    }
+
+    proptest! {
         #[test]
         fn test_fmt(test_id: u16, test_value: i32) {
             let test_valid_values: HashSet<i32> = vec![test_value].into_iter().collect();
@@ -135,4 +226,5 @@ mod tests {
             assert_eq!(format!("{constraint:?}"), format!("Constraint {{ id: {}, valid_values: {{{}}} }}", test_id, test_value));
         }
     }
+
 }
