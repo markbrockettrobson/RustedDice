@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+echo "run fmt"
+( cd rusted_dice && cargo fmt)
+
 echo "runing clippy"
 ( cd rusted_dice && cargo clippy --all-targets --all-features -- -D warnings )
 
