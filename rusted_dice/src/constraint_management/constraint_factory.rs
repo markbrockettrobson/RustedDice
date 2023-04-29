@@ -20,20 +20,23 @@ impl ConstraintFactory {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use proptest::prelude::*;
     
-    #[test]
-    fn test_new_empty_constraint() {
-        let test_valid_values: HashSet<i32> = vec![].into_iter().collect();
-        let constraint = Constraint {id: 12345, valid_values: test_valid_values };
+    proptest! {
+        #[test]
+        fn test_new_empty_constraint(test_value: u16) {
+            let test_valid_values: HashSet<i32> = vec![].into_iter().collect();
+            let constraint = Constraint {id: test_value, valid_values: test_valid_values };
 
-        assert_eq!(constraint, ConstraintFactory::new_empty_constraint(12345));
-    }  
+            assert_eq!(constraint, ConstraintFactory::new_empty_constraint(test_value));
+        }  
 
-    #[test]
-    fn test_new_single_valid_value_constraint() {
-        let test_valid_values: HashSet<i32> = vec![654321].into_iter().collect();
-        let constraint = Constraint {id: 12345, valid_values: test_valid_values };
+        #[test]
+        fn test_new_single_valid_value_constraint(test_value: u16, test_valid_value: i32) {
+            let test_valid_values: HashSet<i32> = vec![test_valid_value].into_iter().collect();
+            let constraint = Constraint {id: test_value, valid_values: test_valid_values };
 
-        assert_eq!(constraint, ConstraintFactory::new_single_valid_value_constraint(12345, 654321));
+            assert_eq!(constraint, ConstraintFactory::new_single_valid_value_constraint(test_value, test_valid_value));
+        }
     }
 }
