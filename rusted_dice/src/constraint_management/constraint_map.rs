@@ -109,7 +109,7 @@ mod tests {
     }
 
     #[test]
-    fn is_theoretically_possible_one_bad_constraint_true() {
+    fn is_theoretically_possible_one_bad_constraint_false() {
         let constraint1_123 = Constraint {id: 1, valid_values: vec![1, 2, 3].into_iter().collect()};
         let constraint2 = Constraint {id: 2, valid_values: vec![].into_iter().collect()};
         let constraint3_123 = Constraint {id: 3, valid_values: vec![1, 2, 3].into_iter().collect()};
@@ -122,7 +122,7 @@ mod tests {
     }
 
     #[test]
-    fn is_theoretically_possible_all_bad_constraint_true() {
+    fn is_theoretically_possible_all_bad_constraint_false() {
         let constraint1 = Constraint {id: 1, valid_values: vec![].into_iter().collect()};
         let constraint2 = Constraint {id: 2, valid_values: vec![].into_iter().collect()};
         let constraint3 = Constraint {id: 3, valid_values: vec![].into_iter().collect()};
@@ -497,5 +497,5 @@ mod tests {
         let result = constraint_map_two.cmp(&constraint_map_one);
         assert_eq!(result, Ordering::Equal);
     }
- 
+
 }
