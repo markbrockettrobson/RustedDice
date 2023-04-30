@@ -10,18 +10,18 @@ pub(crate) struct ConstraintMapFactory;
 
 #[allow(dead_code)]
 impl ConstraintMapFactory {
-    fn new_empty_constraint_map() -> ConstraintMap {
+    pub(crate) fn new_empty_constraint_map() -> ConstraintMap {
         let map: HashMap<u16, Constraint> = HashMap::new();
         ConstraintMap { map }
     }
 
-    fn single_constraint_constraint_map(constraint: Constraint) -> ConstraintMap {
+    pub(crate) fn single_constraint_constraint_map(constraint: Constraint) -> ConstraintMap {
         let mut map: HashMap<u16, Constraint> = HashMap::new();
         map.insert(constraint.id, constraint);
         ConstraintMap { map }
     }
 
-    fn new_constraint_map(constraints: IntoIter<Constraint>) -> ConstraintMap {
+    pub(crate) fn new_constraint_map(constraints: IntoIter<Constraint>) -> ConstraintMap {
         let mut map: HashMap<u16, Constraint> = HashMap::new();
         for constraint in constraints {
             match map.entry(constraint.id) {
