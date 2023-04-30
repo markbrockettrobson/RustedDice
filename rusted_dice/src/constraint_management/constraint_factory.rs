@@ -6,12 +6,12 @@ pub(crate) struct ConstraintFactory;
 
 #[allow(dead_code)]
 impl ConstraintFactory {
-    fn new_empty_constraint(id: u16) -> Constraint {
+    pub(crate) fn new_empty_constraint(id: u16) -> Constraint {
         let valid_values: HashSet<i32> = vec![].into_iter().collect();
         Constraint { id, valid_values }
     }
 
-    fn new_single_valid_value_constraint(id: u16, value: i32) -> Constraint {
+    pub(crate) fn new_single_valid_value_constraint(id: u16, value: i32) -> Constraint {
         let valid_values: HashSet<i32> = vec![value].into_iter().collect();
         Constraint { id, valid_values }
     }
