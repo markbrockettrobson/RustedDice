@@ -22,8 +22,7 @@ impl Add for Constraint {
 
 #[cfg(test)]
 mod tests {
-    use crate::constraint_management::ConstraintFactory;
-    use crate::constraint_management::ConstraintValueType;
+    use crate::constraint_management::{ConstraintFactory, ConstraintValueType};
     use std::collections::HashSet;
 
     #[test]
