@@ -13,7 +13,7 @@ impl ConstraintMapFactory {
         ConstraintMap { map }
     }
 
-    pub(crate) fn single_constraint_constraint_map(constraint: Constraint) -> ConstraintMap {
+    pub(crate) fn new_single_constraint_constraint_map(constraint: Constraint) -> ConstraintMap {
         let mut map: HashMap<ConstraintIdType, Constraint> = HashMap::new();
         map.insert(constraint.id, constraint);
         ConstraintMap { map }
@@ -63,7 +63,7 @@ mod tests {
         let constraint_map = ConstraintMap { map };
         assert_eq!(
             constraint_map,
-            ConstraintMapFactory::single_constraint_constraint_map(constraint3_123)
+            ConstraintMapFactory::new_single_constraint_constraint_map(constraint3_123)
         );
     }
 
