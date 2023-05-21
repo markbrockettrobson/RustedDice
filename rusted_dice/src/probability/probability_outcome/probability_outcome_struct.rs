@@ -328,145 +328,264 @@ impl Neg for ProbabilityOutcome {
 mod tests {
     use std::{cmp::Ordering, collections::HashMap};
 
-    use crate::constraint_management::constraint::Constraint;
+    use crate::{
+        constraint_management::{ConstraintFactory, ConstraintIdType, ConstraintValueType},
+        probability::ProbabilityOutcomeFactory,
+    };
 
     use super::*;
     use proptest::prelude::*;
 
+    fn has_key_valid_value(
+        constraint_map: &ConstraintMap,
+        id: ConstraintIdType,
+        valid_value: ConstraintValueType,
+    ) -> bool {
+        constraint_map
+            .map
+            .get(&id)
+            .unwrap()
+            .valid_values
+            .contains(&valid_value)
+    }
+
+    fn key_valid_value_len(constraint_map: &ConstraintMap, id: ConstraintIdType) -> usize {
+        constraint_map.map.get(&id).unwrap().valid_values.len()
+    }
+
     #[test]
     fn test_combine_constraint_map() {
-        let constraint1_12 = Constraint {
-            id: 1,
-            valid_values: vec![1, 2].into_iter().collect(),
-        };
-        let constraint1_23 = Constraint {
-            id: 1,
-            valid_values: vec![2, 3].into_iter().collect(),
-        };
-        let mut map_one: HashMap<u16, Constraint> = HashMap::new();
-        map_one.insert(1, constraint1_12);
-        let mut map_two: HashMap<u16, Constraint> = HashMap::new();
-        map_two.insert(1, constraint1_23);
-        let test_constraint_map_one = ConstraintMap { map: map_one };
-        let test_constraint_map_two = ConstraintMap { map: map_two };
-
-        let probability_outcome_one = ProbabilityOutcome {
-            value: 123,
-            constraint_map: test_constraint_map_one,
-        };
-        let probability_outcome_two = ProbabilityOutcome {
-            value: 123,
-            constraint_map: test_constraint_map_two,
-        };
+        let probability_outcome_one = ProbabilityOutcomeFactory::new_with_constraints(
+            123,
+            vec![ConstraintFactory::new_many_item_constraint(1, vec![1, 2])],
+        );
+        let probability_outcome_two = ProbabilityOutcomeFactory::new_with_constraints(
+            123,
+            vec![ConstraintFactory::new_many_item_constraint(1, vec![2, 3])],
+        );
 
         let combined_probability_outcome =
             probability_outcome_one.combine(probability_outcome_two, |lhs, rhs| lhs + rhs);
 
         let combined_constraint_map = combined_probability_outcome.constraint_map;
 
+        assert_eq!(combined_probability_outcome.value, 246);
         assert_eq!(combined_constraint_map.map.len(), 1);
+        assert_eq!(key_valid_value_len(&combined_constraint_map, 1), 1);
+        assert!(!has_key_valid_value(&combined_constraint_map, 1, 1));
+        assert!(has_key_valid_value(&combined_constraint_map, 1, 2));
+        assert!(!has_key_valid_value(&combined_constraint_map, 1, 3));
     }
 
     #[test]
     fn test_combine_constrainti32_map() {
-        let constraint1_12 = Constraint {
-            id: 1,
-            valid_values: vec![1, 2].into_iter().collect(),
-        };
-        let mut map: HashMap<u16, Constraint> = HashMap::new();
-        map.insert(1, constraint1_12);
-
-        let probability_outcome = ProbabilityOutcome {
-            value: 123,
-            constraint_map: ConstraintMap { map: map.clone() },
-        };
-
-        let combined_probability_outcome = probability_outcome.combinei32(1, |lhs, rhs| lhs + rhs);
-
+        let probability_outcome = ProbabilityOutcomeFactory::new_with_constraints(
+            10,
+            vec![ConstraintFactory::new_many_item_constraint(1, vec![1, 2])],
+        );
+        let combined_probability_outcome = probability_outcome.combinei32(1, |lhs, rhs| lhs - rhs);
         let combined_constraint_map = combined_probability_outcome.constraint_map;
 
-        assert_eq!(combined_constraint_map.map, map);
+        assert_eq!(combined_probability_outcome.value, 9);
+        assert_eq!(combined_constraint_map.map.len(), 1);
+        assert_eq!(key_valid_value_len(&combined_constraint_map, 1), 2);
+        assert!(has_key_valid_value(&combined_constraint_map, 1, 1));
+        assert!(has_key_valid_value(&combined_constraint_map, 1, 2));
     }
 
     #[test]
     fn test_combine_i32constraint_map() {
-        let constraint1_12 = Constraint {
-            id: 1,
-            valid_values: vec![1, 2].into_iter().collect(),
-        };
-        let mut map: HashMap<u16, Constraint> = HashMap::new();
-        map.insert(1, constraint1_12);
-
-        let probability_outcome = ProbabilityOutcome {
-            value: 123,
-            constraint_map: ConstraintMap { map: map.clone() },
-        };
-
-        let combined_probability_outcome = probability_outcome.i32combine(1, |lhs, rhs| lhs + rhs);
-
+        let probability_outcome = ProbabilityOutcomeFactory::new_with_constraints(
+            10,
+            vec![ConstraintFactory::new_many_item_constraint(2, vec![1, 2])],
+        );
+        let combined_probability_outcome = probability_outcome.i32combine(1, |lhs, rhs| lhs - rhs);
         let combined_constraint_map = combined_probability_outcome.constraint_map;
 
-        assert_eq!(combined_constraint_map.map, map);
+        assert_eq!(combined_probability_outcome.value, -9);
+        assert_eq!(combined_constraint_map.map.len(), 1);
+        assert_eq!(key_valid_value_len(&combined_constraint_map, 2), 2);
+        assert!(has_key_valid_value(&combined_constraint_map, 2, 1));
+        assert!(has_key_valid_value(&combined_constraint_map, 2, 2));
     }
 
     proptest! {
         #[test]
-        fn test_value_set(test_value: i32) {
-            let probability_outcome = ProbabilityOutcome {value: test_value,  constraint_map: ConstraintMap {map: HashMap::new()}};
+        fn test_value_set(test_value: ConstraintValueType) {
+            let probability_outcome = ProbabilityOutcomeFactory::new_with_empty_constraint_map(test_value);
             assert!(probability_outcome.value == test_value);
         }
 
         #[test]
-        fn test_constraint_map_set(test_value: u16) {
-            let constraint1_123 = Constraint {id: test_value, valid_values: vec![1, 2, 3].into_iter().collect()};
-            let mut map: HashMap<u16, Constraint> = HashMap::new();
-            map.insert(test_value, constraint1_123);
-            let test_constraint_map = ConstraintMap {map};
-
-            let probability_outcome = ProbabilityOutcome {value: 123, constraint_map: test_constraint_map};
-
-            assert!(probability_outcome.constraint_map.map.contains_key(&test_value));
-            assert!(probability_outcome.constraint_map.map.get(&test_value).unwrap().valid_values.contains(&1));
-            assert!(probability_outcome.constraint_map.map.get(&test_value).unwrap().valid_values.contains(&2));
-            assert!(probability_outcome.constraint_map.map.get(&test_value).unwrap().valid_values.contains(&3));
+        fn test_constraint_map_set(test_value: ConstraintIdType) {
+            let probability_outcome = ProbabilityOutcomeFactory::new_with_constraints(
+                123,
+                vec![
+                    ConstraintFactory::new_many_item_constraint(test_value, vec![1,2,3])
+            ]);
+            assert_eq!(probability_outcome.constraint_map.map.len(), 1);
+            assert_eq!(
+                key_valid_value_len(&probability_outcome.constraint_map, test_value), 3);
+            assert!(has_key_valid_value(&probability_outcome.constraint_map, test_value, 1));
+            assert!(has_key_valid_value(&probability_outcome.constraint_map, test_value, 2));
+            assert!(has_key_valid_value(&probability_outcome.constraint_map, test_value, 3));
         }
 
         #[test]
-        fn test_eq_true(test_value: u16) {
-            let constraint1_123 = Constraint {id: test_value, valid_values: vec![1, 2, 3].into_iter().collect()};
-            let mut map: HashMap<u16, Constraint> = HashMap::new();
-            map.insert(test_value, constraint1_123);
-            let test_constraint_map = ConstraintMap {map};
+        fn test_eq_true(test_value: ConstraintIdType) {
+            let probability_outcome_one = ProbabilityOutcomeFactory::new_with_constraints(
+                123,
+                vec![
+                    ConstraintFactory::new_many_item_constraint(test_value, vec![1,2,3])
+                ]);
 
-            let probability_outcome_one = ProbabilityOutcome {value: 123,  constraint_map: test_constraint_map.clone()};
-            let probability_outcome_two = ProbabilityOutcome {value: 123,  constraint_map: test_constraint_map};
+            let probability_outcome_two = ProbabilityOutcomeFactory::new_with_constraints(
+                123,
+                vec![
+                    ConstraintFactory::new_many_item_constraint(test_value, vec![1,2,3])
+                ]);
             assert!(probability_outcome_one == probability_outcome_two);
         }
 
         #[test]
         #[allow(clippy::nonminimal_bool)]
-        fn test_eq_false(test_value: i32, other_test_value: i32) {
+        fn test_eq_false_value(test_value: ConstraintValueType, other_test_value: ConstraintValueType) {
             prop_assume!(test_value != other_test_value);
-            let probability_outcome_one = ProbabilityOutcome {value: test_value,  constraint_map: ConstraintMap {map: HashMap::new()}};
-            let probability_outcome_two = ProbabilityOutcome {value: other_test_value,  constraint_map: ConstraintMap {map: HashMap::new()}};
+            let probability_outcome_one = ProbabilityOutcomeFactory::new_with_empty_constraint_map(test_value);
+            let probability_outcome_two = ProbabilityOutcomeFactory::new_with_empty_constraint_map(other_test_value);
             assert!(!(probability_outcome_one == probability_outcome_two));
         }
 
         #[test]
-        fn test_ne_true(test_value: i32, other_test_value: i32) {
-            prop_assume!(test_value != other_test_value);
-            let probability_outcome_one = ProbabilityOutcome {value: test_value,  constraint_map: ConstraintMap {map: HashMap::new()}};
-            let probability_outcome_two = ProbabilityOutcome {value: other_test_value,  constraint_map: ConstraintMap {map: HashMap::new()}};
-            assert!(probability_outcome_one != probability_outcome_two);
+        #[allow(clippy::nonminimal_bool)]
+        fn test_eq_false_constraints(test_value: ConstraintValueType) {
+            let probability_outcome_one = ProbabilityOutcomeFactory::new_with_constraints(
+                test_value,
+                vec![
+                    ConstraintFactory::new_many_item_constraint(123, vec![1,2,3])
+                ]);
+
+            let probability_outcome_two = ProbabilityOutcomeFactory::new_with_constraints(
+                test_value,
+                vec![
+                    ConstraintFactory::new_many_item_constraint(12, vec![1,2])
+                ]);
+            assert!(!(probability_outcome_one == probability_outcome_two));
         }
 
         #[test]
         #[allow(clippy::nonminimal_bool)]
-        fn test_ne_false(test_value: i32) {
-            let probability_outcome_one = ProbabilityOutcome {value: test_value,  constraint_map: ConstraintMap {map: HashMap::new()}};
-            let probability_outcome_two = ProbabilityOutcome {value: test_value,  constraint_map: ConstraintMap {map: HashMap::new()}};
+        fn test_ne_false(test_value: ConstraintIdType) {
+            let probability_outcome_one = ProbabilityOutcomeFactory::new_with_constraints(
+                123,
+                vec![
+                    ConstraintFactory::new_many_item_constraint(test_value, vec![1,2,3])
+                ]);
+
+            let probability_outcome_two = ProbabilityOutcomeFactory::new_with_constraints(
+                123,
+                vec![
+                    ConstraintFactory::new_many_item_constraint(test_value, vec![1,2,3])
+                ]);
             assert!(!(probability_outcome_one != probability_outcome_two));
         }
+
+        #[test]
+        fn test_ne_true_value(test_value: ConstraintValueType, other_test_value: ConstraintValueType) {
+            prop_assume!(test_value != other_test_value);
+            let probability_outcome_one = ProbabilityOutcomeFactory::new_with_empty_constraint_map(test_value);
+            let probability_outcome_two = ProbabilityOutcomeFactory::new_with_empty_constraint_map(other_test_value);
+            assert!(probability_outcome_one != probability_outcome_two);
+        }
+
+        #[test]
+        fn test_ne_true_constraints(test_value: ConstraintValueType) {
+            let probability_outcome_one = ProbabilityOutcomeFactory::new_with_constraints(
+                test_value,
+                vec![
+                    ConstraintFactory::new_many_item_constraint(123, vec![1,2,3])
+                ]);
+
+            let probability_outcome_two = ProbabilityOutcomeFactory::new_with_constraints(
+                test_value,
+                vec![
+                    ConstraintFactory::new_many_item_constraint(12, vec![1,2])
+                ]);
+            assert!(probability_outcome_one != probability_outcome_two);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         #[test]
         fn test_gt_true(base_value: i16, delta: u16) {

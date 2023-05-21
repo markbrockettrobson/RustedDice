@@ -33,7 +33,7 @@ mod tests {
         ConstraintValueType,
     };
 
-    fn test_map_has_key_valid_value(
+    fn has_key_valid_value(
         constraint_map: &ConstraintMap,
         id: ConstraintIdType,
         valid_value: ConstraintValueType,
@@ -82,11 +82,11 @@ mod tests {
         assert!(constraint_map_three.map.contains_key(&1));
         assert!(constraint_map_three.map.contains_key(&2));
         assert!(constraint_map_three.map.contains_key(&3));
-        assert!(!test_map_has_key_valid_value(&constraint_map_three, 2, 1));
-        assert!(!test_map_has_key_valid_value(&constraint_map_three, 2, 2));
-        assert!(test_map_has_key_valid_value(&constraint_map_three, 2, 3));
-        assert!(!test_map_has_key_valid_value(&constraint_map_three, 2, 4));
-        assert!(!test_map_has_key_valid_value(&constraint_map_three, 2, 5));
+        assert!(!has_key_valid_value(&constraint_map_three, 2, 1));
+        assert!(!has_key_valid_value(&constraint_map_three, 2, 2));
+        assert!(has_key_valid_value(&constraint_map_three, 2, 3));
+        assert!(!has_key_valid_value(&constraint_map_three, 2, 4));
+        assert!(!has_key_valid_value(&constraint_map_three, 2, 5));
         assert!(!constraint_map_three.map.contains_key(&4));
     }
 
@@ -103,17 +103,17 @@ mod tests {
         let constraint_map_three = constraint_map_one + constraint_map_two;
 
         assert!(constraint_map_three.map.contains_key(&1));
-        assert!(!test_map_has_key_valid_value(&constraint_map_three, 1, 1));
-        assert!(test_map_has_key_valid_value(&constraint_map_three, 1, 2));
-        assert!(test_map_has_key_valid_value(&constraint_map_three, 1, 3));
-        assert!(!test_map_has_key_valid_value(&constraint_map_three, 1, 4));
+        assert!(!has_key_valid_value(&constraint_map_three, 1, 1));
+        assert!(has_key_valid_value(&constraint_map_three, 1, 2));
+        assert!(has_key_valid_value(&constraint_map_three, 1, 3));
+        assert!(!has_key_valid_value(&constraint_map_three, 1, 4));
 
         assert!(constraint_map_three.map.contains_key(&2));
-        assert!(!test_map_has_key_valid_value(&constraint_map_three, 2, 1));
-        assert!(!test_map_has_key_valid_value(&constraint_map_three, 2, 2));
-        assert!(test_map_has_key_valid_value(&constraint_map_three, 2, 3));
-        assert!(!test_map_has_key_valid_value(&constraint_map_three, 2, 4));
-        assert!(!test_map_has_key_valid_value(&constraint_map_three, 2, 5));
+        assert!(!has_key_valid_value(&constraint_map_three, 2, 1));
+        assert!(!has_key_valid_value(&constraint_map_three, 2, 2));
+        assert!(has_key_valid_value(&constraint_map_three, 2, 3));
+        assert!(!has_key_valid_value(&constraint_map_three, 2, 4));
+        assert!(!has_key_valid_value(&constraint_map_three, 2, 5));
         assert!(!constraint_map_three.map.contains_key(&4));
     }
 
@@ -130,18 +130,18 @@ mod tests {
         let constraint_map_three = constraint_map_one + constraint_map_two;
 
         assert!(constraint_map_three.map.contains_key(&1));
-        assert!(!test_map_has_key_valid_value(&constraint_map_three, 1, 1));
-        assert!(test_map_has_key_valid_value(&constraint_map_three, 1, 2));
-        assert!(test_map_has_key_valid_value(&constraint_map_three, 1, 3));
-        assert!(!test_map_has_key_valid_value(&constraint_map_three, 1, 4));
+        assert!(!has_key_valid_value(&constraint_map_three, 1, 1));
+        assert!(has_key_valid_value(&constraint_map_three, 1, 2));
+        assert!(has_key_valid_value(&constraint_map_three, 1, 3));
+        assert!(!has_key_valid_value(&constraint_map_three, 1, 4));
 
         assert!(constraint_map_three.map.contains_key(&2));
-        assert!(!test_map_has_key_valid_value(&constraint_map_three, 2, 1));
-        assert!(!test_map_has_key_valid_value(&constraint_map_three, 2, 2));
-        assert!(!test_map_has_key_valid_value(&constraint_map_three, 2, 3));
-        assert!(!test_map_has_key_valid_value(&constraint_map_three, 2, 4));
-        assert!(!test_map_has_key_valid_value(&constraint_map_three, 2, 5));
-        assert!(!test_map_has_key_valid_value(&constraint_map_three, 2, 6));
+        assert!(!has_key_valid_value(&constraint_map_three, 2, 1));
+        assert!(!has_key_valid_value(&constraint_map_three, 2, 2));
+        assert!(!has_key_valid_value(&constraint_map_three, 2, 3));
+        assert!(!has_key_valid_value(&constraint_map_three, 2, 4));
+        assert!(!has_key_valid_value(&constraint_map_three, 2, 5));
+        assert!(!has_key_valid_value(&constraint_map_three, 2, 6));
 
         assert!(!constraint_map_three.map.contains_key(&4));
     }
