@@ -1,10 +1,10 @@
 use std::collections::BTreeMap;
 
-use super::probability_outcome::ProbabilityOutcome;
+use crate::probability::ProbabilityOutcome;
 
 #[allow(dead_code)]
 #[derive(Debug)]
-struct ProbabilityDistribution {
+pub struct ProbabilityDistribution {
     pub outcome_counts: BTreeMap<ProbabilityOutcome, u64>,
 }
 

@@ -1,10 +1,10 @@
 use std::cmp::{Eq, Ord, PartialOrd};
 use std::ops::{Add, BitAnd, BitOr, BitXor, Div, Mul, Neg, Not, Rem, Sub};
 
-use super::super::constraint_management::constraint_map::ConstraintMap;
+use crate::constraint_management::ConstraintMap;
 
 #[derive(Clone, Debug, Eq, Ord, PartialOrd, PartialEq)]
-pub(crate) struct ProbabilityOutcome {
+pub struct ProbabilityOutcome {
     pub value: i32,
     pub constraint_map: ConstraintMap,
 }
