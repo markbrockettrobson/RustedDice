@@ -1,6 +1,6 @@
 use std::ops::Add;
 
-use super::Constraint;
+use crate::constraint_management::Constraint;
 
 impl Add for Constraint {
     type Output = Self;
@@ -22,8 +22,8 @@ impl Add for Constraint {
 
 #[cfg(test)]
 mod tests {
-    use super::super::ConstraintFactory;
-    use super::super::ConstraintValueType;
+    use crate::constraint_management::ConstraintFactory;
+    use crate::constraint_management::ConstraintValueType;
     use std::collections::HashSet;
 
     #[test]

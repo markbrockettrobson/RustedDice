@@ -1,4 +1,4 @@
-use super::{Constraint, ConstraintIDType, ConstraintValueType};
+use crate::constraint_management::{Constraint, ConstraintIDType, ConstraintValueType};
 use std::collections::HashSet;
 
 pub struct ConstraintFactory;

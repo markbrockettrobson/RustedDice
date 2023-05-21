@@ -1,4 +1,4 @@
-use super::Constraint;
+use crate::constraint_management::Constraint;
 use std::cmp::Ordering;
 
 impl Ord for Constraint {
@@ -20,7 +20,7 @@ impl PartialOrd for Constraint {
 
 #[cfg(test)]
 mod tests {
-    use super::super::ConstraintFactory;
+    use crate::constraint_management::ConstraintFactory;
 
     use super::*;
 

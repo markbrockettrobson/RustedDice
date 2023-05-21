@@ -1,5 +1,5 @@
-use super::super::constraint_management::constraint_map_factory::ConstraintMapFactory;
 use super::probability_outcome::ProbabilityOutcome;
+use crate::constraint_management::ConstraintMapFactory;
 
 #[allow(dead_code)]
 pub(crate) struct ProbabilityOutcomeFactory;

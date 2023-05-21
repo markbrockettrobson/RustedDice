@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 
-use super::{ConstraintIDType, ConstraintValueType};
+use crate::constraint_management::{ConstraintIDType, ConstraintValueType};
 
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct Constraint {
@@ -10,8 +10,8 @@ pub struct Constraint {
 
 #[cfg(test)]
 mod tests {
-    use super::super::ConstraintFactory;
     use super::*;
+    use crate::constraint_management::ConstraintFactory;
     use proptest::prelude::*;
 
     #[test]

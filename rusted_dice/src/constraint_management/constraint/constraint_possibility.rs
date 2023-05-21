@@ -1,4 +1,4 @@
-use super::{Constraint, ConstraintValueType};
+use crate::constraint_management::{Constraint, ConstraintValueType};
 
 pub trait IsConstraintCompiledWith {
     fn is_compiled_with(&self, value: ConstraintValueType) -> bool;
@@ -22,7 +22,7 @@ impl IsTheoreticallyPossible for Constraint {
 
 #[cfg(test)]
 mod tests {
-    use super::super::ConstraintFactory;
+    use crate::constraint_management::ConstraintFactory;
 
     use super::*;
 
