@@ -4,10 +4,8 @@ pub(crate) mod traits;
 pub(crate) mod types;
 
 pub use constraint::Constraint;
-pub use constraint::ConstraintFactory;
 
 pub use constraint_map::ConstraintMap;
-pub use constraint_map::ConstraintMapFactory;
 
 pub use traits::AreConstraintsCompiledWith;
 pub use traits::IsConstraintCompiledWith;

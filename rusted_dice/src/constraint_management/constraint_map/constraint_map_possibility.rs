@@ -26,58 +26,58 @@ impl AreConstraintsCompiledWith for ConstraintMap {
 mod tests {
     use std::collections::HashMap;
 
-    use crate::constraint_management::{ConstraintFactory, ConstraintMapFactory};
+    use crate::constraint_management::{Constraint, ConstraintMap};
 
     use super::*;
 
     #[test]
     fn is_theoretically_possible_no_constraint_true() {
-        let constraint_map = ConstraintMapFactory::new_empty_constraint_map();
+        let constraint_map = ConstraintMap::new_empty_constraint_map();
         assert!(constraint_map.is_theoretically_possible());
     }
 
     #[test]
     fn is_theoretically_possible_true() {
-        let constraint_map = ConstraintMapFactory::new_constraint_map(vec![
-            ConstraintFactory::new_many_item_constraint(1, vec![1, 2, 3]),
-            ConstraintFactory::new_many_item_constraint(2, vec![1, 2, 3]),
-            ConstraintFactory::new_many_item_constraint(3, vec![1, 2, 3]),
+        let constraint_map = ConstraintMap::new_constraint_map(vec![
+            Constraint::new_many_item_constraint(1, vec![1, 2, 3]),
+            Constraint::new_many_item_constraint(2, vec![1, 2, 3]),
+            Constraint::new_many_item_constraint(3, vec![1, 2, 3]),
         ]);
         assert!(constraint_map.is_theoretically_possible());
     }
 
     #[test]
     fn is_theoretically_possible_one_bad_constraint_false() {
-        let constraint_map = ConstraintMapFactory::new_constraint_map(vec![
-            ConstraintFactory::new_many_item_constraint(1, vec![1, 2, 3]),
-            ConstraintFactory::new_empty_constraint(2),
-            ConstraintFactory::new_many_item_constraint(3, vec![1, 2, 3]),
+        let constraint_map = ConstraintMap::new_constraint_map(vec![
+            Constraint::new_many_item_constraint(1, vec![1, 2, 3]),
+            Constraint::new_empty_constraint(2),
+            Constraint::new_many_item_constraint(3, vec![1, 2, 3]),
         ]);
         assert!(!constraint_map.is_theoretically_possible());
     }
 
     #[test]
     fn is_theoretically_possible_all_bad_constraint_false() {
-        let constraint_map = ConstraintMapFactory::new_constraint_map(vec![
-            ConstraintFactory::new_empty_constraint(1),
-            ConstraintFactory::new_empty_constraint(2),
-            ConstraintFactory::new_empty_constraint(3),
+        let constraint_map = ConstraintMap::new_constraint_map(vec![
+            Constraint::new_empty_constraint(1),
+            Constraint::new_empty_constraint(2),
+            Constraint::new_empty_constraint(3),
         ]);
         assert!(!constraint_map.is_theoretically_possible());
     }
 
     #[test]
     fn compiles_no_constraint_map_true() {
-        let constraint_map = ConstraintMapFactory::new_empty_constraint_map();
+        let constraint_map = ConstraintMap::new_empty_constraint_map();
         assert!(constraint_map.is_compliant_with(HashMap::new()));
     }
 
     #[test]
     fn compiles_one_id_in_map_true() {
-        let constraint_map = ConstraintMapFactory::new_constraint_map(vec![
-            ConstraintFactory::new_many_item_constraint(1, vec![1, 2, 3]),
-            ConstraintFactory::new_many_item_constraint(2, vec![1, 2, 3]),
-            ConstraintFactory::new_many_item_constraint(3, vec![1, 2, 3]),
+        let constraint_map = ConstraintMap::new_constraint_map(vec![
+            Constraint::new_many_item_constraint(1, vec![1, 2, 3]),
+            Constraint::new_many_item_constraint(2, vec![1, 2, 3]),
+            Constraint::new_many_item_constraint(3, vec![1, 2, 3]),
         ]);
         let mut id_value_map: IdToValueMap = HashMap::new();
         id_value_map.insert(1, 1);
@@ -87,10 +87,10 @@ mod tests {
 
     #[test]
     fn compiles_one_id_in_map_false() {
-        let constraint_map = ConstraintMapFactory::new_constraint_map(vec![
-            ConstraintFactory::new_many_item_constraint(1, vec![1, 2, 3]),
-            ConstraintFactory::new_many_item_constraint(2, vec![1, 2, 3]),
-            ConstraintFactory::new_many_item_constraint(3, vec![1, 2, 3]),
+        let constraint_map = ConstraintMap::new_constraint_map(vec![
+            Constraint::new_many_item_constraint(1, vec![1, 2, 3]),
+            Constraint::new_many_item_constraint(2, vec![1, 2, 3]),
+            Constraint::new_many_item_constraint(3, vec![1, 2, 3]),
         ]);
         let mut id_value_map: IdToValueMap = HashMap::new();
         id_value_map.insert(1, 4);
@@ -100,10 +100,10 @@ mod tests {
 
     #[test]
     fn compiles_more_then_one_id_in_map_true() {
-        let constraint_map = ConstraintMapFactory::new_constraint_map(vec![
-            ConstraintFactory::new_many_item_constraint(1, vec![1, 2, 3]),
-            ConstraintFactory::new_many_item_constraint(2, vec![1, 2, 3]),
-            ConstraintFactory::new_many_item_constraint(3, vec![1, 2, 3]),
+        let constraint_map = ConstraintMap::new_constraint_map(vec![
+            Constraint::new_many_item_constraint(1, vec![1, 2, 3]),
+            Constraint::new_many_item_constraint(2, vec![1, 2, 3]),
+            Constraint::new_many_item_constraint(3, vec![1, 2, 3]),
         ]);
 
         let mut id_value_map: IdToValueMap = HashMap::new();
@@ -115,10 +115,10 @@ mod tests {
 
     #[test]
     fn compiles_more_then_one_id_in_map_false() {
-        let constraint_map = ConstraintMapFactory::new_constraint_map(vec![
-            ConstraintFactory::new_many_item_constraint(1, vec![1, 2, 3]),
-            ConstraintFactory::new_many_item_constraint(2, vec![1, 2, 3]),
-            ConstraintFactory::new_many_item_constraint(3, vec![1, 2, 3]),
+        let constraint_map = ConstraintMap::new_constraint_map(vec![
+            Constraint::new_many_item_constraint(1, vec![1, 2, 3]),
+            Constraint::new_many_item_constraint(2, vec![1, 2, 3]),
+            Constraint::new_many_item_constraint(3, vec![1, 2, 3]),
         ]);
 
         let mut id_value_map: IdToValueMap = HashMap::new();
@@ -129,10 +129,10 @@ mod tests {
 
     #[test]
     fn compiles_all_id_in_map_true() {
-        let constraint_map = ConstraintMapFactory::new_constraint_map(vec![
-            ConstraintFactory::new_many_item_constraint(1, vec![1, 2, 3]),
-            ConstraintFactory::new_many_item_constraint(2, vec![1, 2, 3]),
-            ConstraintFactory::new_many_item_constraint(3, vec![1, 2, 3]),
+        let constraint_map = ConstraintMap::new_constraint_map(vec![
+            Constraint::new_many_item_constraint(1, vec![1, 2, 3]),
+            Constraint::new_many_item_constraint(2, vec![1, 2, 3]),
+            Constraint::new_many_item_constraint(3, vec![1, 2, 3]),
         ]);
 
         let mut id_value_map: IdToValueMap = HashMap::new();
@@ -144,10 +144,10 @@ mod tests {
 
     #[test]
     fn compiles_all_id_in_map_false() {
-        let constraint_map = ConstraintMapFactory::new_constraint_map(vec![
-            ConstraintFactory::new_many_item_constraint(1, vec![1, 2, 3]),
-            ConstraintFactory::new_many_item_constraint(2, vec![1, 2, 3]),
-            ConstraintFactory::new_many_item_constraint(3, vec![1, 2, 3]),
+        let constraint_map = ConstraintMap::new_constraint_map(vec![
+            Constraint::new_many_item_constraint(1, vec![1, 2, 3]),
+            Constraint::new_many_item_constraint(2, vec![1, 2, 3]),
+            Constraint::new_many_item_constraint(3, vec![1, 2, 3]),
         ]);
 
         let mut id_value_map: IdToValueMap = HashMap::new();

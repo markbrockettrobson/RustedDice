@@ -29,8 +29,7 @@ impl Add for ConstraintMap {
 #[cfg(test)]
 mod tests {
     use crate::constraint_management::{
-        ConstraintFactory, ConstraintIdType, ConstraintMap, ConstraintMapFactory,
-        ConstraintValueType,
+        Constraint, ConstraintIdType, ConstraintMap, ConstraintValueType,
     };
 
     fn has_key_valid_value(
@@ -48,13 +47,13 @@ mod tests {
 
     #[test]
     fn combine_no_id_common() {
-        let constraint_map_one = ConstraintMapFactory::new_constraint_map(vec![
-            ConstraintFactory::new_many_item_constraint(1, vec![1, 2, 3]),
-            ConstraintFactory::new_many_item_constraint(2, vec![1, 2, 3]),
+        let constraint_map_one = ConstraintMap::new_constraint_map(vec![
+            Constraint::new_many_item_constraint(1, vec![1, 2, 3]),
+            Constraint::new_many_item_constraint(2, vec![1, 2, 3]),
         ]);
-        let constraint_map_two = ConstraintMapFactory::new_constraint_map(vec![
-            ConstraintFactory::new_many_item_constraint(3, vec![1, 2, 3]),
-            ConstraintFactory::new_many_item_constraint(4, vec![1, 2, 3]),
+        let constraint_map_two = ConstraintMap::new_constraint_map(vec![
+            Constraint::new_many_item_constraint(3, vec![1, 2, 3]),
+            Constraint::new_many_item_constraint(4, vec![1, 2, 3]),
         ]);
 
         let constraint_map_three = constraint_map_one + constraint_map_two;
@@ -68,13 +67,13 @@ mod tests {
 
     #[test]
     fn combine_one_id_common() {
-        let constraint_map_one = ConstraintMapFactory::new_constraint_map(vec![
-            ConstraintFactory::new_many_item_constraint(1, vec![1, 2, 3]),
-            ConstraintFactory::new_many_item_constraint(2, vec![1, 2, 3]),
+        let constraint_map_one = ConstraintMap::new_constraint_map(vec![
+            Constraint::new_many_item_constraint(1, vec![1, 2, 3]),
+            Constraint::new_many_item_constraint(2, vec![1, 2, 3]),
         ]);
-        let constraint_map_two = ConstraintMapFactory::new_constraint_map(vec![
-            ConstraintFactory::new_many_item_constraint(2, vec![3, 4, 5]),
-            ConstraintFactory::new_many_item_constraint(3, vec![1, 2, 3]),
+        let constraint_map_two = ConstraintMap::new_constraint_map(vec![
+            Constraint::new_many_item_constraint(2, vec![3, 4, 5]),
+            Constraint::new_many_item_constraint(3, vec![1, 2, 3]),
         ]);
 
         let constraint_map_three = constraint_map_one + constraint_map_two;
@@ -92,13 +91,13 @@ mod tests {
 
     #[test]
     fn combine_all_id_common() {
-        let constraint_map_one = ConstraintMapFactory::new_constraint_map(vec![
-            ConstraintFactory::new_many_item_constraint(1, vec![1, 2, 3]),
-            ConstraintFactory::new_many_item_constraint(2, vec![1, 2, 3]),
+        let constraint_map_one = ConstraintMap::new_constraint_map(vec![
+            Constraint::new_many_item_constraint(1, vec![1, 2, 3]),
+            Constraint::new_many_item_constraint(2, vec![1, 2, 3]),
         ]);
-        let constraint_map_two = ConstraintMapFactory::new_constraint_map(vec![
-            ConstraintFactory::new_many_item_constraint(1, vec![2, 3, 4]),
-            ConstraintFactory::new_many_item_constraint(2, vec![3, 4, 5]),
+        let constraint_map_two = ConstraintMap::new_constraint_map(vec![
+            Constraint::new_many_item_constraint(1, vec![2, 3, 4]),
+            Constraint::new_many_item_constraint(2, vec![3, 4, 5]),
         ]);
         let constraint_map_three = constraint_map_one + constraint_map_two;
 
@@ -119,13 +118,13 @@ mod tests {
 
     #[test]
     fn combine_no_impossable_options_common() {
-        let constraint_map_one = ConstraintMapFactory::new_constraint_map(vec![
-            ConstraintFactory::new_many_item_constraint(1, vec![1, 2, 3]),
-            ConstraintFactory::new_many_item_constraint(2, vec![1, 2, 3]),
+        let constraint_map_one = ConstraintMap::new_constraint_map(vec![
+            Constraint::new_many_item_constraint(1, vec![1, 2, 3]),
+            Constraint::new_many_item_constraint(2, vec![1, 2, 3]),
         ]);
-        let constraint_map_two = ConstraintMapFactory::new_constraint_map(vec![
-            ConstraintFactory::new_many_item_constraint(1, vec![2, 3, 4]),
-            ConstraintFactory::new_many_item_constraint(2, vec![4, 5, 6]),
+        let constraint_map_two = ConstraintMap::new_constraint_map(vec![
+            Constraint::new_many_item_constraint(1, vec![2, 3, 4]),
+            Constraint::new_many_item_constraint(2, vec![4, 5, 6]),
         ]);
         let constraint_map_three = constraint_map_one + constraint_map_two;
 

@@ -2,19 +2,12 @@ use std::cmp::{Eq, Ord, PartialOrd};
 use std::ops::{Add, BitAnd, BitOr, BitXor, Div, Mul, Neg, Not, Rem, Sub};
 
 use crate::constraint_management::ConstraintMap;
+use crate::probability::{BinaryOperation, Combine};
 
 #[derive(Clone, Debug, Eq, Ord, PartialOrd, PartialEq)]
 pub struct ProbabilityOutcome {
     pub value: i32,
     pub constraint_map: ConstraintMap,
-}
-
-type BinaryOperation = fn(i32, i32) -> i32;
-
-trait Combine {
-    fn combine(&self, other: Self, binary_operation: BinaryOperation) -> Self;
-    fn combinei32(&self, other: i32, binary_operation: BinaryOperation) -> Self;
-    fn i32combine(&self, other: i32, binary_operation: BinaryOperation) -> Self;
 }
 
 impl Combine for ProbabilityOutcome {
@@ -328,12 +321,12 @@ impl Neg for ProbabilityOutcome {
 mod tests {
     use std::cmp::Ordering;
 
-    use crate::{
-        constraint_management::{ConstraintFactory, ConstraintIdType, ConstraintValueType},
-        probability::ProbabilityOutcomeFactory,
+    use crate::constraint_management::{
+        Constraint, ConstraintIdType, ConstraintMap, ConstraintValueType,
     };
+    use crate::probability::probability_outcome::probability_outcome_struct::Combine;
+    use crate::probability::ProbabilityOutcome;
 
-    use super::*;
     use proptest::prelude::*;
 
     fn has_key_valid_value(
@@ -355,13 +348,13 @@ mod tests {
 
     #[test]
     fn test_combine_constraint_map() {
-        let probability_outcome_one = ProbabilityOutcomeFactory::new_with_constraints(
+        let probability_outcome_one = ProbabilityOutcome::new_with_constraints(
             123,
-            vec![ConstraintFactory::new_many_item_constraint(1, vec![1, 2])],
+            vec![Constraint::new_many_item_constraint(1, vec![1, 2])],
         );
-        let probability_outcome_two = ProbabilityOutcomeFactory::new_with_constraints(
+        let probability_outcome_two = ProbabilityOutcome::new_with_constraints(
             123,
-            vec![ConstraintFactory::new_many_item_constraint(1, vec![2, 3])],
+            vec![Constraint::new_many_item_constraint(1, vec![2, 3])],
         );
 
         let combined_probability_outcome =
@@ -379,9 +372,9 @@ mod tests {
 
     #[test]
     fn test_combine_constrainti32_map() {
-        let probability_outcome = ProbabilityOutcomeFactory::new_with_constraints(
+        let probability_outcome = ProbabilityOutcome::new_with_constraints(
             10,
-            vec![ConstraintFactory::new_many_item_constraint(1, vec![1, 2])],
+            vec![Constraint::new_many_item_constraint(1, vec![1, 2])],
         );
         let combined_probability_outcome = probability_outcome.combinei32(1, |lhs, rhs| lhs - rhs);
         let combined_constraint_map = combined_probability_outcome.constraint_map;
@@ -395,9 +388,9 @@ mod tests {
 
     #[test]
     fn test_combine_i32constraint_map() {
-        let probability_outcome = ProbabilityOutcomeFactory::new_with_constraints(
+        let probability_outcome = ProbabilityOutcome::new_with_constraints(
             10,
-            vec![ConstraintFactory::new_many_item_constraint(2, vec![1, 2])],
+            vec![Constraint::new_many_item_constraint(2, vec![1, 2])],
         );
         let combined_probability_outcome = probability_outcome.i32combine(1, |lhs, rhs| lhs - rhs);
         let combined_constraint_map = combined_probability_outcome.constraint_map;
@@ -412,16 +405,16 @@ mod tests {
     proptest! {
         #[test]
         fn test_value_set(test_value: ConstraintValueType) {
-            let probability_outcome = ProbabilityOutcomeFactory::new_with_empty_constraint_map(test_value);
+            let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(test_value);
             assert!(probability_outcome.value == test_value);
         }
 
         #[test]
         fn test_constraint_map_set(test_value: ConstraintIdType) {
-            let probability_outcome = ProbabilityOutcomeFactory::new_with_constraints(
+            let probability_outcome = ProbabilityOutcome::new_with_constraints(
                 123,
                 vec![
-                    ConstraintFactory::new_many_item_constraint(test_value, vec![1,2,3])
+                    Constraint::new_many_item_constraint(test_value, vec![1,2,3])
             ]);
             assert_eq!(probability_outcome.constraint_map.map.len(), 1);
             assert_eq!(
@@ -433,16 +426,16 @@ mod tests {
 
         #[test]
         fn test_eq_true(test_value: ConstraintIdType) {
-            let probability_outcome_one = ProbabilityOutcomeFactory::new_with_constraints(
+            let probability_outcome_one = ProbabilityOutcome::new_with_constraints(
                 123,
                 vec![
-                    ConstraintFactory::new_many_item_constraint(test_value, vec![1,2,3])
+                    Constraint::new_many_item_constraint(test_value, vec![1,2,3])
                 ]);
 
-            let probability_outcome_two = ProbabilityOutcomeFactory::new_with_constraints(
+            let probability_outcome_two = ProbabilityOutcome::new_with_constraints(
                 123,
                 vec![
-                    ConstraintFactory::new_many_item_constraint(test_value, vec![1,2,3])
+                    Constraint::new_many_item_constraint(test_value, vec![1,2,3])
                 ]);
             assert!(probability_outcome_one == probability_outcome_two);
         }
@@ -451,24 +444,24 @@ mod tests {
         #[allow(clippy::nonminimal_bool)]
         fn test_eq_false_value(test_value: ConstraintValueType, other_test_value: ConstraintValueType) {
             prop_assume!(test_value != other_test_value);
-            let probability_outcome_one = ProbabilityOutcomeFactory::new_with_empty_constraint_map(test_value);
-            let probability_outcome_two = ProbabilityOutcomeFactory::new_with_empty_constraint_map(other_test_value);
+            let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(test_value);
+            let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(other_test_value);
             assert!(!(probability_outcome_one == probability_outcome_two));
         }
 
         #[test]
         #[allow(clippy::nonminimal_bool)]
         fn test_eq_false_constraints(test_value: ConstraintValueType) {
-            let probability_outcome_one = ProbabilityOutcomeFactory::new_with_constraints(
+            let probability_outcome_one = ProbabilityOutcome::new_with_constraints(
                 test_value,
                 vec![
-                    ConstraintFactory::new_many_item_constraint(123, vec![1,2,3])
+                    Constraint::new_many_item_constraint(123, vec![1,2,3])
                 ]);
 
-            let probability_outcome_two = ProbabilityOutcomeFactory::new_with_constraints(
+            let probability_outcome_two = ProbabilityOutcome::new_with_constraints(
                 test_value,
                 vec![
-                    ConstraintFactory::new_many_item_constraint(12, vec![1,2])
+                    Constraint::new_many_item_constraint(12, vec![1,2])
                 ]);
             assert!(!(probability_outcome_one == probability_outcome_two));
         }
@@ -476,16 +469,16 @@ mod tests {
         #[test]
         #[allow(clippy::nonminimal_bool)]
         fn test_ne_false(test_value: ConstraintIdType) {
-            let probability_outcome_one = ProbabilityOutcomeFactory::new_with_constraints(
+            let probability_outcome_one = ProbabilityOutcome::new_with_constraints(
                 123,
                 vec![
-                    ConstraintFactory::new_many_item_constraint(test_value, vec![1,2,3])
+                    Constraint::new_many_item_constraint(test_value, vec![1,2,3])
                 ]);
 
-            let probability_outcome_two = ProbabilityOutcomeFactory::new_with_constraints(
+            let probability_outcome_two = ProbabilityOutcome::new_with_constraints(
                 123,
                 vec![
-                    ConstraintFactory::new_many_item_constraint(test_value, vec![1,2,3])
+                    Constraint::new_many_item_constraint(test_value, vec![1,2,3])
                 ]);
             assert!(!(probability_outcome_one != probability_outcome_two));
         }
@@ -493,22 +486,22 @@ mod tests {
         #[test]
         fn test_ne_true_value(test_value: ConstraintValueType, other_test_value: ConstraintValueType) {
             prop_assume!(test_value != other_test_value);
-            let probability_outcome_one = ProbabilityOutcomeFactory::new_with_empty_constraint_map(test_value);
-            let probability_outcome_two = ProbabilityOutcomeFactory::new_with_empty_constraint_map(other_test_value);
+            let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(test_value);
+            let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(other_test_value);
             assert!(probability_outcome_one != probability_outcome_two);
         }
 
         #[test]
         fn test_ne_true_constraints(test_value: ConstraintValueType) {
-            let probability_outcome_one = ProbabilityOutcomeFactory::new_with_constraints(
+            let probability_outcome_one = ProbabilityOutcome::new_with_constraints(
                 test_value,
                 vec![
-                    ConstraintFactory::new_many_item_constraint(123, vec![1,2,3])
+                    Constraint::new_many_item_constraint(123, vec![1,2,3])
                 ]);
-            let probability_outcome_two = ProbabilityOutcomeFactory::new_with_constraints(
+            let probability_outcome_two = ProbabilityOutcome::new_with_constraints(
                 test_value,
                 vec![
-                    ConstraintFactory::new_many_item_constraint(12, vec![1,2])
+                    Constraint::new_many_item_constraint(12, vec![1,2])
                 ]);
             assert!(probability_outcome_one != probability_outcome_two);
         }
@@ -516,8 +509,8 @@ mod tests {
         #[test]
         fn test_gt_true(base_value: i16, delta: u16) {
             prop_assume!(delta != 0);
-            let probability_outcome_one = ProbabilityOutcomeFactory::new_with_empty_constraint_map(base_value.into());
-            let probability_outcome_two = ProbabilityOutcomeFactory::new_with_empty_constraint_map(i32::from(base_value) + i32::from(delta));
+            let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(base_value.into());
+            let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(i32::from(base_value) + i32::from(delta));
             assert!(probability_outcome_two > probability_outcome_one);
         }
 
@@ -525,24 +518,24 @@ mod tests {
         #[allow(clippy::nonminimal_bool)]
         fn test_gt_false(base_value: i16, delta: u16) {
             prop_assume!(delta != 0);
-            let probability_outcome_one = ProbabilityOutcomeFactory::new_with_empty_constraint_map(base_value.into());
-            let probability_outcome_two = ProbabilityOutcomeFactory::new_with_empty_constraint_map(i32::from(base_value) + i32::from(delta));
+            let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(base_value.into());
+            let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(i32::from(base_value) + i32::from(delta));
             assert!(!(probability_outcome_one > probability_outcome_two));
         }
 
         #[test]
         #[allow(clippy::nonminimal_bool)]
         fn test_gt_same(base_value: i16) {
-            let probability_outcome_one = ProbabilityOutcomeFactory::new_with_empty_constraint_map(base_value.into());
-            let probability_outcome_two = ProbabilityOutcomeFactory::new_with_empty_constraint_map(base_value.into());
+            let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(base_value.into());
+            let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(base_value.into());
             assert!(!(probability_outcome_two > probability_outcome_one));
         }
 
         #[test]
         fn test_lt_true(base_value: i16, delta: u16) {
             prop_assume!(delta != 0);
-            let probability_outcome_one = ProbabilityOutcomeFactory::new_with_empty_constraint_map(base_value.into());
-            let probability_outcome_two = ProbabilityOutcomeFactory::new_with_empty_constraint_map(i32::from(base_value) + i32::from(delta));
+            let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(base_value.into());
+            let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(i32::from(base_value) + i32::from(delta));
             assert!(probability_outcome_one < probability_outcome_two);
         }
 
@@ -550,24 +543,24 @@ mod tests {
         #[allow(clippy::nonminimal_bool)]
         fn test_lt_false(base_value: i16, delta: u16) {
             prop_assume!(delta != 0);
-            let probability_outcome_one = ProbabilityOutcomeFactory::new_with_empty_constraint_map(base_value.into());
-            let probability_outcome_two = ProbabilityOutcomeFactory::new_with_empty_constraint_map(i32::from(base_value) + i32::from(delta));
+            let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(base_value.into());
+            let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(i32::from(base_value) + i32::from(delta));
             assert!(!(probability_outcome_two < probability_outcome_one));
         }
 
         #[test]
         #[allow(clippy::nonminimal_bool)]
         fn test_lt_same(base_value: i16) {
-            let probability_outcome_one = ProbabilityOutcomeFactory::new_with_empty_constraint_map(base_value.into());
-            let probability_outcome_two = ProbabilityOutcomeFactory::new_with_empty_constraint_map(base_value.into());
+            let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(base_value.into());
+            let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(base_value.into());
             assert!(!(probability_outcome_two < probability_outcome_one));
         }
 
         #[test]
         fn test_ge_true(base_value: i16, delta: u16) {
             prop_assume!(delta != 0);
-            let probability_outcome_one = ProbabilityOutcomeFactory::new_with_empty_constraint_map(base_value.into());
-            let probability_outcome_two = ProbabilityOutcomeFactory::new_with_empty_constraint_map(i32::from(base_value) + i32::from(delta));
+            let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(base_value.into());
+            let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(i32::from(base_value) + i32::from(delta));
             assert!(probability_outcome_two >= probability_outcome_one);
         }
 
@@ -575,23 +568,23 @@ mod tests {
         #[allow(clippy::nonminimal_bool)]
         fn test_ge_false(base_value: i16, delta: u16) {
             prop_assume!(delta != 0);
-            let probability_outcome_one = ProbabilityOutcomeFactory::new_with_empty_constraint_map(base_value.into());
-            let probability_outcome_two = ProbabilityOutcomeFactory::new_with_empty_constraint_map(i32::from(base_value) + i32::from(delta));
+            let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(base_value.into());
+            let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(i32::from(base_value) + i32::from(delta));
             assert!(!(probability_outcome_one >= probability_outcome_two));
         }
 
         #[test]
         fn test_ge_same(base_value: i16) {
-            let probability_outcome_one = ProbabilityOutcomeFactory::new_with_empty_constraint_map(base_value.into());
-            let probability_outcome_two = ProbabilityOutcomeFactory::new_with_empty_constraint_map(base_value.into());
+            let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(base_value.into());
+            let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(base_value.into());
             assert!(probability_outcome_two >= probability_outcome_one);
         }
 
         #[test]
         fn test_le_true(base_value: i16, delta: u16) {
             prop_assume!(delta != 0);
-            let probability_outcome_one = ProbabilityOutcomeFactory::new_with_empty_constraint_map(base_value.into());
-            let probability_outcome_two = ProbabilityOutcomeFactory::new_with_empty_constraint_map(i32::from(base_value) + i32::from(delta));
+            let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(base_value.into());
+            let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(i32::from(base_value) + i32::from(delta));
             assert!(probability_outcome_one <= probability_outcome_two);
         }
 
@@ -599,23 +592,23 @@ mod tests {
         #[allow(clippy::nonminimal_bool)]
         fn test_le_false(base_value: i16, delta: u16) {
             prop_assume!(delta != 0);
-            let probability_outcome_one = ProbabilityOutcomeFactory::new_with_empty_constraint_map(base_value.into());
-            let probability_outcome_two = ProbabilityOutcomeFactory::new_with_empty_constraint_map(i32::from(base_value) + i32::from(delta));
+            let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(base_value.into());
+            let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(i32::from(base_value) + i32::from(delta));
             assert!(!(probability_outcome_two <= probability_outcome_one));
         }
 
         #[test]
         fn test_le_same(base_value: i16) {
-            let probability_outcome_one = ProbabilityOutcomeFactory::new_with_empty_constraint_map(base_value.into());
-            let probability_outcome_two = ProbabilityOutcomeFactory::new_with_empty_constraint_map(base_value.into());
+            let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(base_value.into());
+            let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(base_value.into());
             assert!(probability_outcome_two <= probability_outcome_one);
         }
 
         #[test]
         fn test_cmp_less(base_value: i16, delta: u16) {
             prop_assume!(delta != 0);
-            let probability_outcome_one = ProbabilityOutcomeFactory::new_with_empty_constraint_map(base_value.into());
-            let probability_outcome_two = ProbabilityOutcomeFactory::new_with_empty_constraint_map(i32::from(base_value) + i32::from(delta));
+            let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(base_value.into());
+            let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(i32::from(base_value) + i32::from(delta));
             let result = probability_outcome_one.cmp(&probability_outcome_two);
             assert_eq!(result, Ordering::Less);
         }
@@ -623,31 +616,31 @@ mod tests {
         #[test]
         fn test_cmp_greater(base_value: i16, delta: u16) {
             prop_assume!(delta != 0);
-            let probability_outcome_one = ProbabilityOutcomeFactory::new_with_empty_constraint_map(i32::from(base_value) + i32::from(delta));
-            let probability_outcome_two = ProbabilityOutcomeFactory::new_with_empty_constraint_map(base_value.into());
+            let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(i32::from(base_value) + i32::from(delta));
+            let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(base_value.into());
             let result = probability_outcome_one.cmp(&probability_outcome_two);
             assert_eq!(result, Ordering::Greater);
         }
 
         #[test]
         fn test_cmp_equal(base_value: i16) {
-            let probability_outcome_one = ProbabilityOutcomeFactory::new_with_empty_constraint_map(base_value.into());
-            let probability_outcome_two = ProbabilityOutcomeFactory::new_with_empty_constraint_map(base_value.into());
+            let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(base_value.into());
+            let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(base_value.into());
             let result = probability_outcome_one.cmp(&probability_outcome_two);
             assert_eq!(result, Ordering::Equal);
         }
 
         #[test]
         fn test_fmt(value: i32) {
-            let probability_outcome = ProbabilityOutcomeFactory::new_with_empty_constraint_map(value);
+            let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(value);
             assert_eq!(format!("{probability_outcome:?}"), format!("ProbabilityOutcome {{ value: {}, constraint_map: ConstraintMap {{ map: {{}} }} }}", value));
         }
 
         #[test]
         fn test_add(value_one: i16, value_two: i16) {
             let expected_value = i32::from(value_one) + i32::from(value_two);
-            let probability_outcome_one = ProbabilityOutcomeFactory::new_with_empty_constraint_map(value_one.into());
-            let probability_outcome_two = ProbabilityOutcomeFactory::new_with_empty_constraint_map(value_two.into());
+            let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(value_one.into());
+            let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(value_two.into());
             let result = probability_outcome_one + probability_outcome_two;
             assert_eq!(result.value, expected_value);
         }
@@ -655,7 +648,7 @@ mod tests {
         #[test]
         fn test_add_i32(value_one: i16, value_two: i16) {
             let expected_value = i32::from(value_one) + i32::from(value_two);
-            let probability_outcome = ProbabilityOutcomeFactory::new_with_empty_constraint_map(value_one.into());
+            let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(value_one.into());
             let result = probability_outcome + i32::from(value_two);
             assert_eq!(result.value, expected_value);
         }
@@ -663,7 +656,7 @@ mod tests {
         #[test]
         fn test_i32_add(value_one: i16, value_two: i16) {
             let expected_value = i32::from(value_one) + i32::from(value_two);
-            let probability_outcome = ProbabilityOutcomeFactory::new_with_empty_constraint_map(value_one.into());
+            let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(value_one.into());
             let result = i32::from(value_two) + probability_outcome ;
             assert_eq!(result.value, expected_value);
         }
@@ -671,8 +664,8 @@ mod tests {
         #[test]
         fn test_sub(value_one: i16, value_two: i16) {
             let expected_value = i32::from(value_one) - i32::from(value_two);
-            let probability_outcome_one = ProbabilityOutcomeFactory::new_with_empty_constraint_map(value_one.into());
-            let probability_outcome_two = ProbabilityOutcomeFactory::new_with_empty_constraint_map(value_two.into());
+            let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(value_one.into());
+            let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(value_two.into());
             let result = probability_outcome_one - probability_outcome_two;
             assert_eq!(result.value, expected_value);
         }
@@ -680,7 +673,7 @@ mod tests {
         #[test]
         fn test_sub_i32(value_one: i16, value_two: i16) {
             let expected_value = i32::from(value_one) - i32::from(value_two);
-            let probability_outcome = ProbabilityOutcomeFactory::new_with_empty_constraint_map(value_one.into());
+            let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(value_one.into());
             let result = probability_outcome - i32::from(value_two);
             assert_eq!(result.value, expected_value);
         }
@@ -688,7 +681,7 @@ mod tests {
         #[test]
         fn test_i32_sub(value_one: i16, value_two: i16) {
             let expected_value = i32::from(value_one) - i32::from(value_two);
-            let probability_outcome = ProbabilityOutcomeFactory::new_with_empty_constraint_map(value_two.into());
+            let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(value_two.into());
             let result = i32::from(value_one) - probability_outcome;
             assert_eq!(result.value, expected_value);
         }
@@ -696,8 +689,8 @@ mod tests {
         #[test]
         fn test_mul(value_one: i16, value_two: i16) {
             let expected_value = i32::from(value_one) * i32::from(value_two);
-            let probability_outcome_one = ProbabilityOutcomeFactory::new_with_empty_constraint_map(value_one.into());
-            let probability_outcome_two = ProbabilityOutcomeFactory::new_with_empty_constraint_map(value_two.into());
+            let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(value_one.into());
+            let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(value_two.into());
             let result = probability_outcome_one * probability_outcome_two;
             assert_eq!(result.value, expected_value);
         }
@@ -705,7 +698,7 @@ mod tests {
         #[test]
         fn test_mul_i32(value_one: i16, value_two: i16) {
             let expected_value = i32::from(value_one) * i32::from(value_two);
-            let probability_outcome = ProbabilityOutcomeFactory::new_with_empty_constraint_map(value_one.into());
+            let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(value_one.into());
             let result = probability_outcome * i32::from(value_two);
             assert_eq!(result.value, expected_value);
         }
@@ -713,7 +706,7 @@ mod tests {
         #[test]
         fn test_i32_mul(value_one: i16, value_two: i16) {
             let expected_value = i32::from(value_one) * i32::from(value_two);
-            let probability_outcome = ProbabilityOutcomeFactory::new_with_empty_constraint_map(value_two.into());
+            let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(value_two.into());
             let result = i32::from(value_one) * probability_outcome;
             assert_eq!(result.value, expected_value);
         }
@@ -722,8 +715,8 @@ mod tests {
         fn test_div(value_one: i32, value_two: i16) {
             prop_assume!(value_two != 0);
             let expected_value = value_one / i32::from(value_two);
-            let probability_outcome_one = ProbabilityOutcomeFactory::new_with_empty_constraint_map(value_one);
-            let probability_outcome_two = ProbabilityOutcomeFactory::new_with_empty_constraint_map(value_two.into());
+            let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(value_one);
+            let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(value_two.into());
             let result = probability_outcome_one / probability_outcome_two;
             assert_eq!(result.value, expected_value);
         }
@@ -732,7 +725,7 @@ mod tests {
         fn test_div_i32(value_one: i16, value_two: i16) {
             prop_assume!(value_two != 0);
             let expected_value = i32::from(value_one) / i32::from(value_two);
-            let probability_outcome = ProbabilityOutcomeFactory::new_with_empty_constraint_map(value_one.into());
+            let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(value_one.into());
             let result = probability_outcome / i32::from(value_two);
             assert_eq!(result.value, expected_value);
         }
@@ -741,7 +734,7 @@ mod tests {
         fn test_i32_div(value_one: i16, value_two: i16) {
             prop_assume!(value_two != 0);
             let expected_value = i32::from(value_one) / i32::from(value_two);
-            let probability_outcome = ProbabilityOutcomeFactory::new_with_empty_constraint_map(value_two.into());
+            let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(value_two.into());
             let result = i32::from(value_one) / probability_outcome;
             assert_eq!(result.value, expected_value);
         }
@@ -750,8 +743,8 @@ mod tests {
         fn test_rem(value_one: i32, value_two: i16) {
             prop_assume!(value_two != 0);
             let expected_value = value_one % i32::from(value_two);
-            let probability_outcome_one = ProbabilityOutcomeFactory::new_with_empty_constraint_map(value_one);
-            let probability_outcome_two = ProbabilityOutcomeFactory::new_with_empty_constraint_map(value_two.into());
+            let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(value_one);
+            let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(value_two.into());
             let result = probability_outcome_one % probability_outcome_two;
             assert_eq!(result.value, expected_value);
         }
@@ -760,7 +753,7 @@ mod tests {
         fn test_rem_i32(value_one: i16, value_two: i16) {
             prop_assume!(value_two != 0);
             let expected_value = i32::from(value_one) % i32::from(value_two);
-            let probability_outcome = ProbabilityOutcomeFactory::new_with_empty_constraint_map(value_one.into());
+            let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(value_one.into());
             let result = probability_outcome % i32::from(value_two);
             assert_eq!(result.value, expected_value);
         }
@@ -769,7 +762,7 @@ mod tests {
         fn test_i32_rem(value_one: i16, value_two: i16) {
             prop_assume!(value_two != 0);
             let expected_value = i32::from(value_one) % i32::from(value_two);
-            let probability_outcome = ProbabilityOutcomeFactory::new_with_empty_constraint_map(value_two.into());
+            let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(value_two.into());
             let result = i32::from(value_one) % probability_outcome;
             assert_eq!(result.value, expected_value);
         }
@@ -777,8 +770,8 @@ mod tests {
         #[test]
         fn test_bitor(value_one: i32, value_two: i32) {
             let expected_value = value_one | value_two;
-            let probability_outcome_one = ProbabilityOutcomeFactory::new_with_empty_constraint_map(value_one);
-            let probability_outcome_two = ProbabilityOutcomeFactory::new_with_empty_constraint_map(value_two);
+            let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(value_one);
+            let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(value_two);
             let result = probability_outcome_one | probability_outcome_two;
             assert_eq!(result.value, expected_value);
         }
@@ -786,7 +779,7 @@ mod tests {
         #[test]
         fn test_bitor_i32(value_one: i16, value_two: i16) {
             let expected_value = i32::from(value_one) | i32::from(value_two);
-            let probability_outcome = ProbabilityOutcomeFactory::new_with_empty_constraint_map(value_one.into());
+            let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(value_one.into());
             let result = probability_outcome | i32::from(value_two);
             assert_eq!(result.value, expected_value);
         }
@@ -794,7 +787,7 @@ mod tests {
         #[test]
         fn test_i32_bitor(value_one: i16, value_two: i16) {
             let expected_value = i32::from(value_one) | i32::from(value_two);
-            let probability_outcome = ProbabilityOutcomeFactory::new_with_empty_constraint_map(value_two.into());
+            let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(value_two.into());
             let result = i32::from(value_one) | probability_outcome;
             assert_eq!(result.value, expected_value);
         }
@@ -802,8 +795,8 @@ mod tests {
         #[test]
         fn test_bitxor(value_one: i32, value_two: i32) {
             let expected_value = value_one ^ value_two;
-            let probability_outcome_one = ProbabilityOutcomeFactory::new_with_empty_constraint_map(value_one);
-            let probability_outcome_two = ProbabilityOutcomeFactory::new_with_empty_constraint_map(value_two);
+            let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(value_one);
+            let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(value_two);
             let result = probability_outcome_one ^ probability_outcome_two;
             assert_eq!(result.value, expected_value);
         }
@@ -811,7 +804,7 @@ mod tests {
         #[test]
         fn test_bitxor_i32(value_one: i16, value_two: i16) {
             let expected_value = i32::from(value_one) ^ i32::from(value_two);
-            let probability_outcome = ProbabilityOutcomeFactory::new_with_empty_constraint_map(value_one.into());
+            let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(value_one.into());
             let result = probability_outcome ^ i32::from(value_two);
             assert_eq!(result.value, expected_value);
         }
@@ -819,7 +812,7 @@ mod tests {
         #[test]
         fn test_i32_bitxor(value_one: i16, value_two: i16) {
             let expected_value = i32::from(value_one) ^ i32::from(value_two);
-            let probability_outcome = ProbabilityOutcomeFactory::new_with_empty_constraint_map(value_two.into());
+            let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(value_two.into());
             let result = i32::from(value_one) ^ probability_outcome;
             assert_eq!(result.value, expected_value);
         }
@@ -827,8 +820,8 @@ mod tests {
         #[test]
         fn test_bitand(value_one: i32, value_two: i32) {
             let expected_value = value_one & value_two;
-            let probability_outcome_one = ProbabilityOutcomeFactory::new_with_empty_constraint_map(value_one);
-            let probability_outcome_two = ProbabilityOutcomeFactory::new_with_empty_constraint_map(value_two);
+            let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(value_one);
+            let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(value_two);
             let result = probability_outcome_one & probability_outcome_two;
             assert_eq!(result.value, expected_value);
         }
@@ -836,7 +829,7 @@ mod tests {
         #[test]
         fn test_bitand_i32(value_one: i16, value_two: i16) {
             let expected_value = i32::from(value_one) & i32::from(value_two);
-            let probability_outcome = ProbabilityOutcomeFactory::new_with_empty_constraint_map(value_one.into());
+            let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(value_one.into());
             let result = probability_outcome & i32::from(value_two);
             assert_eq!(result.value, expected_value);
         }
@@ -844,7 +837,7 @@ mod tests {
         #[test]
         fn test_i32_bitand(value_one: i16, value_two: i16) {
             let expected_value = i32::from(value_one) & i32::from(value_two);
-            let probability_outcome = ProbabilityOutcomeFactory::new_with_empty_constraint_map(value_two.into());
+            let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(value_two.into());
             let result = i32::from(value_one) & probability_outcome;
             assert_eq!(result.value, expected_value);
         }
@@ -852,7 +845,7 @@ mod tests {
         #[test]
         fn test_not(value_one: i32) {
             let expected_value = !value_one;
-            let probability_outcome = ProbabilityOutcomeFactory::new_with_empty_constraint_map(value_one);
+            let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(value_one);
             let result = !probability_outcome;
             assert_eq!(result.value, expected_value);
         }
@@ -860,7 +853,7 @@ mod tests {
         #[test]
         fn test_neg(value_one: i32) {
             let expected_value = -value_one;
-            let probability_outcome = ProbabilityOutcomeFactory::new_with_empty_constraint_map(value_one);
+            let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(value_one);
             let result = -probability_outcome;
             assert_eq!(result.value, expected_value);
         }
@@ -869,8 +862,7 @@ mod tests {
     #[test]
     #[allow(clippy::clone_on_copy)]
     fn test_clone() {
-        let mut probability_outcome_one =
-            ProbabilityOutcomeFactory::new_with_empty_constraint_map(10);
+        let mut probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(10);
         let probability_outcome_two = probability_outcome_one.clone();
 
         assert_eq!(probability_outcome_one, probability_outcome_two);
@@ -881,9 +873,8 @@ mod tests {
     #[test]
     #[allow(clippy::clone_on_copy)]
     fn test_clone_from() {
-        let mut probability_outcome_two =
-            ProbabilityOutcomeFactory::new_with_empty_constraint_map(2);
-        let probability_outcome_one = ProbabilityOutcomeFactory::new_with_empty_constraint_map(10);
+        let mut probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(2);
+        let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(10);
         probability_outcome_two.clone_from(&probability_outcome_one);
         assert_ne!(probability_outcome_two.value, 2);
     }
@@ -891,194 +882,176 @@ mod tests {
     #[test]
     #[should_panic(expected = "attempt to add with overflow")]
     fn test_add_overflow() {
-        let probability_outcome_one =
-            ProbabilityOutcomeFactory::new_with_empty_constraint_map(i32::MAX);
-        let probability_outcome_two = ProbabilityOutcomeFactory::new_with_empty_constraint_map(1);
+        let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(i32::MAX);
+        let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(1);
         let _ = probability_outcome_one + probability_outcome_two;
     }
 
     #[test]
     #[should_panic(expected = "attempt to add with overflow")]
     fn test_add_underflow() {
-        let probability_outcome_one =
-            ProbabilityOutcomeFactory::new_with_empty_constraint_map(i32::MIN);
-        let probability_outcome_two = ProbabilityOutcomeFactory::new_with_empty_constraint_map(-1);
+        let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(i32::MIN);
+        let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(-1);
         let _ = probability_outcome_one + probability_outcome_two;
     }
 
     #[test]
     #[should_panic(expected = "attempt to add with overflow")]
     fn test_add_i32_overflow() {
-        let probability_outcome =
-            ProbabilityOutcomeFactory::new_with_empty_constraint_map(i32::MAX);
+        let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(i32::MAX);
         let _ = probability_outcome + 1;
     }
 
     #[test]
     #[should_panic(expected = "attempt to add with overflow")]
     fn test_add_i32_underflow() {
-        let probability_outcome =
-            ProbabilityOutcomeFactory::new_with_empty_constraint_map(i32::MIN);
+        let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(i32::MIN);
         let _ = probability_outcome + -1;
     }
 
     #[test]
     #[should_panic(expected = "attempt to add with overflow")]
     fn test_i32_add_overflow() {
-        let probability_outcome =
-            ProbabilityOutcomeFactory::new_with_empty_constraint_map(i32::MAX);
+        let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(i32::MAX);
         let _ = 1 + probability_outcome;
     }
 
     #[test]
     #[should_panic(expected = "attempt to add with overflow")]
     fn test_i32_add_underflow() {
-        let probability_outcome =
-            ProbabilityOutcomeFactory::new_with_empty_constraint_map(i32::MIN);
+        let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(i32::MIN);
         let _ = -1 + probability_outcome;
     }
 
     #[test]
     #[should_panic(expected = "attempt to subtract with overflow")]
     fn test_sub_overflow() {
-        let probability_outcome_one =
-            ProbabilityOutcomeFactory::new_with_empty_constraint_map(i32::MAX);
-        let probability_outcome_two = ProbabilityOutcomeFactory::new_with_empty_constraint_map(-1);
+        let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(i32::MAX);
+        let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(-1);
         let _ = probability_outcome_one - probability_outcome_two;
     }
 
     #[test]
     #[should_panic(expected = "attempt to subtract with overflow")]
     fn test_sub_underflow() {
-        let probability_outcome_one =
-            ProbabilityOutcomeFactory::new_with_empty_constraint_map(i32::MIN);
-        let probability_outcome_two = ProbabilityOutcomeFactory::new_with_empty_constraint_map(1);
+        let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(i32::MIN);
+        let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(1);
         let _ = probability_outcome_one - probability_outcome_two;
     }
 
     #[test]
     #[should_panic(expected = "attempt to subtract with overflow")]
     fn test_sub_i32_overflow() {
-        let probability_outcome =
-            ProbabilityOutcomeFactory::new_with_empty_constraint_map(i32::MAX);
+        let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(i32::MAX);
         let _ = probability_outcome - -1;
     }
 
     #[test]
     #[should_panic(expected = "attempt to subtract with overflow")]
     fn test_sub_i32_underflow() {
-        let probability_outcome =
-            ProbabilityOutcomeFactory::new_with_empty_constraint_map(i32::MIN);
+        let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(i32::MIN);
         let _ = probability_outcome - 1;
     }
 
     #[test]
     #[should_panic(expected = "attempt to subtract with overflow")]
     fn test_i32_sub_overflow() {
-        let probability_outcome = ProbabilityOutcomeFactory::new_with_empty_constraint_map(-1);
+        let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(-1);
         let _ = i32::MAX - probability_outcome;
     }
 
     #[test]
     #[should_panic(expected = "attempt to subtract with overflow")]
     fn test_132_sub_underflow() {
-        let probability_outcome = ProbabilityOutcomeFactory::new_with_empty_constraint_map(1);
+        let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(1);
         let _ = i32::MIN - probability_outcome;
     }
 
     #[test]
     #[should_panic(expected = "attempt to multiply with overflow")]
     fn test_mul_overflow() {
-        let probability_outcome_one =
-            ProbabilityOutcomeFactory::new_with_empty_constraint_map(i32::MAX);
-        let probability_outcome_two = ProbabilityOutcomeFactory::new_with_empty_constraint_map(2);
+        let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(i32::MAX);
+        let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(2);
         let _ = probability_outcome_one * probability_outcome_two;
     }
 
     #[test]
     #[should_panic(expected = "attempt to multiply with overflow")]
     fn test_mul_underflow() {
-        let probability_outcome_one =
-            ProbabilityOutcomeFactory::new_with_empty_constraint_map(i32::MIN);
-        let probability_outcome_two = ProbabilityOutcomeFactory::new_with_empty_constraint_map(-2);
+        let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(i32::MIN);
+        let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(-2);
         let _ = probability_outcome_one * probability_outcome_two;
     }
 
     #[test]
     #[should_panic(expected = "attempt to multiply with overflow")]
     fn test_mul_i32_overflow() {
-        let probability_outcome =
-            ProbabilityOutcomeFactory::new_with_empty_constraint_map(i32::MAX);
+        let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(i32::MAX);
         let _ = probability_outcome * 2;
     }
 
     #[test]
     #[should_panic(expected = "attempt to multiply with overflow")]
     fn test_mul_i32_underflow() {
-        let probability_outcome =
-            ProbabilityOutcomeFactory::new_with_empty_constraint_map(i32::MIN);
+        let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(i32::MIN);
         let _ = probability_outcome * -2;
     }
 
     #[test]
     #[should_panic(expected = "attempt to multiply with overflow")]
     fn test_i32_mul_overflow() {
-        let probability_outcome = ProbabilityOutcomeFactory::new_with_empty_constraint_map(2);
+        let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(2);
         let _ = i32::MAX * probability_outcome;
     }
 
     #[test]
     #[should_panic(expected = "attempt to multiply with overflow")]
     fn test_132_mul_underflow() {
-        let probability_outcome = ProbabilityOutcomeFactory::new_with_empty_constraint_map(-2);
+        let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(-2);
         let _ = i32::MIN * probability_outcome;
     }
 
     #[test]
     #[should_panic(expected = "attempt to divide by zero")]
     fn test_div_by_zero() {
-        let probability_outcome_one =
-            ProbabilityOutcomeFactory::new_with_empty_constraint_map(i32::MAX);
-        let probability_outcome_two = ProbabilityOutcomeFactory::new_with_empty_constraint_map(0);
+        let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(i32::MAX);
+        let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(0);
         let _ = probability_outcome_one / probability_outcome_two;
     }
 
     #[test]
     #[should_panic(expected = "attempt to divide by zero")]
     fn test_div_i32_by_zero() {
-        let probability_outcome =
-            ProbabilityOutcomeFactory::new_with_empty_constraint_map(i32::MAX);
+        let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(i32::MAX);
         let _ = probability_outcome / 0;
     }
 
     #[test]
     #[should_panic(expected = "attempt to divide by zero")]
     fn test_i32_div_by_zero() {
-        let probability_outcome = ProbabilityOutcomeFactory::new_with_empty_constraint_map(0);
+        let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(0);
         let _ = i32::MAX / probability_outcome;
     }
 
     #[test]
     #[should_panic(expected = "attempt to calculate the remainder with a divisor of zero")]
     fn test_rem_by_zero() {
-        let probability_outcome_one =
-            ProbabilityOutcomeFactory::new_with_empty_constraint_map(i32::MAX);
-        let probability_outcome_two = ProbabilityOutcomeFactory::new_with_empty_constraint_map(0);
+        let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(i32::MAX);
+        let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(0);
         let _ = probability_outcome_one % probability_outcome_two;
     }
 
     #[test]
     #[should_panic(expected = "attempt to calculate the remainder with a divisor of zero")]
     fn test_rem_i32_by_zero() {
-        let probability_outcome =
-            ProbabilityOutcomeFactory::new_with_empty_constraint_map(i32::MAX);
+        let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(i32::MAX);
         let _ = probability_outcome % 0;
     }
 
     #[test]
     #[should_panic(expected = "attempt to calculate the remainder with a divisor of zero")]
     fn test_i32_rem_by_zero() {
-        let probability_outcome = ProbabilityOutcomeFactory::new_with_empty_constraint_map(0);
+        let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(0);
         let _ = i32::MAX % probability_outcome;
     }
 }

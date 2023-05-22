@@ -22,22 +22,22 @@ impl Add for Constraint {
 
 #[cfg(test)]
 mod tests {
-    use crate::constraint_management::{ConstraintFactory, ConstraintValueType};
+    use crate::constraint_management::{Constraint, ConstraintValueType};
     use std::collections::HashSet;
 
     #[test]
     #[should_panic(expected = "Can not combine Constraints with different ids.")]
     fn panic_on_different_id_combine() {
-        let constraint_one = ConstraintFactory::new_empty_constraint(0);
-        let constraint_two = ConstraintFactory::new_empty_constraint(1);
+        let constraint_one = Constraint::new_empty_constraint(0);
+        let constraint_two = Constraint::new_empty_constraint(1);
         let _ = constraint_one + constraint_two;
     }
 
     #[test]
     fn combine_no_overlap() {
         let expected_value: HashSet<ConstraintValueType> = vec![].into_iter().collect();
-        let constraint_one = ConstraintFactory::new_many_item_constraint(1234, vec![1, 3, 5, 6]);
-        let constraint_two = ConstraintFactory::new_single_valid_value_constraint(1234, 4);
+        let constraint_one = Constraint::new_many_item_constraint(1234, vec![1, 3, 5, 6]);
+        let constraint_two = Constraint::new_single_valid_value_constraint(1234, 4);
 
         let constraint_three = constraint_one + constraint_two;
 
@@ -54,8 +54,8 @@ mod tests {
     #[test]
     fn combine_part_overlap() {
         let expected_value: HashSet<ConstraintValueType> = vec![5, 6].into_iter().collect();
-        let constraint_one = ConstraintFactory::new_many_item_constraint(1234, vec![1, 3, 5, 6]);
-        let constraint_two = ConstraintFactory::new_many_item_constraint(1234, vec![4, 5, 6]);
+        let constraint_one = Constraint::new_many_item_constraint(1234, vec![1, 3, 5, 6]);
+        let constraint_two = Constraint::new_many_item_constraint(1234, vec![4, 5, 6]);
 
         let constraint_three = constraint_one + constraint_two;
 
@@ -72,8 +72,8 @@ mod tests {
     #[test]
     fn combine_full_overlap() {
         let expected_value: HashSet<ConstraintValueType> = vec![4, 5, 6].into_iter().collect();
-        let constraint_one = ConstraintFactory::new_many_item_constraint(1234, vec![4, 5, 6]);
-        let constraint_two = ConstraintFactory::new_many_item_constraint(1234, vec![4, 5, 6]);
+        let constraint_one = Constraint::new_many_item_constraint(1234, vec![4, 5, 6]);
+        let constraint_two = Constraint::new_many_item_constraint(1234, vec![4, 5, 6]);
 
         let constraint_three = constraint_one + constraint_two;
 

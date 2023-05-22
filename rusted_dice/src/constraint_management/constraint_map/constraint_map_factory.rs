@@ -4,10 +4,7 @@ use std::collections::HashMap;
 use crate::constraint_management::{Constraint, ConstraintIdType, ConstraintMap};
 
 #[allow(dead_code)]
-pub struct ConstraintMapFactory;
-
-#[allow(dead_code)]
-impl ConstraintMapFactory {
+impl ConstraintMap {
     pub(crate) fn new_empty_constraint_map() -> ConstraintMap {
         let map: HashMap<ConstraintIdType, Constraint> = HashMap::new();
         ConstraintMap { map }
@@ -40,7 +37,7 @@ impl ConstraintMapFactory {
 
 #[cfg(test)]
 mod tests {
-    use crate::constraint_management::{ConstraintFactory, IdToConstraintMap};
+    use crate::constraint_management::{Constraint, IdToConstraintMap};
 
     use super::*;
     use std::vec::IntoIter;
@@ -49,21 +46,18 @@ mod tests {
     fn test_new_empty_constraint_map() {
         let map: IdToConstraintMap = HashMap::new();
         let constraint_map = ConstraintMap { map };
-        assert_eq!(
-            constraint_map,
-            ConstraintMapFactory::new_empty_constraint_map()
-        );
+        assert_eq!(constraint_map, ConstraintMap::new_empty_constraint_map());
     }
 
     #[test]
     fn test_new_constraint_map() {
-        let constraint3_123 = ConstraintFactory::new_many_item_constraint(3, vec![1, 2, 3]);
+        let constraint3_123 = Constraint::new_many_item_constraint(3, vec![1, 2, 3]);
         let mut map: IdToConstraintMap = HashMap::new();
         map.insert(3, constraint3_123.clone());
         let constraint_map = ConstraintMap { map };
         assert_eq!(
             constraint_map,
-            ConstraintMapFactory::new_single_constraint_constraint_map(constraint3_123)
+            ConstraintMap::new_single_constraint_constraint_map(constraint3_123)
         );
     }
 
@@ -75,13 +69,13 @@ mod tests {
         let constraint_map = ConstraintMap { map };
         assert_eq!(
             constraint_map,
-            ConstraintMapFactory::new_constraint_map(constraint_iter)
+            ConstraintMap::new_constraint_map(constraint_iter)
         );
     }
 
     #[test]
     fn test_new_constraint_map_single_constraint() {
-        let constraint3_123 = ConstraintFactory::new_many_item_constraint(3, vec![1, 2, 3]);
+        let constraint3_123 = Constraint::new_many_item_constraint(3, vec![1, 2, 3]);
         let constraint_iter = vec![constraint3_123.clone()];
 
         let mut map: IdToConstraintMap = HashMap::new();
@@ -89,15 +83,15 @@ mod tests {
         let constraint_map = ConstraintMap { map };
         assert_eq!(
             constraint_map,
-            ConstraintMapFactory::new_constraint_map(constraint_iter)
+            ConstraintMap::new_constraint_map(constraint_iter)
         );
     }
 
     #[test]
     fn test_new_constraint_map_constraints() {
-        let constraint1_123 = ConstraintFactory::new_many_item_constraint(1, vec![1, 2, 3]);
-        let constraint2_123 = ConstraintFactory::new_many_item_constraint(2, vec![1, 2, 3]);
-        let constraint3_123 = ConstraintFactory::new_many_item_constraint(3, vec![1, 2, 3]);
+        let constraint1_123 = Constraint::new_many_item_constraint(1, vec![1, 2, 3]);
+        let constraint2_123 = Constraint::new_many_item_constraint(2, vec![1, 2, 3]);
+        let constraint3_123 = Constraint::new_many_item_constraint(3, vec![1, 2, 3]);
         let constraint_iter = vec![
             constraint1_123.clone(),
             constraint2_123.clone(),
@@ -112,17 +106,17 @@ mod tests {
         let constraint_map = ConstraintMap { map };
         assert_eq!(
             constraint_map,
-            ConstraintMapFactory::new_constraint_map(constraint_iter)
+            ConstraintMap::new_constraint_map(constraint_iter)
         );
     }
 
     #[test]
     fn test_new_constraint_map_constraints_some_overlap() {
-        let constraint1_123 = ConstraintFactory::new_many_item_constraint(1, vec![1, 2, 3]);
-        let constraint2_123 = ConstraintFactory::new_many_item_constraint(2, vec![1, 2, 3]);
-        let constraint2_23 = ConstraintFactory::new_many_item_constraint(2, vec![2, 3]);
-        let constraint2_234 = ConstraintFactory::new_many_item_constraint(2, vec![2, 3, 4]);
-        let constraint3_123 = ConstraintFactory::new_many_item_constraint(3, vec![1, 2, 3]);
+        let constraint1_123 = Constraint::new_many_item_constraint(1, vec![1, 2, 3]);
+        let constraint2_123 = Constraint::new_many_item_constraint(2, vec![1, 2, 3]);
+        let constraint2_23 = Constraint::new_many_item_constraint(2, vec![2, 3]);
+        let constraint2_234 = Constraint::new_many_item_constraint(2, vec![2, 3, 4]);
+        let constraint3_123 = Constraint::new_many_item_constraint(3, vec![1, 2, 3]);
         let constraint_iter = vec![
             constraint1_123.clone(),
             constraint2_123,
@@ -138,7 +132,7 @@ mod tests {
         let constraint_map = ConstraintMap { map };
         assert_eq!(
             constraint_map,
-            ConstraintMapFactory::new_constraint_map(constraint_iter)
+            ConstraintMap::new_constraint_map(constraint_iter)
         );
     }
 }

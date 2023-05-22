@@ -30,19 +30,19 @@ impl PartialOrd for ConstraintMap {
 
 #[cfg(test)]
 mod tests {
-    use crate::constraint_management::{ConstraintFactory, ConstraintMapFactory};
+    use crate::constraint_management::{Constraint, ConstraintMap};
 
     use super::*;
 
     #[test]
     fn test_cmp_less() {
-        let constraint_map_one = ConstraintMapFactory::new_constraint_map(vec![
-            ConstraintFactory::new_many_item_constraint(1, vec![1, 2, 3]),
-            ConstraintFactory::new_many_item_constraint(2, vec![1, 2, 3]),
+        let constraint_map_one = ConstraintMap::new_constraint_map(vec![
+            Constraint::new_many_item_constraint(1, vec![1, 2, 3]),
+            Constraint::new_many_item_constraint(2, vec![1, 2, 3]),
         ]);
-        let constraint_map_two = ConstraintMapFactory::new_constraint_map(vec![
-            ConstraintFactory::new_many_item_constraint(2, vec![1, 2, 3]),
-            ConstraintFactory::new_many_item_constraint(3, vec![1, 2, 3]),
+        let constraint_map_two = ConstraintMap::new_constraint_map(vec![
+            Constraint::new_many_item_constraint(2, vec![1, 2, 3]),
+            Constraint::new_many_item_constraint(3, vec![1, 2, 3]),
         ]);
         let result = constraint_map_one.cmp(&constraint_map_two);
         assert_eq!(result, Ordering::Less);
@@ -50,14 +50,14 @@ mod tests {
 
     #[test]
     fn test_cmp_less_longer_set() {
-        let constraint_map_one = ConstraintMapFactory::new_constraint_map(vec![
-            ConstraintFactory::new_many_item_constraint(1, vec![1, 2, 3]),
-            ConstraintFactory::new_many_item_constraint(2, vec![1, 2, 3]),
+        let constraint_map_one = ConstraintMap::new_constraint_map(vec![
+            Constraint::new_many_item_constraint(1, vec![1, 2, 3]),
+            Constraint::new_many_item_constraint(2, vec![1, 2, 3]),
         ]);
-        let constraint_map_two = ConstraintMapFactory::new_constraint_map(vec![
-            ConstraintFactory::new_many_item_constraint(1, vec![1, 2, 3]),
-            ConstraintFactory::new_many_item_constraint(2, vec![1, 2, 3]),
-            ConstraintFactory::new_many_item_constraint(3, vec![1, 2, 3]),
+        let constraint_map_two = ConstraintMap::new_constraint_map(vec![
+            Constraint::new_many_item_constraint(1, vec![1, 2, 3]),
+            Constraint::new_many_item_constraint(2, vec![1, 2, 3]),
+            Constraint::new_many_item_constraint(3, vec![1, 2, 3]),
         ]);
         let result = constraint_map_one.cmp(&constraint_map_two);
         assert_eq!(result, Ordering::Less);
@@ -65,13 +65,13 @@ mod tests {
 
     #[test]
     fn test_cmp_greater() {
-        let constraint_map_one = ConstraintMapFactory::new_constraint_map(vec![
-            ConstraintFactory::new_many_item_constraint(1, vec![1, 2, 3]),
-            ConstraintFactory::new_many_item_constraint(2, vec![1, 2, 3]),
+        let constraint_map_one = ConstraintMap::new_constraint_map(vec![
+            Constraint::new_many_item_constraint(1, vec![1, 2, 3]),
+            Constraint::new_many_item_constraint(2, vec![1, 2, 3]),
         ]);
-        let constraint_map_two = ConstraintMapFactory::new_constraint_map(vec![
-            ConstraintFactory::new_many_item_constraint(2, vec![1, 2, 3]),
-            ConstraintFactory::new_many_item_constraint(3, vec![1, 2, 3]),
+        let constraint_map_two = ConstraintMap::new_constraint_map(vec![
+            Constraint::new_many_item_constraint(2, vec![1, 2, 3]),
+            Constraint::new_many_item_constraint(3, vec![1, 2, 3]),
         ]);
         let result = constraint_map_two.cmp(&constraint_map_one);
         assert_eq!(result, Ordering::Greater);
@@ -79,14 +79,14 @@ mod tests {
 
     #[test]
     fn test_cmp_greater_longer_set() {
-        let constraint_map_one = ConstraintMapFactory::new_constraint_map(vec![
-            ConstraintFactory::new_many_item_constraint(1, vec![1, 2, 3]),
-            ConstraintFactory::new_many_item_constraint(2, vec![1, 2, 3]),
+        let constraint_map_one = ConstraintMap::new_constraint_map(vec![
+            Constraint::new_many_item_constraint(1, vec![1, 2, 3]),
+            Constraint::new_many_item_constraint(2, vec![1, 2, 3]),
         ]);
-        let constraint_map_two = ConstraintMapFactory::new_constraint_map(vec![
-            ConstraintFactory::new_many_item_constraint(1, vec![1, 2, 3]),
-            ConstraintFactory::new_many_item_constraint(2, vec![1, 2, 3]),
-            ConstraintFactory::new_many_item_constraint(3, vec![1, 2, 3]),
+        let constraint_map_two = ConstraintMap::new_constraint_map(vec![
+            Constraint::new_many_item_constraint(1, vec![1, 2, 3]),
+            Constraint::new_many_item_constraint(2, vec![1, 2, 3]),
+            Constraint::new_many_item_constraint(3, vec![1, 2, 3]),
         ]);
         let result = constraint_map_two.cmp(&constraint_map_one);
         assert_eq!(result, Ordering::Greater);
@@ -94,15 +94,15 @@ mod tests {
 
     #[test]
     fn test_cmp_equal() {
-        let constraint_map_one = ConstraintMapFactory::new_constraint_map(vec![
-            ConstraintFactory::new_many_item_constraint(1, vec![1, 2, 3]),
-            ConstraintFactory::new_many_item_constraint(2, vec![1, 2, 3]),
-            ConstraintFactory::new_many_item_constraint(3, vec![1, 2, 3]),
+        let constraint_map_one = ConstraintMap::new_constraint_map(vec![
+            Constraint::new_many_item_constraint(1, vec![1, 2, 3]),
+            Constraint::new_many_item_constraint(2, vec![1, 2, 3]),
+            Constraint::new_many_item_constraint(3, vec![1, 2, 3]),
         ]);
-        let constraint_map_two = ConstraintMapFactory::new_constraint_map(vec![
-            ConstraintFactory::new_many_item_constraint(1, vec![1, 2, 3]),
-            ConstraintFactory::new_many_item_constraint(2, vec![1, 2, 3]),
-            ConstraintFactory::new_many_item_constraint(3, vec![1, 2, 3]),
+        let constraint_map_two = ConstraintMap::new_constraint_map(vec![
+            Constraint::new_many_item_constraint(1, vec![1, 2, 3]),
+            Constraint::new_many_item_constraint(2, vec![1, 2, 3]),
+            Constraint::new_many_item_constraint(3, vec![1, 2, 3]),
         ]);
         let result = constraint_map_two.cmp(&constraint_map_one);
         assert_eq!(result, Ordering::Equal);

@@ -16,25 +16,23 @@ impl IsTheoreticallyPossible for Constraint {
 
 #[cfg(test)]
 mod tests {
-    use crate::constraint_management::ConstraintFactory;
-
     use super::*;
 
     #[test]
     fn is_theoretically_possible_true() {
-        let constraint = ConstraintFactory::new_many_item_constraint(0, vec![1, 2, 3]);
+        let constraint = Constraint::new_many_item_constraint(0, vec![1, 2, 3]);
         assert!(constraint.is_theoretically_possible());
     }
 
     #[test]
     fn is_theoretically_possible_false() {
-        let constraint = ConstraintFactory::new_empty_constraint(0);
+        let constraint = Constraint::new_empty_constraint(0);
         assert!(!constraint.is_theoretically_possible());
     }
 
     #[test]
     fn is_compiled_with_true() {
-        let constraint = ConstraintFactory::new_many_item_constraint(0, vec![1, 2, 3]);
+        let constraint = Constraint::new_many_item_constraint(0, vec![1, 2, 3]);
         assert!(constraint.is_compliant_with(1));
         assert!(constraint.is_compliant_with(2));
         assert!(constraint.is_compliant_with(3));
@@ -42,7 +40,7 @@ mod tests {
 
     #[test]
     fn is_compiled_with_false() {
-        let constraint = ConstraintFactory::new_many_item_constraint(0, vec![4, 5, 6]);
+        let constraint = Constraint::new_many_item_constraint(0, vec![4, 5, 6]);
         assert!(!constraint.is_compliant_with(1));
         assert!(!constraint.is_compliant_with(2));
         assert!(!constraint.is_compliant_with(3));
