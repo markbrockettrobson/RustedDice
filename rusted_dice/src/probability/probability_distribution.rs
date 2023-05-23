@@ -1,29 +1,20 @@
 use std::collections::BTreeMap;
 
-use super::probability_outcome::ProbabilityOutcome;
+use crate::probability::ProbabilityOutcome;
 
 #[allow(dead_code)]
 #[derive(Debug)]
-struct ProbabilityDistribution {
+pub struct ProbabilityDistribution {
     pub outcome_counts: BTreeMap<ProbabilityOutcome, u64>,
 }
 
 #[cfg(test)]
 mod tests {
-    use std::collections::HashMap;
-
-    use crate::constraint_management::constraint_map::ConstraintMap;
-
     use super::*;
 
     #[test]
     fn outcome_counts_set() {
-        let test_outcome = ProbabilityOutcome {
-            value: 12345,
-            constraint_map: ConstraintMap {
-                map: HashMap::new(),
-            },
-        };
+        let test_outcome = ProbabilityOutcome::new_with_empty_constraint_map(12345);
 
         let mut b_tree_map = BTreeMap::new();
         b_tree_map.insert(test_outcome.clone(), 67890);
@@ -35,24 +26,9 @@ mod tests {
     }
     #[test]
     fn test_fmt() {
-        let test_outcome_one = ProbabilityOutcome {
-            value: 1111,
-            constraint_map: ConstraintMap {
-                map: HashMap::new(),
-            },
-        };
-        let test_outcome_two = ProbabilityOutcome {
-            value: 2222,
-            constraint_map: ConstraintMap {
-                map: HashMap::new(),
-            },
-        };
-        let test_outcome_three = ProbabilityOutcome {
-            value: 3333,
-            constraint_map: ConstraintMap {
-                map: HashMap::new(),
-            },
-        };
+        let test_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(1111);
+        let test_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(2222);
+        let test_outcome_three = ProbabilityOutcome::new_with_empty_constraint_map(3333);
 
         let mut b_tree_map = BTreeMap::new();
         b_tree_map.insert(test_outcome_one.clone(), 1);
