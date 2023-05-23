@@ -17,12 +17,13 @@ impl Not for ProbabilityOutcome {
 mod tests {
     use crate::constraint_management::{Constraint, ConstraintMap};
     use crate::probability::ProbabilityOutcome;
+    use crate::ValueType;
 
     use proptest::prelude::*;
 
     proptest! {
         #[test]
-        fn test_not(value_one: i32) {
+        fn test_not(value_one: ValueType) {
             let expected_value = !value_one;
             let probability_outcome = ProbabilityOutcome::new_with_constraint_map(
                 value_one,

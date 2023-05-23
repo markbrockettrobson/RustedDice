@@ -1,47 +1,50 @@
-use crate::probability::{Combine, ProbabilityOutcome};
+use crate::{
+    probability::{Combine, ProbabilityOutcome},
+    ValueType,
+};
 use std::ops::BitOr;
 
 impl BitOr for ProbabilityOutcome {
     type Output = Self;
 
     fn bitor(self, other: Self) -> Self {
-        fn _bitor(lhs: i32, rhs: i32) -> i32 {
+        fn _bitor(lhs: ValueType, rhs: ValueType) -> ValueType {
             lhs | rhs
         }
         self.combine(other, _bitor)
     }
 }
 
-impl BitOr<i32> for ProbabilityOutcome {
+impl BitOr<ValueType> for ProbabilityOutcome {
     type Output = Self;
 
-    fn bitor(self, other: i32) -> Self {
-        fn _bitor(lhs: i32, rhs: i32) -> i32 {
+    fn bitor(self, other: ValueType) -> Self {
+        fn _bitor(lhs: ValueType, rhs: ValueType) -> ValueType {
             lhs | rhs
         }
-        self.combinei32(other, _bitor)
+        self.combine_value_type(other, _bitor)
     }
 }
 
-impl BitOr<ProbabilityOutcome> for i32 {
+impl BitOr<ProbabilityOutcome> for ValueType {
     type Output = ProbabilityOutcome;
 
     fn bitor(self, other: ProbabilityOutcome) -> ProbabilityOutcome {
-        fn _bitor(lhs: i32, rhs: i32) -> i32 {
+        fn _bitor(lhs: ValueType, rhs: ValueType) -> ValueType {
             lhs | rhs
         }
-        other.i32combine(self, _bitor)
+        other.value_type_combine(self, _bitor)
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::probability::ProbabilityOutcome;
+    use crate::{probability::ProbabilityOutcome, SmallValueType, ValueType};
     use proptest::prelude::*;
 
     proptest! {
         #[test]
-        fn test_bitor(value_one: i32, value_two: i32) {
+        fn test_bitor(value_one: ValueType, value_two: ValueType) {
             let expected_value = value_one | value_two;
             let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(value_one);
             let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(value_two);
@@ -50,18 +53,18 @@ mod tests {
         }
 
         #[test]
-        fn test_bitor_i32(value_one: i16, value_two: i16) {
-            let expected_value = i32::from(value_one) | i32::from(value_two);
+        fn test_bitor_value_type(value_one: SmallValueType, value_two: SmallValueType) {
+            let expected_value = ValueType::from(value_one) | ValueType::from(value_two);
             let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(value_one.into());
-            let result = probability_outcome | i32::from(value_two);
+            let result = probability_outcome | ValueType::from(value_two);
             assert_eq!(result.value, expected_value);
         }
 
         #[test]
-        fn test_i32_bitor(value_one: i16, value_two: i16) {
-            let expected_value = i32::from(value_one) | i32::from(value_two);
+        fn test_value_type_bitor(value_one: SmallValueType, value_two: SmallValueType) {
+            let expected_value = ValueType::from(value_one) | ValueType::from(value_two);
             let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(value_two.into());
-            let result = i32::from(value_one) | probability_outcome;
+            let result = ValueType::from(value_one) | probability_outcome;
             assert_eq!(result.value, expected_value);
         }
     }

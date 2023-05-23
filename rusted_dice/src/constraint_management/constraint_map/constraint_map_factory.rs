@@ -1,17 +1,17 @@
 use std::collections::hash_map::Entry::{Occupied, Vacant};
 use std::collections::HashMap;
 
-use crate::constraint_management::{Constraint, ConstraintIdType, ConstraintMap};
+use crate::constraint_management::{Constraint, ConstraintMap, IdToConstraintMap};
 
 #[allow(dead_code)]
 impl ConstraintMap {
     pub(crate) fn new_empty_constraint_map() -> ConstraintMap {
-        let map: HashMap<ConstraintIdType, Constraint> = HashMap::new();
+        let map: IdToConstraintMap = HashMap::new();
         ConstraintMap { map }
     }
 
     pub(crate) fn new_single_constraint_constraint_map(constraint: Constraint) -> ConstraintMap {
-        let mut map: HashMap<ConstraintIdType, Constraint> = HashMap::new();
+        let mut map: IdToConstraintMap = HashMap::new();
         map.insert(constraint.id, constraint);
         ConstraintMap { map }
     }
@@ -19,7 +19,7 @@ impl ConstraintMap {
     pub(crate) fn new_constraint_map(
         constraints: impl IntoIterator<Item = Constraint>,
     ) -> ConstraintMap {
-        let mut map: HashMap<ConstraintIdType, Constraint> = HashMap::new();
+        let mut map: IdToConstraintMap = HashMap::new();
         for constraint in constraints {
             match map.entry(constraint.id) {
                 Occupied(mut e) => {
@@ -99,7 +99,7 @@ mod tests {
         ]
         .into_iter();
 
-        let mut map: HashMap<u16, Constraint> = HashMap::new();
+        let mut map: IdToConstraintMap = HashMap::new();
         map.insert(1, constraint1_123);
         map.insert(2, constraint2_123);
         map.insert(3, constraint3_123);
@@ -125,7 +125,7 @@ mod tests {
         ]
         .into_iter();
 
-        let mut map: HashMap<u16, Constraint> = HashMap::new();
+        let mut map: IdToConstraintMap = HashMap::new();
         map.insert(1, constraint1_123);
         map.insert(2, constraint2_23);
         map.insert(3, constraint3_123);

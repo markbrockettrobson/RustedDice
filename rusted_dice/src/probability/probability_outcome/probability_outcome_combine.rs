@@ -1,4 +1,7 @@
-use crate::probability::{BinaryOperation, Combine, ProbabilityOutcome};
+use crate::{
+    probability::{BinaryOperation, Combine, ProbabilityOutcome},
+    ValueType,
+};
 
 impl Combine for ProbabilityOutcome {
     fn combine(&self, other: Self, binary_operation: BinaryOperation) -> Self {
@@ -7,13 +10,13 @@ impl Combine for ProbabilityOutcome {
             constraint_map: self.constraint_map.clone() + other.constraint_map,
         }
     }
-    fn combinei32(&self, other: i32, binary_operation: BinaryOperation) -> Self {
+    fn combine_value_type(&self, other: ValueType, binary_operation: BinaryOperation) -> Self {
         ProbabilityOutcome {
             value: binary_operation(self.value, other),
             constraint_map: self.constraint_map.clone(),
         }
     }
-    fn i32combine(&self, other: i32, binary_operation: BinaryOperation) -> Self {
+    fn value_type_combine(&self, other: ValueType, binary_operation: BinaryOperation) -> Self {
         ProbabilityOutcome {
             value: binary_operation(other, self.value),
             constraint_map: self.constraint_map.clone(),
@@ -23,15 +26,14 @@ impl Combine for ProbabilityOutcome {
 
 #[cfg(test)]
 mod tests {
-    use crate::constraint_management::{
-        Constraint, ConstraintIdType, ConstraintMap, ConstraintValueType,
-    };
+    use crate::constraint_management::{Constraint, ConstraintIdType, ConstraintMap};
     use crate::probability::{Combine, ProbabilityOutcome};
+    use crate::ValueType;
 
     fn has_key_valid_value(
         constraint_map: &ConstraintMap,
         id: ConstraintIdType,
-        valid_value: ConstraintValueType,
+        valid_value: ValueType,
     ) -> bool {
         constraint_map
             .map
@@ -70,12 +72,13 @@ mod tests {
     }
 
     #[test]
-    fn test_combine_constrainti32_map() {
+    fn test_combine_constraint_value_type_map() {
         let probability_outcome = ProbabilityOutcome::new_with_constraints(
             10,
             vec![Constraint::new_many_item_constraint(1, vec![1, 2])],
         );
-        let combined_probability_outcome = probability_outcome.combinei32(1, |lhs, rhs| lhs - rhs);
+        let combined_probability_outcome =
+            probability_outcome.combine_value_type(1, |lhs, rhs| lhs - rhs);
         let combined_constraint_map = combined_probability_outcome.constraint_map;
 
         assert_eq!(combined_probability_outcome.value, 9);
@@ -86,12 +89,13 @@ mod tests {
     }
 
     #[test]
-    fn test_combine_i32constraint_map() {
+    fn test_combine_value_type_constraint_map() {
         let probability_outcome = ProbabilityOutcome::new_with_constraints(
             10,
             vec![Constraint::new_many_item_constraint(2, vec![1, 2])],
         );
-        let combined_probability_outcome = probability_outcome.i32combine(1, |lhs, rhs| lhs - rhs);
+        let combined_probability_outcome =
+            probability_outcome.value_type_combine(1, |lhs, rhs| lhs - rhs);
         let combined_constraint_map = combined_probability_outcome.constraint_map;
 
         assert_eq!(combined_probability_outcome.value, -9);

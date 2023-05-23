@@ -12,6 +12,6 @@ pub use traits::IsConstraintCompiledWith;
 pub use traits::IsTheoreticallyPossible;
 
 pub use types::ConstraintIdType;
-pub use types::ConstraintValueType;
 pub use types::IdToConstraintMap;
 pub use types::IdToValueMap;
+pub use types::ValueTypeSet;

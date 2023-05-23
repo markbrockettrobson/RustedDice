@@ -1,15 +1,15 @@
-use std::collections::HashSet;
-
-use crate::constraint_management::{ConstraintIdType, ConstraintValueType};
+use crate::constraint_management::{ConstraintIdType, ValueTypeSet};
 
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct Constraint {
     pub id: ConstraintIdType,
-    pub valid_values: HashSet<ConstraintValueType>,
+    pub valid_values: ValueTypeSet,
 }
 
 #[cfg(test)]
 mod tests {
+    use crate::ValueType;
+
     use super::*;
     use proptest::prelude::*;
 
@@ -60,7 +60,7 @@ mod tests {
 
     proptest! {
         #[test]
-        fn test_fmt(test_id: ConstraintIdType, test_valid_value: ConstraintValueType) {
+        fn test_fmt(test_id: ConstraintIdType, test_valid_value: ValueType) {
             let constraint = Constraint::new_many_item_constraint(test_id, vec![test_valid_value]);
             assert_eq!(format!("{constraint:?}"), format!("Constraint {{ id: {}, valid_values: {{{}}} }}", test_id, test_valid_value));
         }

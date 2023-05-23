@@ -1,1 +1,3 @@
-pub type BinaryOperation = fn(i32, i32) -> i32;
+use crate::ValueType;
+
+pub type BinaryOperation = fn(ValueType, ValueType) -> ValueType;

@@ -28,14 +28,15 @@ impl Add for ConstraintMap {
 
 #[cfg(test)]
 mod tests {
-    use crate::constraint_management::{
-        Constraint, ConstraintIdType, ConstraintMap, ConstraintValueType,
+    use crate::{
+        constraint_management::{Constraint, ConstraintIdType, ConstraintMap},
+        ValueType,
     };
 
     fn has_key_valid_value(
         constraint_map: &ConstraintMap,
         id: ConstraintIdType,
-        valid_value: ConstraintValueType,
+        valid_value: ValueType,
     ) -> bool {
         constraint_map
             .map

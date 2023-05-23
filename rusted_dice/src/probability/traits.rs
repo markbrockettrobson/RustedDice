@@ -1,7 +1,7 @@
-use crate::probability::BinaryOperation;
+use crate::{probability::BinaryOperation, ValueType};
 
 pub trait Combine {
     fn combine(&self, other: Self, binary_operation: BinaryOperation) -> Self;
-    fn combinei32(&self, other: i32, binary_operation: BinaryOperation) -> Self;
-    fn i32combine(&self, other: i32, binary_operation: BinaryOperation) -> Self;
+    fn combine_value_type(&self, other: ValueType, binary_operation: BinaryOperation) -> Self;
+    fn value_type_combine(&self, other: ValueType, binary_operation: BinaryOperation) -> Self;
 }

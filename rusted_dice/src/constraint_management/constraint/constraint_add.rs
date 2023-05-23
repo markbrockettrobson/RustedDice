@@ -22,8 +22,8 @@ impl Add for Constraint {
 
 #[cfg(test)]
 mod tests {
-    use crate::constraint_management::{Constraint, ConstraintValueType};
-    use std::collections::HashSet;
+    use crate::constraint_management::Constraint;
+    use crate::constraint_management::ValueTypeSet;
 
     #[test]
     #[should_panic(expected = "Can not combine Constraints with different ids.")]
@@ -35,7 +35,7 @@ mod tests {
 
     #[test]
     fn combine_no_overlap() {
-        let expected_value: HashSet<ConstraintValueType> = vec![].into_iter().collect();
+        let expected_value: ValueTypeSet = vec![].into_iter().collect();
         let constraint_one = Constraint::new_many_item_constraint(1234, vec![1, 3, 5, 6]);
         let constraint_two = Constraint::new_single_valid_value_constraint(1234, 4);
 
@@ -53,7 +53,7 @@ mod tests {
 
     #[test]
     fn combine_part_overlap() {
-        let expected_value: HashSet<ConstraintValueType> = vec![5, 6].into_iter().collect();
+        let expected_value: ValueTypeSet = vec![5, 6].into_iter().collect();
         let constraint_one = Constraint::new_many_item_constraint(1234, vec![1, 3, 5, 6]);
         let constraint_two = Constraint::new_many_item_constraint(1234, vec![4, 5, 6]);
 
@@ -71,7 +71,7 @@ mod tests {
 
     #[test]
     fn combine_full_overlap() {
-        let expected_value: HashSet<ConstraintValueType> = vec![4, 5, 6].into_iter().collect();
+        let expected_value: ValueTypeSet = vec![4, 5, 6].into_iter().collect();
         let constraint_one = Constraint::new_many_item_constraint(1234, vec![4, 5, 6]);
         let constraint_two = Constraint::new_many_item_constraint(1234, vec![4, 5, 6]);
 

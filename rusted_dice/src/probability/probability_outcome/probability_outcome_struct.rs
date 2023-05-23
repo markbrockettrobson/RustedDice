@@ -1,10 +1,10 @@
 use std::cmp::{Eq, Ord, PartialOrd};
 
-use crate::constraint_management::ConstraintMap;
+use crate::{constraint_management::ConstraintMap, ValueType};
 
 #[derive(Clone, Debug, Eq, Ord, PartialOrd, PartialEq)]
 pub struct ProbabilityOutcome {
-    pub value: i32,
+    pub value: ValueType,
     pub constraint_map: ConstraintMap,
 }
 
@@ -12,17 +12,16 @@ pub struct ProbabilityOutcome {
 mod tests {
     use std::cmp::Ordering;
 
-    use crate::constraint_management::{
-        Constraint, ConstraintIdType, ConstraintMap, ConstraintValueType,
-    };
+    use crate::constraint_management::{Constraint, ConstraintIdType, ConstraintMap};
     use crate::probability::ProbabilityOutcome;
+    use crate::{SmallValueType, UnsignedSmallValueType, ValueType};
 
     use proptest::prelude::*;
 
     fn has_key_valid_value(
         constraint_map: &ConstraintMap,
         id: ConstraintIdType,
-        valid_value: ConstraintValueType,
+        valid_value: ValueType,
     ) -> bool {
         constraint_map
             .map
@@ -38,7 +37,7 @@ mod tests {
 
     proptest! {
         #[test]
-        fn test_value_set(test_value: ConstraintValueType) {
+        fn test_value_set(test_value: ValueType) {
             let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(test_value);
             assert!(probability_outcome.value == test_value);
         }
@@ -76,7 +75,7 @@ mod tests {
 
         #[test]
         #[allow(clippy::nonminimal_bool)]
-        fn test_eq_false_value(test_value: ConstraintValueType, other_test_value: ConstraintValueType) {
+        fn test_eq_false_value(test_value: ValueType, other_test_value: ValueType) {
             prop_assume!(test_value != other_test_value);
             let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(test_value);
             let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(other_test_value);
@@ -85,7 +84,7 @@ mod tests {
 
         #[test]
         #[allow(clippy::nonminimal_bool)]
-        fn test_eq_false_constraints(test_value: ConstraintValueType) {
+        fn test_eq_false_constraints(test_value: ValueType) {
             let probability_outcome_one = ProbabilityOutcome::new_with_constraints(
                 test_value,
                 vec![
@@ -118,7 +117,7 @@ mod tests {
         }
 
         #[test]
-        fn test_ne_true_value(test_value: ConstraintValueType, other_test_value: ConstraintValueType) {
+        fn test_ne_true_value(test_value: ValueType, other_test_value: ValueType) {
             prop_assume!(test_value != other_test_value);
             let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(test_value);
             let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(other_test_value);
@@ -126,7 +125,7 @@ mod tests {
         }
 
         #[test]
-        fn test_ne_true_constraints(test_value: ConstraintValueType) {
+        fn test_ne_true_constraints(test_value: ValueType) {
             let probability_outcome_one = ProbabilityOutcome::new_with_constraints(
                 test_value,
                 vec![
@@ -141,123 +140,123 @@ mod tests {
         }
 
         #[test]
-        fn test_gt_true(base_value: i16, delta: u16) {
+        fn test_gt_true(base_value: SmallValueType, delta: UnsignedSmallValueType) {
             prop_assume!(delta != 0);
             let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(base_value.into());
-            let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(i32::from(base_value) + i32::from(delta));
+            let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(ValueType::from(base_value) + ValueType::from(delta));
             assert!(probability_outcome_two > probability_outcome_one);
         }
 
         #[test]
         #[allow(clippy::nonminimal_bool)]
-        fn test_gt_false(base_value: i16, delta: u16) {
+        fn test_gt_false(base_value: SmallValueType, delta: UnsignedSmallValueType) {
             prop_assume!(delta != 0);
             let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(base_value.into());
-            let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(i32::from(base_value) + i32::from(delta));
+            let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(ValueType::from(base_value) + ValueType::from(delta));
             assert!(!(probability_outcome_one > probability_outcome_two));
         }
 
         #[test]
         #[allow(clippy::nonminimal_bool)]
-        fn test_gt_same(base_value: i16) {
+        fn test_gt_same(base_value: SmallValueType) {
             let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(base_value.into());
             let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(base_value.into());
             assert!(!(probability_outcome_two > probability_outcome_one));
         }
 
         #[test]
-        fn test_lt_true(base_value: i16, delta: u16) {
+        fn test_lt_true(base_value: SmallValueType, delta: UnsignedSmallValueType) {
             prop_assume!(delta != 0);
             let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(base_value.into());
-            let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(i32::from(base_value) + i32::from(delta));
+            let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(ValueType::from(base_value) + ValueType::from(delta));
             assert!(probability_outcome_one < probability_outcome_two);
         }
 
         #[test]
         #[allow(clippy::nonminimal_bool)]
-        fn test_lt_false(base_value: i16, delta: u16) {
+        fn test_lt_false(base_value: SmallValueType, delta: UnsignedSmallValueType) {
             prop_assume!(delta != 0);
             let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(base_value.into());
-            let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(i32::from(base_value) + i32::from(delta));
+            let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(ValueType::from(base_value) + ValueType::from(delta));
             assert!(!(probability_outcome_two < probability_outcome_one));
         }
 
         #[test]
         #[allow(clippy::nonminimal_bool)]
-        fn test_lt_same(base_value: i16) {
+        fn test_lt_same(base_value: SmallValueType) {
             let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(base_value.into());
             let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(base_value.into());
             assert!(!(probability_outcome_two < probability_outcome_one));
         }
 
         #[test]
-        fn test_ge_true(base_value: i16, delta: u16) {
+        fn test_ge_true(base_value: SmallValueType, delta: UnsignedSmallValueType) {
             prop_assume!(delta != 0);
             let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(base_value.into());
-            let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(i32::from(base_value) + i32::from(delta));
+            let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(ValueType::from(base_value) + ValueType::from(delta));
             assert!(probability_outcome_two >= probability_outcome_one);
         }
 
         #[test]
         #[allow(clippy::nonminimal_bool)]
-        fn test_ge_false(base_value: i16, delta: u16) {
+        fn test_ge_false(base_value: SmallValueType, delta: UnsignedSmallValueType) {
             prop_assume!(delta != 0);
             let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(base_value.into());
-            let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(i32::from(base_value) + i32::from(delta));
+            let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(ValueType::from(base_value) + ValueType::from(delta));
             assert!(!(probability_outcome_one >= probability_outcome_two));
         }
 
         #[test]
-        fn test_ge_same(base_value: i16) {
+        fn test_ge_same(base_value: SmallValueType) {
             let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(base_value.into());
             let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(base_value.into());
             assert!(probability_outcome_two >= probability_outcome_one);
         }
 
         #[test]
-        fn test_le_true(base_value: i16, delta: u16) {
+        fn test_le_true(base_value: SmallValueType, delta: UnsignedSmallValueType) {
             prop_assume!(delta != 0);
             let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(base_value.into());
-            let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(i32::from(base_value) + i32::from(delta));
+            let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(ValueType::from(base_value) + ValueType::from(delta));
             assert!(probability_outcome_one <= probability_outcome_two);
         }
 
         #[test]
         #[allow(clippy::nonminimal_bool)]
-        fn test_le_false(base_value: i16, delta: u16) {
+        fn test_le_false(base_value: SmallValueType, delta: UnsignedSmallValueType) {
             prop_assume!(delta != 0);
             let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(base_value.into());
-            let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(i32::from(base_value) + i32::from(delta));
+            let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(ValueType::from(base_value) + ValueType::from(delta));
             assert!(!(probability_outcome_two <= probability_outcome_one));
         }
 
         #[test]
-        fn test_le_same(base_value: i16) {
+        fn test_le_same(base_value: SmallValueType) {
             let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(base_value.into());
             let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(base_value.into());
             assert!(probability_outcome_two <= probability_outcome_one);
         }
 
         #[test]
-        fn test_cmp_less(base_value: i16, delta: u16) {
+        fn test_cmp_less(base_value: SmallValueType, delta: UnsignedSmallValueType) {
             prop_assume!(delta != 0);
             let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(base_value.into());
-            let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(i32::from(base_value) + i32::from(delta));
+            let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(ValueType::from(base_value) + ValueType::from(delta));
             let result = probability_outcome_one.cmp(&probability_outcome_two);
             assert_eq!(result, Ordering::Less);
         }
 
         #[test]
-        fn test_cmp_greater(base_value: i16, delta: u16) {
+        fn test_cmp_greater(base_value: SmallValueType, delta: UnsignedSmallValueType) {
             prop_assume!(delta != 0);
-            let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(i32::from(base_value) + i32::from(delta));
+            let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(ValueType::from(base_value) + ValueType::from(delta));
             let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(base_value.into());
             let result = probability_outcome_one.cmp(&probability_outcome_two);
             assert_eq!(result, Ordering::Greater);
         }
 
         #[test]
-        fn test_cmp_equal(base_value: i16) {
+        fn test_cmp_equal(base_value: SmallValueType) {
             let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(base_value.into());
             let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(base_value.into());
             let result = probability_outcome_one.cmp(&probability_outcome_two);
@@ -265,7 +264,7 @@ mod tests {
         }
 
         #[test]
-        fn test_fmt(value: i32) {
+        fn test_fmt(value: ValueType) {
             let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(value);
             assert_eq!(format!("{probability_outcome:?}"), format!("ProbabilityOutcome {{ value: {}, constraint_map: ConstraintMap {{ map: {{}} }} }}", value));
         }

@@ -1,9 +1,10 @@
-use crate::constraint_management::{
-    Constraint, ConstraintValueType, IsConstraintCompiledWith, IsTheoreticallyPossible,
+use crate::{
+    constraint_management::{Constraint, IsConstraintCompiledWith, IsTheoreticallyPossible},
+    ValueType,
 };
 
 impl IsConstraintCompiledWith for Constraint {
-    fn is_compliant_with(&self, value: ConstraintValueType) -> bool {
+    fn is_compliant_with(&self, value: ValueType) -> bool {
         self.valid_values.contains(&value)
     }
 }
