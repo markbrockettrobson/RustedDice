@@ -33,7 +33,10 @@ impl ProbabilityOutcome {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use crate::{
+        constraint_management::{Constraint, ConstraintMap, ConstraintValueType},
+        probability::ProbabilityOutcome,
+    };
     use proptest::prelude::*;
 
     proptest! {

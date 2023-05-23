@@ -1,4 +1,4 @@
-use crate::probability::{ProbabilityOutcome, BinaryOperation, Combine};
+use crate::probability::{BinaryOperation, Combine, ProbabilityOutcome};
 
 impl Combine for ProbabilityOutcome {
     fn combine(&self, other: Self, binary_operation: BinaryOperation) -> Self {
@@ -21,14 +21,12 @@ impl Combine for ProbabilityOutcome {
     }
 }
 
-
 #[cfg(test)]
 mod tests {
     use crate::constraint_management::{
         Constraint, ConstraintIdType, ConstraintMap, ConstraintValueType,
     };
-    use crate::probability::ProbabilityOutcome;
-
+    use crate::probability::{Combine, ProbabilityOutcome};
 
     fn has_key_valid_value(
         constraint_map: &ConstraintMap,
