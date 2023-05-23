@@ -15,6 +15,7 @@ impl Not for ProbabilityOutcome {
 
 #[cfg(test)]
 mod tests {
+    use crate::constraint_management::{Constraint, ConstraintMap};
     use crate::probability::ProbabilityOutcome;
 
     use proptest::prelude::*;
@@ -23,9 +24,25 @@ mod tests {
         #[test]
         fn test_not(value_one: i32) {
             let expected_value = !value_one;
-            let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(value_one);
+            let probability_outcome = ProbabilityOutcome::new_with_constraint_map(
+                value_one,
+                ConstraintMap::new_constraint_map(
+                    vec![Constraint::new_many_item_constraint(3, vec![1, 2, 3])]
+                )
+            );
             let result = !probability_outcome;
             assert_eq!(result.value, expected_value);
+            assert_eq!(
+                result.constraint_map,
+                ConstraintMap::new_constraint_map(
+                    vec![
+                        Constraint::new_many_item_constraint(
+                            3,
+                            vec![1, 2, 3]
+                        )
+                    ]
+                )
+            );
         }
     }
 }
