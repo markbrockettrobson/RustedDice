@@ -6,20 +6,61 @@ use std::collections::HashSet;
 
 #[allow(dead_code)]
 impl Constraint {
-    pub(crate) fn new_empty_constraint(id: ConstraintIdType) -> Constraint {
+    /// Creates a new empty constraint with the given ID.
+    ///
+    /// An empty constraint has no valid values associated with it.
+    ///
+    /// # Arguments
+    ///
+    /// * `id` - The unique identifier for the constraint.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # use crate::rusted_dice::constraint_management::constraint::Constraint;
+    /// let constraint = Constraint::new_empty_constraint(1);
+    /// ```
+    pub fn new_empty_constraint(id: ConstraintIdType) -> Constraint {
         let valid_values: ValueTypeSet = HashSet::new();
         Constraint { id, valid_values }
     }
 
-    pub(crate) fn new_single_valid_value_constraint(
-        id: ConstraintIdType,
-        value: ValueType,
-    ) -> Constraint {
+    /// Creates a new constraint with a single valid value.
+    ///
+    /// The constraint allows only a single value to be valid.
+    ///
+    /// # Arguments
+    ///
+    /// * `id` - The unique identifier for the constraint.
+    /// * `value` - The valid value for the constraint.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # use crate::rusted_dice::constraint_management::constraint::Constraint;
+    /// let constraint = Constraint::new_single_valid_value_constraint(2, 3);
+    /// ```
+    pub fn new_single_valid_value_constraint(id: ConstraintIdType, value: ValueType) -> Constraint {
         let valid_values: ValueTypeSet = vec![value].into_iter().collect();
         Constraint { id, valid_values }
     }
 
-    pub(crate) fn new_many_item_constraint(
+    /// Creates a new constraint with multiple valid values.
+    ///
+    /// The constraint allows multiple values to be valid.
+    ///
+    /// # Arguments
+    ///
+    /// * `id` - The unique identifier for the constraint.
+    /// * `values` - An iterator over the valid values for the constraint.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # use crate::rusted_dice::constraint_management::constraint::Constraint;
+    /// let constraint = Constraint::new_many_item_constraint(3, vec![1, 2]);
+    /// ```
+    pub fn new_many_item_constraint(
         id: ConstraintIdType,
         values: impl IntoIterator<Item = ValueType>,
     ) -> Constraint {

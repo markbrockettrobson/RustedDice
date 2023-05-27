@@ -7,6 +7,9 @@ echo "run fmt"
 echo "runing clippy"
 ( cd rusted_dice && cargo clippy --all-targets --all-features -- -D warnings )
 
+echo "runing doctest"
+( cd rusted_dice && cargo test --doc . )
+
 echo "runing coverage"
 ( cd rusted_dice && cargo llvm-cov --html && cargo llvm-cov --no-run )
 

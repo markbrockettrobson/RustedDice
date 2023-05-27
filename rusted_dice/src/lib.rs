@@ -1,7 +1,7 @@
-mod constraint_management;
-mod probability;
+pub mod constraint_management;
+pub mod probability;
 
-mod types;
+pub mod types;
 
 pub use types::SmallValueType;
 pub use types::UnsignedSmallValueType;

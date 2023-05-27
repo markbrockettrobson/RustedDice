@@ -1,5 +1,39 @@
 use crate::constraint_management::{ConstraintIdType, ValueTypeSet};
 
+/// Represents a constraint with an ID and a set of valid values.
+///
+/// Each constraint has a unique identifier (`id`) and a `valid_values` set, which
+/// contains the allowed values for the constraint.
+///
+/// Constraints are utilized to express values within a probability distribution that cannot be combined due to their derivation from the same random event.
+/// see ProbabilityOutcome   
+///
+/// # Examples
+/// #### A constraint with no valid values. Mostly used for testing
+/// ```
+/// # use crate::rusted_dice::constraint_management::constraint::Constraint;
+/// let constraint = Constraint::new_empty_constraint(1);
+/// ```
+///
+/// #### A constraint with one valid value
+/// ```
+/// # use crate::rusted_dice::constraint_management::constraint::Constraint;
+/// let constraint = Constraint::new_single_valid_value_constraint(1, 20);
+/// ```
+///
+/// #### A constraint with many valid values
+/// ```
+/// # use crate::rusted_dice::constraint_management::constraint::Constraint;
+/// let constraint = Constraint::new_many_item_constraint(1, vec![1, 2, 3]);
+/// ```
+///
+/// #### Raw constructor
+/// ```
+/// # use crate::rusted_dice::constraint_management::constraint::Constraint;
+/// # use crate::rusted_dice::constraint_management::ValueTypeSet;
+/// let values: ValueTypeSet = vec![1, 2, 3, 4].into_iter().collect();
+/// let constraint = Constraint { id: 1, valid_values: values };
+/// ```
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct Constraint {
     pub id: ConstraintIdType,
