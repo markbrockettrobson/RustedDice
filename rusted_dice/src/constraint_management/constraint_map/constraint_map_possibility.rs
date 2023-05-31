@@ -3,6 +3,38 @@ use crate::constraint_management::{
 };
 
 impl IsTheoreticallyPossible for ConstraintMap {
+    /// Checks if the `ConstraintMap` is theoretically possible.
+    ///
+    /// # Arguments
+    ///
+    /// * `self` - The `ConstraintMap` instance.
+    ///
+    /// # Returns
+    ///
+    /// `true` if all constraints are theoretically possible
+    ///
+    /// # Examples
+    /// ```
+    /// # use std::collections::HashMap;
+    /// # use crate::rusted_dice::constraint_management::traits::IsTheoreticallyPossible;
+    /// # use crate::rusted_dice::constraint_management::constraint::Constraint;
+    /// # use crate::rusted_dice::constraint_management::constraint_map::ConstraintMap;
+    /// # use crate::rusted_dice::constraint_management::IdToValueMap;
+    /// let constraint_map_one = ConstraintMap::new_constraint_map(
+    ///     vec![
+    ///        Constraint::new_many_item_constraint(1, vec![1, 2, 3]),
+    ///        Constraint::new_many_item_constraint(2, vec![1, 2, 3])
+    ///     ]
+    /// );
+    /// let constraint_map_two = ConstraintMap::new_constraint_map(
+    ///     vec![
+    ///        Constraint::new_many_item_constraint(1, vec![1, 2, 3]),
+    ///        Constraint::new_empty_constraint(2)
+    ///     ]
+    /// );
+    /// assert!(constraint_map_one.is_theoretically_possible());
+    /// assert!(!constraint_map_two.is_theoretically_possible());
+    /// ```
     fn is_theoretically_possible(&self) -> bool {
         return !self
             .map
@@ -12,6 +44,38 @@ impl IsTheoreticallyPossible for ConstraintMap {
 }
 
 impl AreConstraintsCompiledWith for ConstraintMap {
+    /// Checks if the `ConstraintMap` is compliant with a specific ConstraintID -> Value map.
+    ///
+    /// # Arguments
+    ///
+    /// * `self` - The `ConstraintMap` instance.
+    /// * `id_value_map` - The  ConstraintID -> `ValueType` map to check compliance with.
+    ///
+    /// # Returns
+    ///
+    /// `true` if the the given `value` is a valid value `Constraint`, `false` otherwise.
+    ///
+    /// # Examples
+    /// ```
+    /// # use std::collections::HashMap;
+    /// # use crate::rusted_dice::constraint_management::traits::AreConstraintsCompiledWith;
+    /// # use crate::rusted_dice::constraint_management::constraint::Constraint;
+    /// # use crate::rusted_dice::constraint_management::constraint_map::ConstraintMap;
+    /// # use crate::rusted_dice::constraint_management::IdToValueMap;
+    /// let constraint_map_one = ConstraintMap::new_constraint_map(
+    ///     vec![
+    ///        Constraint::new_many_item_constraint(1, vec![1, 2, 3]),
+    ///        Constraint::new_many_item_constraint(2, vec![1, 2, 3])
+    ///     ]
+    /// );
+    /// let mut id_value_map: IdToValueMap = HashMap::new();
+    /// id_value_map.insert(1, 2);
+    /// id_value_map.insert(2, 3);
+    /// id_value_map.insert(4, 10);
+    /// assert!(constraint_map_one.is_compliant_with(id_value_map.clone()));
+    /// id_value_map.insert(2, 4);
+    /// assert!(!constraint_map_one.is_compliant_with(id_value_map));
+    /// ```
     fn is_compliant_with(&self, id_value_map: IdToValueMap) -> bool {
         for (id, value) in &id_value_map {
             if self.map.contains_key(id) && !self.map[id].valid_values.contains(value) {

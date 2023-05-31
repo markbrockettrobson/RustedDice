@@ -1,5 +1,57 @@
 use crate::constraint_management::IdToConstraintMap;
 
+/// Represents a collection of constraint.
+///
+/// Each constraint id can only have one constraint
+///
+/// # Examples
+/// #### A constraint map without any constraints
+/// ```
+/// # use crate::rusted_dice::constraint_management::constraint_map::ConstraintMap;
+/// let constraint_map = ConstraintMap::new_empty_constraint_map();
+/// ```
+///
+/// #### A constraint map with one constraint
+/// ```
+/// # use crate::rusted_dice::constraint_management::constraint::Constraint;
+/// # use crate::rusted_dice::constraint_management::constraint_map::ConstraintMap;
+/// let constraint = Constraint::new_many_item_constraint(1, vec![1, 2, 3]);
+/// let constraint_map = ConstraintMap::new_single_constraint_constraint_map(constraint);
+/// ```
+///
+/// #### A constraint with many constraints,
+/// constraints with the same key will be combined
+/// ```
+/// # use crate::rusted_dice::constraint_management::constraint::Constraint;
+/// # use crate::rusted_dice::constraint_management::constraint_map::ConstraintMap;
+/// let constraint_1 = Constraint::new_many_item_constraint(1, vec![1, 2, 3]);
+/// let constraint_2 = Constraint::new_many_item_constraint(2, vec![1, 2, 3]);
+/// let constraint_3 = Constraint::new_many_item_constraint(3, vec![1, 2, 3]);
+/// let constraint_4 = Constraint::new_many_item_constraint(4, vec![1, 2, 3]);
+/// let constraint_map = ConstraintMap::new_constraint_map(
+///     vec![
+///        constraint_1,
+///        constraint_2,
+///        constraint_3,
+///        constraint_4
+///     ]
+/// );
+/// ```
+///
+/// #### Raw constructor
+/// not recomended.
+/// take care to correctly use the constraint.id as key in the map.
+/// ```
+/// # use crate::rusted_dice::constraint_management::constraint::Constraint;
+/// # use crate::rusted_dice::constraint_management::constraint_map::ConstraintMap;
+/// # use crate::rusted_dice::constraint_management::ValueTypeSet;
+/// # use crate::rusted_dice::constraint_management::IdToConstraintMap;
+/// # use std::collections::HashMap;
+/// let constraint = Constraint::new_many_item_constraint(3, vec![1, 2, 3]);
+/// let mut map: IdToConstraintMap = HashMap::new();
+/// map.insert(constraint.id, constraint);
+/// let constraint_map = ConstraintMap { map };
+/// ```
 #[allow(dead_code)]
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct ConstraintMap {

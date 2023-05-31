@@ -5,20 +5,18 @@ use crate::constraint_management::{Constraint, ConstraintMap, IdToConstraintMap}
 
 #[allow(dead_code)]
 impl ConstraintMap {
-    pub(crate) fn new_empty_constraint_map() -> ConstraintMap {
+    pub fn new_empty_constraint_map() -> ConstraintMap {
         let map: IdToConstraintMap = HashMap::new();
         ConstraintMap { map }
     }
 
-    pub(crate) fn new_single_constraint_constraint_map(constraint: Constraint) -> ConstraintMap {
+    pub fn new_single_constraint_constraint_map(constraint: Constraint) -> ConstraintMap {
         let mut map: IdToConstraintMap = HashMap::new();
         map.insert(constraint.id, constraint);
         ConstraintMap { map }
     }
 
-    pub(crate) fn new_constraint_map(
-        constraints: impl IntoIterator<Item = Constraint>,
-    ) -> ConstraintMap {
+    pub fn new_constraint_map(constraints: impl IntoIterator<Item = Constraint>) -> ConstraintMap {
         let mut map: IdToConstraintMap = HashMap::new();
         for constraint in constraints {
             match map.entry(constraint.id) {
