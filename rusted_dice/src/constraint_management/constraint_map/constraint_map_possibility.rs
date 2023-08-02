@@ -11,7 +11,7 @@ impl IsTheoreticallyPossible for ConstraintMap {
     ///
     /// # Returns
     ///
-    /// `true` if all constraints are theoretically possible
+    /// `true` if all `Constraint`s are theoretically possible
     ///
     /// # Examples
     /// ```
@@ -44,7 +44,7 @@ impl IsTheoreticallyPossible for ConstraintMap {
 }
 
 impl AreConstraintsCompiledWith for ConstraintMap {
-    /// Checks if the `ConstraintMap` is compliant with a specific ConstraintID -> Value map.
+    /// Checks if the `ConstraintMap` is compliant with a specific 'ConstraintID' -> 'Value' map.
     ///
     /// # Arguments
     ///

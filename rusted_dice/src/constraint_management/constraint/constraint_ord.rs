@@ -2,18 +2,18 @@ use crate::constraint_management::Constraint;
 use std::cmp::Ordering;
 
 impl Ord for Constraint {
-    /// Compare two constraints based on their ID and then valid values.
+    /// Compare two `Constraint`s based on their ID and then valid values.
     ///
     /// first on id then on sorted valid values
     ///
     /// # Arguments
     ///
-    /// * `self` - The first constraint to compare.
-    /// * `other` - The second constraint to compare.
+    /// * `self` - The first `Constraint` to compare.
+    /// * `other` - The second `Constraint` to compare.
     ///
     /// # Returns
     ///
-    /// An `Ordering` value indicating the relationship between the constraints.
+    /// An `Ordering` value indicating the relationship between the `Constraint`s.
     ///
     /// # Examples
     /// ```
@@ -34,18 +34,18 @@ impl Ord for Constraint {
 }
 
 impl PartialOrd for Constraint {
-    /// Compare two constraints partially based on their ID and valid values.
+    /// Compare two `Constraint`s partially based on their ID and valid values.
     ///
     /// Calls cmp
     ///
     /// # Arguments
     ///
-    /// * `self` - The first constraint to compare.
-    /// * `other` - The second constraint to compare.
+    /// * `self` - The first `Constraint` to compare.
+    /// * `other` - The second `Constraint` to compare.
     ///
     /// # Returns
     ///
-    /// An `Option<Ordering>` value indicating the relationship between the constraints,
+    /// An `Option<Ordering>` value indicating the relationship between the `Constraints`,
     /// or `None` if the comparison cannot be determined.
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(self.cmp(other))

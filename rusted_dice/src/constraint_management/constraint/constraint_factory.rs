@@ -6,9 +6,9 @@ use std::collections::HashSet;
 
 #[allow(dead_code)]
 impl Constraint {
-    /// Creates a new empty Constraint with the given ID.
+    /// Creates a new empty `Constraint` with the given ID.
     ///
-    /// An empty constraint has no valid values associated with it.
+    /// An empty `Constraint` has no valid values associated with it.
     ///
     /// # Arguments
     ///
@@ -25,9 +25,9 @@ impl Constraint {
         Constraint { id, valid_values }
     }
 
-    /// Creates a new Constraint with a single valid value.
+    /// Creates a new `Constraint` with a single valid value.
     ///
-    /// The constraint allows only a single value to be valid.
+    /// The `Constraint` allows only a single value to be valid.
     ///
     /// # Arguments
     ///
@@ -45,9 +45,9 @@ impl Constraint {
         Constraint { id, valid_values }
     }
 
-    /// Creates a new Constraint with multiple valid values.
+    /// Creates a new `Constraint` with multiple valid values.
     ///
-    /// The constraint allows multiple values to be valid.
+    /// The `Constraint` allows multiple values to be valid.
     ///
     /// # Arguments
     ///

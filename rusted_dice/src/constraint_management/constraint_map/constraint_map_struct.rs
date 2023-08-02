@@ -1,17 +1,17 @@
 use crate::constraint_management::IdToConstraintMap;
 
-/// Represents a collection of constraint.
+/// Represents a collection of `Constraint`s.
 ///
-/// Each constraint id can only have one constraint
+/// Each `ConstraintId` can only have one `Constraint`
 ///
 /// # Examples
-/// #### A constraint map without any constraints
+/// #### A `ConstraintMap` without any `Constraint`s
 /// ```
 /// # use crate::rusted_dice::constraint_management::constraint_map::ConstraintMap;
 /// let constraint_map = ConstraintMap::new_empty_constraint_map();
 /// ```
 ///
-/// #### A constraint map with one constraint
+/// #### A `ConstraintMap` with one `Constraint`
 /// ```
 /// # use crate::rusted_dice::constraint_management::constraint::Constraint;
 /// # use crate::rusted_dice::constraint_management::constraint_map::ConstraintMap;
@@ -19,8 +19,8 @@ use crate::constraint_management::IdToConstraintMap;
 /// let constraint_map = ConstraintMap::new_single_constraint_constraint_map(constraint);
 /// ```
 ///
-/// #### A constraint with many constraints,
-/// constraints with the same key will be combined
+/// #### A `ConstraintMap` with many `Constraint`s,
+/// `Constraint`s with the same key will be combined
 /// ```
 /// # use crate::rusted_dice::constraint_management::constraint::Constraint;
 /// # use crate::rusted_dice::constraint_management::constraint_map::ConstraintMap;
@@ -40,7 +40,7 @@ use crate::constraint_management::IdToConstraintMap;
 ///
 /// #### Raw constructor
 /// not recomended.
-/// take care to correctly use the constraint.id as key in the map.
+/// take care to correctly use the `Constraint.id` as key in the map.
 /// ```
 /// # use crate::rusted_dice::constraint_management::constraint::Constraint;
 /// # use crate::rusted_dice::constraint_management::constraint_map::ConstraintMap;

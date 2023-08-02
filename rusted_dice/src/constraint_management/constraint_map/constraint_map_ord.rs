@@ -3,16 +3,16 @@ use std::cmp::Ordering;
 use crate::constraint_management::{Constraint, ConstraintMap};
 
 impl Ord for ConstraintMap {
-    /// Compare two constraints_map based on their constraints in order.
+    /// Compare two `ConstraintMap`s based on their `Constraint`s in order.
     ///
     /// # Arguments
     ///
-    /// * `self` - The first constraint to compare.
-    /// * `other` - The second constraint to compare.
+    /// * `self` - The first `ConstraintMap` to compare.
+    /// * `other` - The second `ConstraintMap` to compare.
     ///
     /// # Returns
     ///
-    /// An `Ordering` value indicating the relationship between the constraints.
+    /// An `Ordering` value indicating the relationship between the `ConstraintMap`s.
     ///
     /// # Examples
     /// ```
@@ -52,18 +52,18 @@ impl Ord for ConstraintMap {
 }
 
 impl PartialOrd for ConstraintMap {
-    /// Compare two constraints maps partially based on their constraints in order.
+    /// Compare two `ConstraintMap`s partially based on their `Constraint`s in order.
     ///
     /// Calls cmp
     ///
     /// # Arguments
     ///
-    /// * `self` - The first constraint to compare.
-    /// * `other` - The second constraint to compare.
+    /// * `self` - The first `ConstraintMap` to compare.
+    /// * `other` - The second `ConstraintMap` to compare.
     ///
     /// # Returns
     ///
-    /// An `Option<Ordering>` value indicating the relationship between the constraintmaps,
+    /// An `Option<Ordering>` value indicating the relationship between the `ConstraintMap`,
     /// or `None` if the comparison cannot be determined.
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(self.cmp(other))

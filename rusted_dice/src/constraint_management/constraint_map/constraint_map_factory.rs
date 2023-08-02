@@ -5,7 +5,7 @@ use crate::constraint_management::{Constraint, ConstraintMap, IdToConstraintMap}
 
 #[allow(dead_code)]
 impl ConstraintMap {
-    /// Creates a new empty ConstraintMap.
+    /// Creates a new empty `ConstraintMap`.
     ///
     /// # Example
     ///
@@ -18,11 +18,11 @@ impl ConstraintMap {
         ConstraintMap { map }
     }
 
-    /// Creates a new ConstraintMap with the given Constraint.
+    /// Creates a new `ConstraintMap` with the given `Constraint`.
     ///
     /// # Arguments
     ///
-    /// * 'constraint': a 'Constraint' to be the only value in the map.
+    /// * `constraint`: a `Constraint` to be the only value in the map.
     ///
     /// # Example
     ///
@@ -41,7 +41,7 @@ impl ConstraintMap {
     /// Creates a new 'ConstraintMap' from an iterator of 'Constraint's.
     ///
     /// This function takes an iterator of 'Constraint' items and constructs a 'ConstraintMap'
-    /// by consolidating the constraints based on their IDs. If multiple constraints with the same
+    /// by consolidating the `Constraint`s based on their IDs. If multiple `Constraint`s with the same
     /// ID are found, they will be merged using the '+' operator of the 'Constraint' type.
     ///
     /// # Arguments
