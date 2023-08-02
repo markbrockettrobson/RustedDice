@@ -5,17 +5,71 @@ use crate::constraint_management::{Constraint, ConstraintMap, IdToConstraintMap}
 
 #[allow(dead_code)]
 impl ConstraintMap {
+    /// Creates a new empty ConstraintMap.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # use crate::rusted_dice::constraint_management::constraint_map::ConstraintMap;
+    /// let constraint_map = ConstraintMap::new_empty_constraint_map();
+    /// ```
     pub fn new_empty_constraint_map() -> ConstraintMap {
         let map: IdToConstraintMap = HashMap::new();
         ConstraintMap { map }
     }
 
+    /// Creates a new ConstraintMap with the given Constraint.
+    ///
+    /// # Arguments
+    ///
+    /// * 'constraint': a 'Constraint' to be the only value in the map.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # use crate::rusted_dice::constraint_management::constraint_map::ConstraintMap;
+    /// # use crate::rusted_dice::constraint_management::constraint::Constraint;
+    /// let constraint = Constraint::new_single_valid_value_constraint(2, 3);
+    /// let constraint_map = ConstraintMap::new_single_constraint_constraint_map(constraint);
+    /// ```
     pub fn new_single_constraint_constraint_map(constraint: Constraint) -> ConstraintMap {
         let mut map: IdToConstraintMap = HashMap::new();
         map.insert(constraint.id, constraint);
         ConstraintMap { map }
     }
 
+    /// Creates a new 'ConstraintMap' from an iterator of 'Constraint's.
+    ///
+    /// This function takes an iterator of 'Constraint' items and constructs a 'ConstraintMap'
+    /// by consolidating the constraints based on their IDs. If multiple constraints with the same
+    /// ID are found, they will be merged using the '+' operator of the 'Constraint' type.
+    ///
+    /// # Arguments
+    ///
+    /// * 'constraints': An iterator of 'Constraint' items.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # use std::collections::HashSet;
+    /// # use crate::rusted_dice::constraint_management::constraint_map::ConstraintMap;
+    /// # use crate::rusted_dice::constraint_management::constraint::Constraint;
+    ///
+    /// let constraints = vec![
+    ///     Constraint::new_single_valid_value_constraint(1, 1),
+    ///     Constraint::new_single_valid_value_constraint(2, 2),
+    ///     Constraint::new_single_valid_value_constraint(3, 3),
+    ///     Constraint::new_single_valid_value_constraint(3, 4),
+    /// ];
+    ///
+    /// let constraint_map = ConstraintMap::new_constraint_map(constraints);
+    /// let unique_constraint_ids: HashSet<u16> = constraint_map.map.keys().cloned().collect();
+    /// assert_eq!(unique_constraint_ids, vec![1, 2, 3].into_iter().collect());
+    /// ```
+    ///
+    /// # Returns
+    ///
+    /// The new `ConstraintMap` containing the merged constraints.
     pub fn new_constraint_map(constraints: impl IntoIterator<Item = Constraint>) -> ConstraintMap {
         let mut map: IdToConstraintMap = HashMap::new();
         for constraint in constraints {
