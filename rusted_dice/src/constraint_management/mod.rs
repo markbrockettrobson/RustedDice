@@ -1,17 +1,16 @@
-pub mod constraint;
-pub mod constraint_map;
-pub mod traits;
-pub mod types;
+mod constraint;
+mod constraint_map;
+mod traits;
+mod types;
 
-pub use constraint::Constraint;
+pub use self::constraint::Constraint;
+pub use self::constraint_map::ConstraintMap;
 
-pub use constraint_map::ConstraintMap;
+pub use self::traits::AreConstraintsCompiledWith;
+pub use self::traits::IsConstraintCompiledWith;
+pub use self::traits::IsTheoreticallyPossible;
 
-pub use traits::AreConstraintsCompiledWith;
-pub use traits::IsConstraintCompiledWith;
-pub use traits::IsTheoreticallyPossible;
-
-pub use types::ConstraintIdType;
-pub use types::IdToConstraintMap;
-pub use types::IdToValueMap;
-pub use types::ValueTypeSet;
+pub use self::types::ConstraintIdToConstraintHashMap;
+pub use self::types::ConstraintIdType;
+pub use self::types::IdToValueMap;
+pub use self::types::ValueTypeSet;

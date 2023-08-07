@@ -6,23 +6,23 @@ use crate::constraint_management::ConstraintMap;
 
 impl Add for ConstraintMap {
     type Output = Self;
-    /// Implements the addition operator for `ConstraintMap`. The intersectoin of maps are maintained
-    /// the `Constraint` of maching keys are added together
+    /// Implements the addition operator for [ConstraintMap]. The intersectoin of maps are maintained
+    /// the [Constraint] of maching keys are added together
     ///
     /// # Arguments
     ///
-    /// * `self` - The first `ConstraintMap` operand.
-    /// * `other` - The second `ConstraintMap` operand.
+    /// * `self` - The first [ConstraintMap] operand.
+    /// * `other` - The second [ConstraintMap] operand.
     ///
     /// # Returns
     ///
-    /// The resulting `ConstraintMap` after the addition operation.
+    /// The resulting [ConstraintMap] after the addition operation.
     ///
     /// # Example
     ///
     /// ```
-    /// # use crate::rusted_dice::constraint_management::constraint::Constraint;
-    /// # use crate::rusted_dice::constraint_management::constraint_map::ConstraintMap;
+    /// # use crate::rusted_dice::constraint_management::Constraint;
+    /// # use crate::rusted_dice::constraint_management::ConstraintMap;
     /// let constraint_map_one = ConstraintMap::new_constraint_map(
     ///     vec![
     ///        Constraint::new_many_item_constraint(1, vec![1, 2, 3]),

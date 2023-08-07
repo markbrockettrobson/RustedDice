@@ -4,21 +4,21 @@ use crate::{
 };
 
 impl IsConstraintCompiledWith for Constraint {
-    /// Checks if the `Constraint` is compliant with a specific `ValueType`.
+    /// Checks if the [Constraint] is compliant with a specific `value`.
     ///
     /// # Arguments
     ///
-    /// * `self` - The `Constraint` instance.
-    /// * `value` - The `ValueType` to check compliance with.
+    /// * `self` - The [Constraint] instance.
+    /// * `value` - The [ValueType] to check compliance with.
     ///
     /// # Returns
     ///
-    /// `true` if the the given `value` is a valid value `Constraint`, `false` otherwise.
+    /// `true` if the the given `value` is a valid value [Constraint], `false` otherwise.
     ///
     /// # Examples
     /// ```
-    /// # use crate::rusted_dice::constraint_management::traits::IsConstraintCompiledWith;
-    /// # use crate::rusted_dice::constraint_management::constraint::Constraint;
+    /// # use crate::rusted_dice::constraint_management::IsConstraintCompiledWith;
+    /// # use crate::rusted_dice::constraint_management::Constraint;
     /// let constraint = Constraint::new_many_item_constraint(1, vec![1, 2, 5]);
     /// assert!(constraint.is_compliant_with(1));
     /// assert!(constraint.is_compliant_with(2));
@@ -31,20 +31,20 @@ impl IsConstraintCompiledWith for Constraint {
 }
 
 impl IsTheoreticallyPossible for Constraint {
-    /// Checks if the `Constraint` is theoretically possible.
+    /// Checks if the [Constraint] is theoretically possible.
     ///
     /// # Arguments
     ///
-    /// * `self` - The `Constraint` instance.
+    /// * `self` - The [Constraint] instance.
     ///
     /// # Returns
     ///
-    /// `true` if the `Constraint` is theoretically possible, `false` otherwise.
+    /// `true` if the [Constraint] is theoretically possible, `false` otherwise.
     ///
     /// # Examples
     /// ```
-    /// # use crate::rusted_dice::constraint_management::traits::IsTheoreticallyPossible;
-    /// # use crate::rusted_dice::constraint_management::constraint::Constraint;
+    /// # use crate::rusted_dice::constraint_management::IsTheoreticallyPossible;
+    /// # use crate::rusted_dice::constraint_management::Constraint;
     /// let constraint_one = Constraint::new_many_item_constraint(1, vec![1, 2, 5]);
     /// let constraint_two = Constraint::new_empty_constraint(1);
     /// assert!(constraint_one.is_theoretically_possible());

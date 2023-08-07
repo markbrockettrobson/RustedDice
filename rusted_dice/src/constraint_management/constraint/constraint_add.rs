@@ -4,7 +4,7 @@ use crate::constraint_management::Constraint;
 
 impl Add for Constraint {
     type Output = Self;
-    /// Implements the addition operator for `Constraint`. The intersectoin of valid values is maintained
+    /// Implements the addition operator for [Constraint]. The intersectoin of valid values is maintained
     ///
     /// # Panics
     ///
@@ -12,17 +12,17 @@ impl Add for Constraint {
     ///
     /// # Arguments
     ///
-    /// * `self` - The first `Constraint` operand.
-    /// * `other` - The second `Constraint` operand.
+    /// * `self` - The first [Constraint] operand.
+    /// * `other` - The second [Constraint] operand.
     ///
     /// # Returns
     ///
-    /// The resulting `Constraint` after the addition operation.
+    /// The resulting [Constraint] after the addition operation.
     ///
     /// # Example
     ///
     /// ```
-    /// # use crate::rusted_dice::constraint_management::constraint::Constraint;
+    /// # use crate::rusted_dice::constraint_management::Constraint;
     /// let constraint_one = Constraint::new_many_item_constraint(2, vec![3, 4, 5]);
     /// let constraint_two = Constraint::new_many_item_constraint(2, vec![1, 2, 3]);
     /// let constraint_three = Constraint::new_single_valid_value_constraint(2, 3);

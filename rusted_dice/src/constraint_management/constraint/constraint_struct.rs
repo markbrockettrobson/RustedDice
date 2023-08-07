@@ -1,35 +1,35 @@
 use crate::constraint_management::{ConstraintIdType, ValueTypeSet};
 
-/// Represents a `Constraint` with an ID and a set of valid values.
+/// Represents a [Constraint] with an ID and a set of valid values.
 ///
-/// Each `Constraint` has a unique identifier (`id`) and a `valid_values` set, which
-/// contains the allowed values for the `Constraint`.
+/// Each [Constraint] has a [ConstraintIdType] (`id`) and a [ValueTypeSet] (`valid_values`),
+/// which contains the allowed values for the [Constraint].
 ///
-/// `Constraint`s are utilized to express values within a probability distribution that cannot be combined due to their derivation from the same random event.
-/// see `ProbabilityOutcome` for use case.   
+/// [Constraint]s are utilized to express values within a [ProbabilityDistribution] that cannot be combined due to their derivation from the same random event.
+/// see [ProbabilityOutcome] for use case.   
 ///
 /// # Examples
-/// #### A `Constraint` with no valid values. Mostly used for testing
+/// #### A [Constraint] with no valid values. Mostly used for testing
 /// ```
-/// # use crate::rusted_dice::constraint_management::constraint::Constraint;
+/// # use crate::rusted_dice::constraint_management::Constraint;
 /// let constraint = Constraint::new_empty_constraint(1);
 /// ```
 ///
-/// #### A `Constraint` with one valid value
+/// #### A [Constraint] with one valid value
 /// ```
-/// # use crate::rusted_dice::constraint_management::constraint::Constraint;
+/// # use crate::rusted_dice::constraint_management::Constraint;
 /// let constraint = Constraint::new_single_valid_value_constraint(1, 20);
 /// ```
 ///
-/// #### A `Constraint` with many valid values
+/// #### A [Constraint] with many valid values
 /// ```
-/// # use crate::rusted_dice::constraint_management::constraint::Constraint;
+/// # use crate::rusted_dice::constraint_management::Constraint;
 /// let constraint = Constraint::new_many_item_constraint(1, vec![1, 2, 3]);
 /// ```
 ///
-/// #### Raw `Constraint`
+/// #### Raw [Constraint]
 /// ```
-/// # use crate::rusted_dice::constraint_management::constraint::Constraint;
+/// # use crate::rusted_dice::constraint_management::Constraint;
 /// # use crate::rusted_dice::constraint_management::ValueTypeSet;
 /// let values: ValueTypeSet = vec![1, 2, 3, 4].into_iter().collect();
 /// let constraint = Constraint { id: 1, valid_values: values };

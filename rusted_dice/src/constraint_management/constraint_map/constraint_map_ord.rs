@@ -3,21 +3,21 @@ use std::cmp::Ordering;
 use crate::constraint_management::{Constraint, ConstraintMap};
 
 impl Ord for ConstraintMap {
-    /// Compare two `ConstraintMap`s based on their `Constraint`s in order.
+    /// Compare two [ConstraintMap]s based on their [Constraint]s in order.
     ///
     /// # Arguments
     ///
-    /// * `self` - The first `ConstraintMap` to compare.
-    /// * `other` - The second `ConstraintMap` to compare.
+    /// * `self` - The first [ConstraintMap] to compare.
+    /// * `other` - The second [ConstraintMap] to compare.
     ///
     /// # Returns
     ///
-    /// An `Ordering` value indicating the relationship between the `ConstraintMap`s.
+    /// An [Ordering] value indicating the relationship between the [ConstraintMap]s.
     ///
     /// # Examples
     /// ```
-    /// # use crate::rusted_dice::constraint_management::constraint::Constraint;
-    /// # use crate::rusted_dice::constraint_management::constraint_map::ConstraintMap;
+    /// # use crate::rusted_dice::constraint_management::Constraint;
+    /// # use crate::rusted_dice::constraint_management::ConstraintMap;
     /// let constraint_map_one = ConstraintMap::new_constraint_map(
     ///     vec![
     ///        Constraint::new_many_item_constraint(1, vec![1, 2, 3]),
@@ -65,6 +65,26 @@ impl PartialOrd for ConstraintMap {
     ///
     /// An `Option<Ordering>` value indicating the relationship between the `ConstraintMap`,
     /// or `None` if the comparison cannot be determined.
+    ///
+    /// # Examples
+    /// ```
+    /// # use crate::rusted_dice::constraint_management::Constraint;
+    /// # use crate::rusted_dice::constraint_management::ConstraintMap;
+    /// # use std::cmp::Ordering;
+    /// let constraint_map_one = ConstraintMap::new_constraint_map(
+    ///     vec![
+    ///        Constraint::new_many_item_constraint(1, vec![1, 2, 3]),
+    ///        Constraint::new_many_item_constraint(2, vec![1, 2, 3])
+    ///     ]
+    /// );
+    /// let constraint_map_two = ConstraintMap::new_constraint_map(
+    ///     vec![
+    ///        Constraint::new_many_item_constraint(1, vec![3, 4, 5])
+    ///     ]
+    /// );
+    /// assert!(constraint_map_one.partial_cmp(&constraint_map_two) == Some(Ordering::Less));
+    /// assert!(constraint_map_two.partial_cmp(&constraint_map_one) == Some(Ordering::Greater));
+    /// ```
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(self.cmp(other))
     }

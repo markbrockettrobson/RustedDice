@@ -6,18 +6,18 @@ use std::collections::HashSet;
 
 #[allow(dead_code)]
 impl Constraint {
-    /// Creates a new empty `Constraint` with the given ID.
+    /// Creates a new empty [Constraint] with the given ID.
     ///
-    /// An empty `Constraint` has no valid values associated with it.
+    /// An empty [Constraint] has no valid values associated with it.
     ///
     /// # Arguments
     ///
-    /// * `id` - The unique identifier for the constraint.
+    /// * `id` - The [ConstraintIdType] for the [Constraint].
     ///
     /// # Example
     ///
     /// ```
-    /// # use crate::rusted_dice::constraint_management::constraint::Constraint;
+    /// # use crate::rusted_dice::constraint_management::Constraint;
     /// let constraint = Constraint::new_empty_constraint(1);
     /// ```
     pub fn new_empty_constraint(id: ConstraintIdType) -> Constraint {
@@ -25,19 +25,19 @@ impl Constraint {
         Constraint { id, valid_values }
     }
 
-    /// Creates a new `Constraint` with a single valid value.
+    /// Creates a new [Constraint] with a single valid value.
     ///
-    /// The `Constraint` allows only a single value to be valid.
+    /// The [Constraint] allows only a single value to be valid.
     ///
     /// # Arguments
     ///
-    /// * `id` - The unique identifier for the constraint.
-    /// * `value` - The valid value for the constraint.
+    /// * `id` - The [ConstraintIdType] for the [Constraint].
+    /// * `value` - The [ValueType] for the [Constraint].
     ///
     /// # Example
     ///
     /// ```
-    /// # use crate::rusted_dice::constraint_management::constraint::Constraint;
+    /// # use crate::rusted_dice::constraint_management::Constraint;
     /// let constraint = Constraint::new_single_valid_value_constraint(2, 3);
     /// ```
     pub fn new_single_valid_value_constraint(id: ConstraintIdType, value: ValueType) -> Constraint {
@@ -45,19 +45,19 @@ impl Constraint {
         Constraint { id, valid_values }
     }
 
-    /// Creates a new `Constraint` with multiple valid values.
+    /// Creates a new [Constraint] with multiple valid values.
     ///
-    /// The `Constraint` allows multiple values to be valid.
+    /// The [Constraint] allows multiple values to be valid.
     ///
     /// # Arguments
     ///
-    /// * `id` - The unique identifier for the constraint.
-    /// * `values` - An iterator over the valid values for the constraint.
+    /// * `id` - The [ConstraintIdType] for the [Constraint].
+    /// * `values` - An iterator over the [ValueType] for the [Constraint].
     ///
     /// # Example
     ///
     /// ```
-    /// # use crate::rusted_dice::constraint_management::constraint::Constraint;
+    /// # use crate::rusted_dice::constraint_management::Constraint;
     /// let constraint = Constraint::new_many_item_constraint(3, vec![1, 2]);
     /// ```
     pub fn new_many_item_constraint(

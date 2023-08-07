@@ -1,29 +1,29 @@
-use crate::constraint_management::IdToConstraintMap;
+use crate::constraint_management::ConstraintIdToConstraintHashMap;
 
-/// Represents a collection of `Constraint`s.
+/// Represents a collection of [Constraint]s.
 ///
-/// Each `ConstraintId` can only have one `Constraint`
+/// Each [ConstraintIdType] can only have one [Constraint]
 ///
 /// # Examples
-/// #### A `ConstraintMap` without any `Constraint`s
+/// #### A [ConstraintMap] without any [Constraint]s
 /// ```
-/// # use crate::rusted_dice::constraint_management::constraint_map::ConstraintMap;
+/// # use crate::rusted_dice::constraint_management::ConstraintMap;
 /// let constraint_map = ConstraintMap::new_empty_constraint_map();
 /// ```
 ///
-/// #### A `ConstraintMap` with one `Constraint`
+/// #### A [ConstraintMap] with one [Constraint]
 /// ```
-/// # use crate::rusted_dice::constraint_management::constraint::Constraint;
-/// # use crate::rusted_dice::constraint_management::constraint_map::ConstraintMap;
+/// # use crate::rusted_dice::constraint_management::Constraint;
+/// # use crate::rusted_dice::constraint_management::ConstraintMap;
 /// let constraint = Constraint::new_many_item_constraint(1, vec![1, 2, 3]);
 /// let constraint_map = ConstraintMap::new_single_constraint_constraint_map(constraint);
 /// ```
 ///
-/// #### A `ConstraintMap` with many `Constraint`s,
-/// `Constraint`s with the same key will be combined
+/// #### A [ConstraintMap] with many [Constraint]s,
+/// [Constraint]s with the same key will be combined
 /// ```
-/// # use crate::rusted_dice::constraint_management::constraint::Constraint;
-/// # use crate::rusted_dice::constraint_management::constraint_map::ConstraintMap;
+/// # use crate::rusted_dice::constraint_management::Constraint;
+/// # use crate::rusted_dice::constraint_management::ConstraintMap;
 /// let constraint_1 = Constraint::new_many_item_constraint(1, vec![1, 2, 3]);
 /// let constraint_2 = Constraint::new_many_item_constraint(2, vec![1, 2, 3]);
 /// let constraint_3 = Constraint::new_many_item_constraint(3, vec![1, 2, 3]);
@@ -42,20 +42,20 @@ use crate::constraint_management::IdToConstraintMap;
 /// not recomended.
 /// take care to correctly use the `Constraint.id` as key in the map.
 /// ```
-/// # use crate::rusted_dice::constraint_management::constraint::Constraint;
-/// # use crate::rusted_dice::constraint_management::constraint_map::ConstraintMap;
+/// # use crate::rusted_dice::constraint_management::Constraint;
+/// # use crate::rusted_dice::constraint_management::ConstraintMap;
 /// # use crate::rusted_dice::constraint_management::ValueTypeSet;
-/// # use crate::rusted_dice::constraint_management::IdToConstraintMap;
+/// # use crate::rusted_dice::constraint_management::ConstraintIdToConstraintHashMap;
 /// # use std::collections::HashMap;
 /// let constraint = Constraint::new_many_item_constraint(3, vec![1, 2, 3]);
-/// let mut map: IdToConstraintMap = HashMap::new();
+/// let mut map: ConstraintIdToConstraintHashMap = HashMap::new();
 /// map.insert(constraint.id, constraint);
 /// let constraint_map = ConstraintMap { map };
 /// ```
 #[allow(dead_code)]
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct ConstraintMap {
-    pub map: IdToConstraintMap,
+    pub map: ConstraintIdToConstraintHashMap,
 }
 
 #[cfg(test)]

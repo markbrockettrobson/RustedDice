@@ -7,6 +7,9 @@ echo "run fmt"
 echo "runing clippy"
 ( cd rusted_dice && cargo clippy --all-targets --all-features -- -D warnings )
 
+echo "building docs"
+(cd rusted_dice && rustdoc src/lib.rs )
+
 echo "runing doctest"
 ( cd rusted_dice && cargo test --doc . )
 

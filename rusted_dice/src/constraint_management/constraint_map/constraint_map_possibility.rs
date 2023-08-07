@@ -3,22 +3,22 @@ use crate::constraint_management::{
 };
 
 impl IsTheoreticallyPossible for ConstraintMap {
-    /// Checks if the `ConstraintMap` is theoretically possible.
+    /// Checks if the [ConstraintMap] is theoretically possible.
     ///
     /// # Arguments
     ///
-    /// * `self` - The `ConstraintMap` instance.
+    /// * `self` - The [ConstraintMap] instance.
     ///
     /// # Returns
     ///
-    /// `true` if all `Constraint`s are theoretically possible
+    /// `true` if all [Constraint]s are theoretically possible
     ///
     /// # Examples
     /// ```
     /// # use std::collections::HashMap;
-    /// # use crate::rusted_dice::constraint_management::traits::IsTheoreticallyPossible;
-    /// # use crate::rusted_dice::constraint_management::constraint::Constraint;
-    /// # use crate::rusted_dice::constraint_management::constraint_map::ConstraintMap;
+    /// # use crate::rusted_dice::constraint_management::IsTheoreticallyPossible;
+    /// # use crate::rusted_dice::constraint_management::Constraint;
+    /// # use crate::rusted_dice::constraint_management::ConstraintMap;
     /// # use crate::rusted_dice::constraint_management::IdToValueMap;
     /// let constraint_map_one = ConstraintMap::new_constraint_map(
     ///     vec![
@@ -44,23 +44,23 @@ impl IsTheoreticallyPossible for ConstraintMap {
 }
 
 impl AreConstraintsCompiledWith for ConstraintMap {
-    /// Checks if the `ConstraintMap` is compliant with a specific 'ConstraintID' -> 'Value' map.
+    /// Checks if the [ConstraintMap] is compliant with a specific [IdToValueMap].
     ///
     /// # Arguments
     ///
-    /// * `self` - The `ConstraintMap` instance.
-    /// * `id_value_map` - The  ConstraintID -> `ValueType` map to check compliance with.
+    /// * `self` - The [ConstraintMap] instance.
+    /// * `id_value_map` - The  [IdToValueMap] map to check compliance with.
     ///
     /// # Returns
     ///
-    /// `true` if the the given `value` is a valid value `Constraint`, `false` otherwise.
+    /// `true` if the the given [IdToValueMap] is a valid with all [Constraint]s, `false` otherwise.
     ///
     /// # Examples
     /// ```
     /// # use std::collections::HashMap;
-    /// # use crate::rusted_dice::constraint_management::traits::AreConstraintsCompiledWith;
-    /// # use crate::rusted_dice::constraint_management::constraint::Constraint;
-    /// # use crate::rusted_dice::constraint_management::constraint_map::ConstraintMap;
+    /// # use crate::rusted_dice::constraint_management::AreConstraintsCompiledWith;
+    /// # use crate::rusted_dice::constraint_management::Constraint;
+    /// # use crate::rusted_dice::constraint_management::ConstraintMap;
     /// # use crate::rusted_dice::constraint_management::IdToValueMap;
     /// let constraint_map_one = ConstraintMap::new_constraint_map(
     ///     vec![
