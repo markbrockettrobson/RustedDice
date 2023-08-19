@@ -4,14 +4,14 @@ use crate::ValueType;
 
 #[allow(dead_code)]
 impl ProbabilityOutcome {
-    pub(crate) fn new_with_empty_constraint_map(value: ValueType) -> ProbabilityOutcome {
+    pub fn new_with_empty_constraint_map(value: ValueType) -> ProbabilityOutcome {
         ProbabilityOutcome {
             value,
             constraint_map: ConstraintMap::new_empty_constraint_map(),
         }
     }
 
-    pub(crate) fn new_with_constraint_map(
+    pub fn new_with_constraint_map(
         value: ValueType,
         constraint_map: ConstraintMap,
     ) -> ProbabilityOutcome {
@@ -21,7 +21,7 @@ impl ProbabilityOutcome {
         }
     }
 
-    pub(crate) fn new_with_constraints(
+    pub fn new_with_constraints(
         value: ValueType,
         constraints: impl IntoIterator<Item = Constraint>,
     ) -> ProbabilityOutcome {
