@@ -26,7 +26,7 @@ pub trait IsConstraintCompiledWith {
 
 /// A trait for objects that can determine whether a set of constraints are complied with.
 pub trait AreConstraintsCompiledWith {
-    /// Checks whether the set of [Constraint]s represented by this object are complied with the given [IdToValueMap].
+    /// Checks whether the set of Constraints represented by this object are complied with the given [IdToValueMap].
     ///
     /// # Arguments
     ///
@@ -34,6 +34,6 @@ pub trait AreConstraintsCompiledWith {
     ///
     /// # Returns
     ///
-    /// Returns `true` if all [Constraint]s are complied with the given value map, `false` otherwise.
+    /// Returns `true` if all Constraints are complied with the given value map, `false` otherwise.
     fn is_compliant_with(&self, value_map: IdToValueMap) -> bool;
 }

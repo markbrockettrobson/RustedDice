@@ -1,17 +1,17 @@
 use crate::constraint_management::ConstraintIdToConstraintHashMap;
 
-/// Represents a collection of [Constraint]s.
+/// Represents a collection of Constraints.
 ///
-/// Each [ConstraintIdType] can only have one [Constraint]
+/// Each ConstraintIdType can only have one Constraint
 ///
 /// # Examples
-/// #### A [ConstraintMap] without any [Constraint]s
+/// #### A [ConstraintMap] without any Constraints
 /// ```
 /// # use crate::rusted_dice::constraint_management::ConstraintMap;
 /// let constraint_map = ConstraintMap::new_empty_constraint_map();
 /// ```
 ///
-/// #### A [ConstraintMap] with one [Constraint]
+/// #### A [ConstraintMap] with one Constraint
 /// ```
 /// # use crate::rusted_dice::constraint_management::Constraint;
 /// # use crate::rusted_dice::constraint_management::ConstraintMap;
@@ -19,8 +19,8 @@ use crate::constraint_management::ConstraintIdToConstraintHashMap;
 /// let constraint_map = ConstraintMap::new_single_constraint_constraint_map(constraint);
 /// ```
 ///
-/// #### A [ConstraintMap] with many [Constraint]s,
-/// [Constraint]s with the same key will be combined
+/// #### A [ConstraintMap] with many Constraints,
+/// Constraints with the same key will be combined
 /// ```
 /// # use crate::rusted_dice::constraint_management::Constraint;
 /// # use crate::rusted_dice::constraint_management::ConstraintMap;

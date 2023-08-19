@@ -7,7 +7,7 @@ use crate::constraint_management::ConstraintMap;
 impl Add for ConstraintMap {
     type Output = Self;
     /// Implements the addition operator for [ConstraintMap]. The intersectoin of maps are maintained
-    /// the [Constraint] of maching keys are added together
+    /// the Constraint of maching keys are added together
     ///
     /// # Arguments
     ///

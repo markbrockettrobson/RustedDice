@@ -11,7 +11,7 @@ impl IsTheoreticallyPossible for ConstraintMap {
     ///
     /// # Returns
     ///
-    /// `true` if all [Constraint]s are theoretically possible
+    /// `true` if all Constraints are theoretically possible
     ///
     /// # Examples
     /// ```
@@ -53,7 +53,7 @@ impl AreConstraintsCompiledWith for ConstraintMap {
     ///
     /// # Returns
     ///
-    /// `true` if the the given [IdToValueMap] is a valid with all [Constraint]s, `false` otherwise.
+    /// `true` if the the given [IdToValueMap] is a valid with all Constraints, `false` otherwise.
     ///
     /// # Examples
     /// ```
