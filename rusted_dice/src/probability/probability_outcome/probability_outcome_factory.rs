@@ -4,7 +4,6 @@ use crate::ValueType;
 
 #[allow(dead_code)]
 impl ProbabilityOutcome {
-    
     /// Creates a new [ProbabilityOutcome] with an empty [ConstraintMap].
     ///
     /// # Arguments

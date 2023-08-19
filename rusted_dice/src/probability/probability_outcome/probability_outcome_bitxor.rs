@@ -68,7 +68,7 @@ impl BitXor for ProbabilityOutcome {
 
 impl BitXor<ValueType> for ProbabilityOutcome {
     type Output = Self;
-    
+
     /// Implements the bitwise xor operator for [ProbabilityOutcome] ^ [ValueType].
     /// values are combined using the bitwise or function.
     /// constraint map is taken from the [ProbabilityOutcome].

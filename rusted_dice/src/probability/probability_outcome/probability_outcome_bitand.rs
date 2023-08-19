@@ -69,7 +69,7 @@ impl BitAnd for ProbabilityOutcome {
 
 impl BitAnd<ValueType> for ProbabilityOutcome {
     type Output = Self;
-    
+
     /// Implements the bitwise and operator for [ProbabilityOutcome] & [ValueType].
     /// values are combined using the bitwise and function.
     /// constraint map is taken from the [ProbabilityOutcome].

@@ -69,7 +69,7 @@ impl Add for ProbabilityOutcome {
 
 impl Add<ValueType> for ProbabilityOutcome {
     type Output = Self;
-    
+
     /// Implements the addition operator for [ProbabilityOutcome] + [ValueType].
     /// values are combined using the add function.
     /// constraint map is taken from the [ProbabilityOutcome].
