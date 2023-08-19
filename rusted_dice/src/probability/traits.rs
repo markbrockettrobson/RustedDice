@@ -3,11 +3,12 @@ use crate::{probability::BinaryOperation, ValueType};
 /// A trait for objects that can perform a [BinaryOperation] with another instance of the same type or [ValueType].
 pub trait Combine {
     /// Combine this instance with another instance using the specified [BinaryOperation].
+    /// in the order: self [BinaryOperation] `other`
     ///
     /// # Arguments
     ///
     /// * `other` - The self type to check preform the [BinaryOperation] with.
-    /// * 'binary_operation' - the [BinaryOperation] function.
+    /// * `binary_operation` - the [BinaryOperation] function.
     ///
     /// # Returns
     ///
@@ -20,7 +21,7 @@ pub trait Combine {
     /// # Arguments
     ///
     /// * `other` - The [ValueType] to check preform the [BinaryOperation] with.
-    /// * 'binary_operation' - the [BinaryOperation] function.
+    /// * `binary_operation` - the [BinaryOperation] function.
     ///
     /// # Returns
     ///
@@ -33,7 +34,7 @@ pub trait Combine {
     /// # Arguments
     ///
     /// * `other` - The [ValueType] to check preform the [BinaryOperation] with.
-    /// * 'binary_operation' - the [BinaryOperation] function.
+    /// * `binary_operation` - the [BinaryOperation] function.
     ///
     /// # Returns
     ///

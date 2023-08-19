@@ -4,18 +4,63 @@ use crate::{
 };
 
 impl Combine for ProbabilityOutcome {
+    
+    /// Combine this instance with another instance using the specified [BinaryOperation].
+    /// in the order: self [BinaryOperation] `other`
+    ///
+    /// values are combined using the [BinaryOperation] function.
+    /// constraint maps are combined using the ConstraintMap::add function.
+    ///
+    /// # Arguments
+    ///
+    /// * `other` - The self type to check preform the [BinaryOperation] with.
+    /// * `binary_operation` - the [BinaryOperation] function.
+    ///
+    /// # Returns
+    ///
+    /// Returns the [ProbabilityOutcome] type result of the [BinaryOperation] function.
     fn combine(&self, other: Self, binary_operation: BinaryOperation) -> Self {
         ProbabilityOutcome {
             value: binary_operation(self.value, other.value),
             constraint_map: self.constraint_map.clone() + other.constraint_map,
         }
     }
+
+    /// Combine this instance with a [ValueType] using the specified [BinaryOperation].
+    /// in the order: self [BinaryOperation] [ValueType]
+    ///
+    /// values are combined using the [BinaryOperation] function.
+    /// constraint maps are combined using the ConstraintMap::add function.
+    ///
+    /// # Arguments
+    ///
+    /// * `other` - The [ValueType] to check preform the [BinaryOperation] with.
+    /// * `binary_operation` - the [BinaryOperation] function.
+    ///
+    /// # Returns
+    ///
+    /// Returns the [ProbabilityOutcome] type result of the [BinaryOperation] function.
     fn combine_value_type(&self, other: ValueType, binary_operation: BinaryOperation) -> Self {
         ProbabilityOutcome {
             value: binary_operation(self.value, other),
             constraint_map: self.constraint_map.clone(),
         }
     }
+
+    /// Combine this instance with a [ValueType] using the specified [BinaryOperation].
+    /// in the order: [ValueType] [BinaryOperation] self
+    ///
+    /// values are combined using the [BinaryOperation] function.
+    /// constraint maps are combined using the ConstraintMap::add function.
+    ///
+    /// # Arguments
+    ///
+    /// * `other` - The [ValueType] to check preform the [BinaryOperation] with.
+    /// * `binary_operation` - the [BinaryOperation] function.
+    ///
+    /// # Returns
+    ///
+    /// Returns the [ProbabilityOutcome] type result of the [BinaryOperation] function.
     fn value_type_combine(&self, other: ValueType, binary_operation: BinaryOperation) -> Self {
         ProbabilityOutcome {
             value: binary_operation(other, self.value),
