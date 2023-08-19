@@ -14,7 +14,7 @@ echo "runing doctest"
 ( cd rusted_dice && cargo test --doc . )
 
 echo "runing coverage"
-( cd rusted_dice && cargo llvm-cov --html && cargo llvm-cov --no-run )
+( cd rusted_dice && cargo llvm-cov --html && cargo llvm-cov report )
 
 echo "runing mutants, google mutation testing for details on why this is useful"
 ( cd rusted_dice && cargo mutants -- --all-targets --all-features )
