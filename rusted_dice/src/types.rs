@@ -12,3 +12,6 @@ pub type SmallValueType = i16;
 ///
 /// see [ValueType], [SmallValueType]
 pub type UnsignedSmallValueType = u16;
+
+/// The type of a count of possible ways to obtain a state in a probability distribution.
+pub type CountType = u64;
