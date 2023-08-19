@@ -4,14 +4,52 @@ use crate::ValueType;
 
 #[allow(dead_code)]
 impl ProbabilityOutcome {
-    pub(crate) fn new_with_empty_constraint_map(value: ValueType) -> ProbabilityOutcome {
+    
+    /// Creates a new [ProbabilityOutcome] with an empty [ConstraintMap].
+    ///
+    /// # Arguments
+    ///
+    /// * `value`: a [ValueType] to represent this outcome.
+    ///
+    /// # Returns
+    ///
+    /// The new empty [ProbabilityOutcome].
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # use crate::rusted_dice::probability::ProbabilityOutcome;
+    /// let value = 123;
+    /// let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(value);
+    /// ```
+    pub fn new_with_empty_constraint_map(value: ValueType) -> ProbabilityOutcome {
         ProbabilityOutcome {
             value,
             constraint_map: ConstraintMap::new_empty_constraint_map(),
         }
     }
 
-    pub(crate) fn new_with_constraint_map(
+    /// Creates a new [ProbabilityOutcome] with given [ConstraintMap].
+    ///
+    /// # Arguments
+    ///
+    /// * `value`: a [ValueType] to represent this outcome.
+    /// * `constraint_map`: a [ConstraintMap] to represent the constraints of this outcome.
+    ///
+    /// # Returns
+    ///
+    /// The new empty [ProbabilityOutcome].
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # use crate::rusted_dice::probability::ProbabilityOutcome;
+    /// # use crate::rusted_dice::constraint_management::ConstraintMap;
+    /// let value = 123;
+    /// let constraint_map = ConstraintMap::new_empty_constraint_map();
+    /// let probability_outcome = ProbabilityOutcome::new_with_constraint_map(value, constraint_map);
+    /// ```
+    pub fn new_with_constraint_map(
         value: ValueType,
         constraint_map: ConstraintMap,
     ) -> ProbabilityOutcome {
@@ -21,7 +59,32 @@ impl ProbabilityOutcome {
         }
     }
 
-    pub(crate) fn new_with_constraints(
+    /// Creates a new [ProbabilityOutcome] with given [ConstraintMap].
+    /// Constraints with the same key will be combined see ConstraintMap::new_constraint_map
+    ///
+    /// # Arguments
+    ///
+    /// * `value`: a [ValueType] to represent this outcome.
+    /// * `constraints`: an iterator of [Constraint]s to represent the constraints of this outcome.
+    ///
+    /// # Returns
+    ///
+    /// The new empty [ProbabilityOutcome].
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # use crate::rusted_dice::probability::ProbabilityOutcome;
+    /// # use crate::rusted_dice::constraint_management::Constraint;
+    /// let value = 123;
+    /// let constraint_1 = Constraint::new_many_item_constraint(1, vec![1, 2, 3]);
+    /// let constraint_2 = Constraint::new_many_item_constraint(2, vec![1, 2, 3]);
+    /// let probability_outcome = ProbabilityOutcome::new_with_constraints(
+    ///     value,
+    ///     vec![constraint_1, constraint_2]
+    /// );
+    /// ```
+    pub fn new_with_constraints(
         value: ValueType,
         constraints: impl IntoIterator<Item = Constraint>,
     ) -> ProbabilityOutcome {

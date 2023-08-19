@@ -6,6 +6,9 @@ rusted_dice/target/
 # More information here https://doc.rust-lang.org/cargo/guide/cargo-toml-vs-cargo-lock.html
 Cargo.lock
 
+# rustdocs
+rusted_dice/doc
+
 # mutants
 rusted_dice/mutants.out/
 rusted_dice/mutants.out.old/

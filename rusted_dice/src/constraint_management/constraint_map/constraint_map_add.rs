@@ -6,6 +6,43 @@ use crate::constraint_management::ConstraintMap;
 
 impl Add for ConstraintMap {
     type Output = Self;
+    /// Implements the addition operator for [ConstraintMap]. The intersectoin of maps are maintained
+    /// the Constraint of maching keys are added together
+    ///
+    /// # Arguments
+    ///
+    /// * `self` - The first [ConstraintMap] operand.
+    /// * `other` - The second [ConstraintMap] operand.
+    ///
+    /// # Returns
+    ///
+    /// The resulting [ConstraintMap] after the addition operation.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # use crate::rusted_dice::constraint_management::Constraint;
+    /// # use crate::rusted_dice::constraint_management::ConstraintMap;
+    /// let constraint_map_one = ConstraintMap::new_constraint_map(
+    ///     vec![
+    ///        Constraint::new_many_item_constraint(1, vec![1, 2, 3]),
+    ///        Constraint::new_many_item_constraint(2, vec![1, 2, 3])
+    ///     ]
+    /// );
+    /// let constraint_map_two = ConstraintMap::new_constraint_map(
+    ///     vec![
+    ///        Constraint::new_many_item_constraint(1, vec![3, 4, 5])
+    ///     ]
+    /// );
+    /// let constraint_map_three = ConstraintMap::new_constraint_map(
+    ///     vec![
+    ///        Constraint::new_many_item_constraint(1, vec![3]),
+    ///        Constraint::new_many_item_constraint(2, vec![1, 2, 3])
+    ///     ]
+    /// );
+    ///
+    /// assert_eq!(constraint_map_one + constraint_map_two, constraint_map_three);
+    /// ```
 
     fn add(self, other: Self) -> Self {
         let mut new_map = HashMap::new();

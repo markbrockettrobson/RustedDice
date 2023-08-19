@@ -5,6 +5,40 @@ use crate::probability::ProbabilityOutcome;
 impl Neg for ProbabilityOutcome {
     type Output = Self;
 
+    /// Implements the negation operator for [ProbabilityOutcome].
+    /// values is negated.
+    /// constraint map is unchanged.
+    ///
+    /// # Arguments
+    ///
+    /// * `self` - The [ProbabilityOutcome].
+    ///
+    /// # Returns
+    ///
+    /// The resulting [ProbabilityOutcome] after the negation operation.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # use crate::rusted_dice::constraint_management::Constraint;
+    /// # use crate::rusted_dice::constraint_management::ConstraintMap;
+    /// # use crate::rusted_dice::probability::ProbabilityOutcome;
+    /// let constraint_map = ConstraintMap::new_constraint_map(
+    ///     vec![
+    ///        Constraint::new_many_item_constraint(1, vec![1, 2, 3]),
+    ///        Constraint::new_many_item_constraint(2, vec![1, 2, 3])
+    ///     ]
+    /// );
+    /// let probability_outcome_one = ProbabilityOutcome::new_with_constraint_map(
+    ///     123, constraint_map.clone()
+    /// );
+    ///
+    /// let probability_outcome_two = ProbabilityOutcome::new_with_constraint_map(
+    ///     -123, constraint_map
+    /// );
+    ///
+    /// assert_eq!(-probability_outcome_one, probability_outcome_two);
+    /// ```
     fn neg(self) -> Self {
         Self {
             value: -self.value,

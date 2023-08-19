@@ -1,8 +1,8 @@
-pub(crate) mod probability_distribution;
-pub(crate) mod probability_outcome;
-pub(crate) mod traits;
-pub(crate) mod types;
+mod probability_distribution;
+mod probability_outcome;
+mod traits;
+mod types;
 
-pub use probability_outcome::ProbabilityOutcome;
-pub use traits::Combine;
-pub use types::BinaryOperation;
+pub use self::probability_outcome::ProbabilityOutcome;
+pub use self::traits::Combine;
+pub use self::types::BinaryOperation;

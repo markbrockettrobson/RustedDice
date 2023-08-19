@@ -2,6 +2,42 @@ use std::cmp::{Eq, Ord, PartialOrd};
 
 use crate::{constraint_management::ConstraintMap, ValueType};
 
+/// Represents a [ProbabilityOutcome].
+///
+/// Each [ProbabilityOutcome] has a [ValueType] ('value') and a [ConstraintMap] (`constraint_map`).
+/// This class represents a single outcome of a ProbabilityDistribution.
+/// The [ConstraintMap] holds infomation on Constraints that may prevent one or more [ProbabilityOutcome]s from being combined
+///
+/// # Examples
+/// #### A [ProbabilityOutcome] with no Constraints
+/// ```
+/// # use crate::rusted_dice::probability::ProbabilityOutcome;
+/// let value = 123;
+/// let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(value);
+/// ```
+///
+/// #### A [ProbabilityOutcome] with a given [ConstraintMap]
+/// ```
+/// # use crate::rusted_dice::probability::ProbabilityOutcome;
+/// # use crate::rusted_dice::constraint_management::ConstraintMap;
+/// let value = 123;
+/// let constraint_map = ConstraintMap::new_empty_constraint_map();
+/// let probability_outcome = ProbabilityOutcome::new_with_constraint_map(value, constraint_map);
+/// ```
+///
+/// #### builds a new [ConstraintMap] from many Constraints,
+/// Constraints with the same key will be combined see ConstraintMap::new_constraint_map
+/// ```
+/// # use crate::rusted_dice::probability::ProbabilityOutcome;
+/// # use crate::rusted_dice::constraint_management::Constraint;
+/// let value = 123;
+/// let constraint_1 = Constraint::new_many_item_constraint(1, vec![1, 2, 3]);
+/// let constraint_2 = Constraint::new_many_item_constraint(2, vec![1, 2, 3]);
+/// let probability_outcome = ProbabilityOutcome::new_with_constraints(
+///     value,
+///     vec![constraint_1, constraint_2]
+/// );
+/// ```
 #[derive(Clone, Debug, Eq, Ord, PartialOrd, PartialEq)]
 pub struct ProbabilityOutcome {
     pub value: ValueType,

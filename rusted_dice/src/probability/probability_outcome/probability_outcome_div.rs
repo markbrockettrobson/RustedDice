@@ -5,13 +5,64 @@ use crate::{
     ValueType,
 };
 
+fn _div(lhs: ValueType, rhs: ValueType) -> ValueType {
+    lhs / rhs
+}
+
 impl Div for ProbabilityOutcome {
     type Output = Self;
 
+    /// Implements the division operator for [ProbabilityOutcome].
+    /// values are combined using the division function.
+    /// constraint maps are combined using the ConstraintMap::add function.
+    ///
+    /// # Arguments
+    ///
+    /// * `self` - The first [ProbabilityOutcome] operand.
+    /// * `other` - The second [ProbabilityOutcome] operand.
+    ///
+    /// # Returns
+    ///
+    /// The resulting [ProbabilityOutcome] after the division operation.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # use crate::rusted_dice::constraint_management::Constraint;
+    /// # use crate::rusted_dice::constraint_management::ConstraintMap;
+    /// # use crate::rusted_dice::probability::ProbabilityOutcome;
+    /// let constraint_map_one = ConstraintMap::new_constraint_map(
+    ///     vec![
+    ///        Constraint::new_many_item_constraint(1, vec![1, 2, 3]),
+    ///        Constraint::new_many_item_constraint(2, vec![1, 2, 3])
+    ///     ]
+    /// );
+    /// let probability_outcome_one = ProbabilityOutcome::new_with_constraint_map(
+    ///     100, constraint_map_one
+    /// );
+    ///
+    /// let constraint_map_two = ConstraintMap::new_constraint_map(
+    ///     vec![
+    ///        Constraint::new_many_item_constraint(1, vec![3, 4, 5])
+    ///     ]
+    /// );
+    /// let probability_outcome_two = ProbabilityOutcome::new_with_constraint_map(
+    ///     20, constraint_map_two
+    /// );
+    ///
+    /// let constraint_map_three = ConstraintMap::new_constraint_map(
+    ///     vec![
+    ///        Constraint::new_many_item_constraint(1, vec![3]),
+    ///        Constraint::new_many_item_constraint(2, vec![1, 2, 3])
+    ///     ]
+    /// );
+    /// let probability_outcome_three = ProbabilityOutcome::new_with_constraint_map(
+    ///     5, constraint_map_three
+    /// );
+    ///
+    /// assert_eq!(probability_outcome_one / probability_outcome_two, probability_outcome_three);
+    /// ```
     fn div(self, other: Self) -> Self {
-        fn _div(lhs: ValueType, rhs: ValueType) -> ValueType {
-            lhs / rhs
-        }
         self.combine(other, _div)
     }
 }
@@ -19,10 +70,42 @@ impl Div for ProbabilityOutcome {
 impl Div<ValueType> for ProbabilityOutcome {
     type Output = Self;
 
+    /// Implements the division operator for [ProbabilityOutcome] / [ValueType].
+    /// values are combined using the division function.
+    /// constraint map is taken from the [ProbabilityOutcome].
+    ///
+    /// # Arguments
+    ///
+    /// * `self` - The [ProbabilityOutcome] operand.
+    /// * `other` - The [ValueType] operand.
+    ///
+    /// # Returns
+    ///
+    /// The resulting [ProbabilityOutcome] after the division operation.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # use crate::rusted_dice::constraint_management::Constraint;
+    /// # use crate::rusted_dice::constraint_management::ConstraintMap;
+    /// # use crate::rusted_dice::probability::ProbabilityOutcome;
+    /// let constraint_map = ConstraintMap::new_constraint_map(
+    ///     vec![
+    ///        Constraint::new_many_item_constraint(1, vec![1, 2, 3]),
+    ///        Constraint::new_many_item_constraint(2, vec![1, 2, 3])
+    ///     ]
+    /// );
+    /// let probability_outcome_one = ProbabilityOutcome::new_with_constraint_map(
+    ///     100, constraint_map.clone()
+    /// );
+    ///
+    /// let probability_outcome_two = ProbabilityOutcome::new_with_constraint_map(
+    ///     5, constraint_map
+    /// );
+    ///
+    /// assert_eq!(probability_outcome_one / 20, probability_outcome_two);
+    /// ```
     fn div(self, other: ValueType) -> Self {
-        fn _div(lhs: ValueType, rhs: ValueType) -> ValueType {
-            lhs / rhs
-        }
         self.combine_value_type(other, _div)
     }
 }
@@ -30,10 +113,42 @@ impl Div<ValueType> for ProbabilityOutcome {
 impl Div<ProbabilityOutcome> for ValueType {
     type Output = ProbabilityOutcome;
 
+    /// Implements the division operator for [ValueType] / [ProbabilityOutcome].
+    /// values are combined using the division function.
+    /// constraint map is taken from the [ProbabilityOutcome].
+    ///
+    /// # Arguments
+    ///
+    /// * `self` - The [ValueType] operand.
+    /// * `other` - The [ProbabilityOutcome] operand.
+    ///
+    /// # Returns
+    ///
+    /// The resulting [ProbabilityOutcome] after the division operation.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # use crate::rusted_dice::constraint_management::Constraint;
+    /// # use crate::rusted_dice::constraint_management::ConstraintMap;
+    /// # use crate::rusted_dice::probability::ProbabilityOutcome;
+    /// let constraint_map = ConstraintMap::new_constraint_map(
+    ///     vec![
+    ///        Constraint::new_many_item_constraint(1, vec![1, 2, 3]),
+    ///        Constraint::new_many_item_constraint(2, vec![1, 2, 3])
+    ///     ]
+    /// );
+    /// let probability_outcome_one = ProbabilityOutcome::new_with_constraint_map(
+    ///     100, constraint_map.clone()
+    /// );
+    ///
+    /// let probability_outcome_two = ProbabilityOutcome::new_with_constraint_map(
+    ///     300, constraint_map
+    /// );
+    ///
+    /// assert_eq!(30000 / probability_outcome_one, probability_outcome_two);
+    /// ```
     fn div(self, other: ProbabilityOutcome) -> ProbabilityOutcome {
-        fn _div(lhs: ValueType, rhs: ValueType) -> ValueType {
-            lhs / rhs
-        }
         other.value_type_combine(self, _div)
     }
 }

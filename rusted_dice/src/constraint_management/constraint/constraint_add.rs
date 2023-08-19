@@ -4,7 +4,31 @@ use crate::constraint_management::Constraint;
 
 impl Add for Constraint {
     type Output = Self;
-
+    /// Implements the addition operator for [Constraint]. The intersectoin of valid values is maintained
+    ///
+    /// # Panics
+    ///
+    /// Panics if the `id` of `self` does not match the `id` of `other`.
+    ///
+    /// # Arguments
+    ///
+    /// * `self` - The first [Constraint] operand.
+    /// * `other` - The second [Constraint] operand.
+    ///
+    /// # Returns
+    ///
+    /// The resulting [Constraint] after the addition operation.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # use crate::rusted_dice::constraint_management::Constraint;
+    /// let constraint_one = Constraint::new_many_item_constraint(2, vec![3, 4, 5]);
+    /// let constraint_two = Constraint::new_many_item_constraint(2, vec![1, 2, 3]);
+    /// let constraint_three = Constraint::new_single_valid_value_constraint(2, 3);
+    ///
+    /// assert_eq!(constraint_one + constraint_two, constraint_three);
+    /// ```
     fn add(self, other: Self) -> Self {
         if self.id != other.id {
             panic!("Can not combine Constraints with different ids.");
