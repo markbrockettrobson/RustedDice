@@ -187,25 +187,48 @@ mod tests {
     }
 
     #[test]
-    #[should_panic(expected = "attempt to divide by zero")]
-    fn test_div_by_zero() {
+    #[should_panic(expected = "attempt to multiply with overflow")]
+    fn test_mul_overflow() {
         let probability_outcome_one =
             ProbabilityOutcome::new_with_empty_constraint_map(ValueType::MAX);
-        let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(0);
-        let _ = probability_outcome_one / probability_outcome_two;
+        let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(2);
+        let _ = probability_outcome_one * probability_outcome_two;
     }
 
     #[test]
-    #[should_panic(expected = "attempt to divide by zero")]
-    fn test_div_value_type_by_zero() {
+    #[should_panic(expected = "attempt to multiply with overflow")]
+    fn test_mul_value_type_overflow() {
         let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(ValueType::MAX);
-        let _ = probability_outcome / 0;
+        let _ = probability_outcome * 2;
     }
 
     #[test]
-    #[should_panic(expected = "attempt to divide by zero")]
-    fn test_value_type_div_by_zero() {
-        let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(0);
-        let _ = ValueType::MAX / probability_outcome;
+    #[should_panic(expected = "attempt to multiply with overflow")]
+    fn test_value_type_mul_overflow() {
+        let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(2);
+        let _ = ValueType::MAX * probability_outcome;
+    }
+
+    #[test]
+    #[should_panic(expected = "attempt to multiply with overflow")]
+    fn test_mul_underflow() {
+        let probability_outcome_one =
+            ProbabilityOutcome::new_with_empty_constraint_map(ValueType::MAX);
+        let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(-2);
+        let _ = probability_outcome_one * probability_outcome_two;
+    }
+
+    #[test]
+    #[should_panic(expected = "attempt to multiply with overflow")]
+    fn test_mul_value_type_underflow() {
+        let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(ValueType::MAX);
+        let _ = probability_outcome * -2;
+    }
+
+    #[test]
+    #[should_panic(expected = "attempt to multiply with overflow")]
+    fn test_value_type_mul_underflow() {
+        let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(-2);
+        let _ = ValueType::MAX * probability_outcome;
     }
 }
