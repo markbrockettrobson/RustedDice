@@ -82,12 +82,11 @@ impl ConstraintMap {
         let mut map: ConstraintIdToConstraintHashMap = HashMap::new();
         for constraint in constraints {
             match map.entry(constraint.id) {
-                Occupied(mut e) => {
-                    let new_constraint = e.get().clone() + constraint;
-                    e.insert(new_constraint);
+                Occupied(mut entry) => {
+                    *entry.get_mut() += constraint;
                 }
-                Vacant(e) => {
-                    e.insert(constraint);
+                Vacant(entry) => {
+                    entry.insert(constraint);
                 }
             }
         }
