@@ -1,6 +1,6 @@
 use std::ops::AddAssign;
 
-use crate::constraint_management::constraint::constraint_add::combine_valid_value_sets;
+use crate::constraint_management::combine_valid_value_sets;
 use crate::constraint_management::Constraint;
 
 impl AddAssign for Constraint {
