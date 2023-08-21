@@ -4,7 +4,6 @@ use crate::ValueType;
 
 #[allow(dead_code)]
 impl ProbabilityOutcome {
-    
     /// Creates a new [ProbabilityOutcome] with an empty [ConstraintMap].
     ///
     /// # Arguments
@@ -106,7 +105,7 @@ mod tests {
 
     proptest! {
         #[test]
-        fn test_new_empty_constraint(test_value: ValueType) {
+        fn test_new_empty_constraint_map(test_value: ValueType) {
             let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(test_value);
             assert!(probability_outcome.value == test_value);
             assert_eq!(probability_outcome.constraint_map, ConstraintMap::new_empty_constraint_map());

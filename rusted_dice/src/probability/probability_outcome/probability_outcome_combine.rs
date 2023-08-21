@@ -4,7 +4,6 @@ use crate::{
 };
 
 impl Combine for ProbabilityOutcome {
-    
     /// Combine this instance with another instance using the specified [BinaryOperation].
     /// in the order: self [BinaryOperation] `other`
     ///

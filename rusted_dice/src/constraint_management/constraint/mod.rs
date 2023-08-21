@@ -1,4 +1,5 @@
 mod constraint_add;
+mod constraint_add_assign;
 mod constraint_factory;
 mod constraint_ord;
 mod constraint_possibility;
