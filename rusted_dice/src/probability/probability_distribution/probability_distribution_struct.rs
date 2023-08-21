@@ -14,13 +14,35 @@ use crate::{probability::ProbabilityOutcome, types::CountType};
 /// assert_eq!(probability_distribution.outcome_counts.len(), 0);
 /// ```
 ///
-/// ### A [ProbabilityDistribution] with a single [ProbabilityOutcome] and [CountType]
+/// ### A [ProbabilityDistribution] with a single [ProbabilityOutcome] and count one 1.
 /// ```
 /// # use crate::rusted_dice::probability::ProbabilityDistribution;
 /// # use crate::rusted_dice::probability::ProbabilityOutcome;
 /// let probability_outcome = ProbabilityOutcome::new_with_empty_constraint_map(123);
-/// let probability_distribution = ProbabilityDistribution::new_single_probability_outcome(probability_outcome.clone(), 345);
-/// assert!(probability_distribution.outcome_counts.get(&probability_outcome) == Some(&345));
+/// let probability_distribution = ProbabilityDistribution::new_from_single_probability_outcome(probability_outcome.clone());
+/// assert!(probability_distribution.outcome_counts.get(&probability_outcome) == Some(&1));
+/// ```
+///
+/// ### A [ProbabilityDistribution] with a many [ProbabilityOutcome]s.
+/// the count will be 1 for all [ProbabilityOutcome]s. unless there are duplicates,
+/// in which case the count will be the number of duplicates.
+/// ```
+/// # use crate::rusted_dice::probability::ProbabilityDistribution;
+/// # use crate::rusted_dice::probability::ProbabilityOutcome;
+/// let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(1);
+/// let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(2);
+/// let probability_outcome_three = ProbabilityOutcome::new_with_empty_constraint_map(3);
+/// let probability_distribution = ProbabilityDistribution::new_from_many_probability_outcomes(
+///     vec![
+///         probability_outcome_one.clone(),
+///         probability_outcome_two.clone(),
+///         probability_outcome_three.clone()
+///     ]
+/// );
+/// assert_eq!(probability_distribution.outcome_counts.get(&probability_outcome_one), Some(&1));
+/// assert_eq!(probability_distribution.outcome_counts.get(&probability_outcome_two), Some(&1));
+/// assert_eq!(probability_distribution.outcome_counts.get(&probability_outcome_three), Some(&1));
+/// assert_eq!(probability_distribution.outcome_counts.len(), 3);
 /// ```
 #[allow(dead_code)]
 #[derive(Debug)]
