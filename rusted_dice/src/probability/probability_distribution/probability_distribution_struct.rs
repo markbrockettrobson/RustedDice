@@ -1,20 +1,18 @@
-use std::collections::BTreeMap;
-
-use crate::{probability::ProbabilityOutcome, types::CountType};
+use crate::probability::types::OutcomeToCountMap;
 
 /// Represents a [ProbabilityDistribution].
 ///
-/// Each [ProbabilityDistribution] has a map of [ProbabilityOutcome] ('outcome_counts') to the number of ways to creat that outcome.
+/// Each [ProbabilityDistribution] has a map of ProbabilityOutcome ('outcome_counts') to the number of ways to creat that outcome.
 ///
 /// # Examples
-/// #### A [ProbabilityDistribution] with no [ProbabilityOutcome]s
+/// #### A [ProbabilityDistribution] with no ProbabilityOutcomes
 /// ```
 /// # use crate::rusted_dice::probability::ProbabilityDistribution;
 /// let probability_distribution = ProbabilityDistribution::new_empty_distribution();
 /// assert_eq!(probability_distribution.outcome_counts.len(), 0);
 /// ```
 ///
-/// ### A [ProbabilityDistribution] with a single [ProbabilityOutcome] and count one 1.
+/// ### A [ProbabilityDistribution] with a single ProbabilityOutcome and count one 1.
 /// ```
 /// # use crate::rusted_dice::probability::ProbabilityDistribution;
 /// # use crate::rusted_dice::probability::ProbabilityOutcome;
@@ -23,8 +21,8 @@ use crate::{probability::ProbabilityOutcome, types::CountType};
 /// assert!(probability_distribution.outcome_counts.get(&probability_outcome) == Some(&1));
 /// ```
 ///
-/// ### A [ProbabilityDistribution] with a many [ProbabilityOutcome]s.
-/// the count will be 1 for all [ProbabilityOutcome]s. unless there are duplicates,
+/// ### A [ProbabilityDistribution] with a many ProbabilityOutcomes.
+/// the count will be 1 for all ProbabilityOutcomes. unless there are duplicates,
 /// in which case the count will be the number of duplicates.
 /// ```
 /// # use crate::rusted_dice::probability::ProbabilityDistribution;
@@ -44,14 +42,54 @@ use crate::{probability::ProbabilityOutcome, types::CountType};
 /// assert_eq!(probability_distribution.outcome_counts.get(&probability_outcome_three), Some(&1));
 /// assert_eq!(probability_distribution.outcome_counts.len(), 3);
 /// ```
+///
+/// ### A [ProbabilityDistribution] of a n sided dice. 1 to n or -1 to -n.
+/// if n is 6, the [ProbabilityDistribution] will have 6 ProbabilityOutcomes 1, 2, 3, 4, 5, 6.
+/// if n is -6, the [ProbabilityDistribution] will have 6 ProbabilityOutcomes -1, -2, -3, -4, -5, -6.
+/// ```
+/// # use crate::rusted_dice::probability::ProbabilityDistribution;
+/// # use crate::rusted_dice::probability::ProbabilityOutcome;
+/// let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(1);
+/// let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(2);
+/// let probability_outcome_three = ProbabilityOutcome::new_with_empty_constraint_map(3);
+/// let probability_outcome_four = ProbabilityOutcome::new_with_empty_constraint_map(4);
+/// let probability_outcome_five = ProbabilityOutcome::new_with_empty_constraint_map(5);
+///
+/// let probability_distribution = ProbabilityDistribution::new_dice(5);
+/// assert_eq!(
+///     probability_distribution.outcome_counts.get(&probability_outcome_one),
+///     Some(&1)
+/// );
+/// assert_eq!(
+///     probability_distribution.outcome_counts.get(&probability_outcome_two),
+///     Some(&1)
+/// );
+/// assert_eq!(
+///     probability_distribution.outcome_counts.get(&probability_outcome_three),
+///     Some(&1)
+/// );
+/// assert_eq!(
+///     probability_distribution.outcome_counts.get(&probability_outcome_four),
+///     Some(&1)
+/// );
+/// assert_eq!(
+///     probability_distribution.outcome_counts.get(&probability_outcome_five),
+///     Some(&1)
+/// );
+/// assert_eq!(probability_distribution.outcome_counts.len(), 5);
+/// ```
 #[allow(dead_code)]
 #[derive(Debug)]
 pub struct ProbabilityDistribution {
-    pub outcome_counts: BTreeMap<ProbabilityOutcome, CountType>,
+    pub outcome_counts: OutcomeToCountMap,
 }
 
 #[cfg(test)]
 mod tests {
+    use std::collections::BTreeMap;
+
+    use crate::probability::ProbabilityOutcome;
+
     use super::*;
 
     #[test]
