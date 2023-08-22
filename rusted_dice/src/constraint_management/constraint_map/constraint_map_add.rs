@@ -1,8 +1,8 @@
-use std::collections::hash_map::Entry::{Occupied, Vacant};
-use std::collections::HashMap;
 use std::ops::Add;
 
 use crate::constraint_management::ConstraintMap;
+
+use super::add_constraint_to_map;
 
 impl Add for ConstraintMap {
     type Output = Self;
@@ -45,19 +45,10 @@ impl Add for ConstraintMap {
     /// ```
 
     fn add(self, other: Self) -> Self {
-        let mut new_map = HashMap::new();
-        new_map.extend(self.map.into_iter());
+        let mut new_map = self.map.clone();
 
-        for (id, value) in other.map {
-            match new_map.entry(id) {
-                Occupied(mut e) => {
-                    let new_value = e.get().clone() + value;
-                    e.insert(new_value);
-                }
-                Vacant(e) => {
-                    e.insert(value);
-                }
-            }
+        for (_, constraint) in other.map {
+            add_constraint_to_map(&mut new_map, constraint);
         }
         ConstraintMap { map: new_map }
     }
@@ -96,11 +87,35 @@ mod tests {
 
         let constraint_map_three = constraint_map_one + constraint_map_two;
 
-        assert!(constraint_map_three.map.contains_key(&1));
-        assert!(constraint_map_three.map.contains_key(&2));
-        assert!(constraint_map_three.map.contains_key(&3));
-        assert!(constraint_map_three.map.contains_key(&4));
-        assert!(!constraint_map_three.map.contains_key(&5));
+        assert_eq!(constraint_map_three.map.len(), 4);
+        assert_eq!(
+            constraint_map_three.map.get(&1).unwrap().valid_values.len(),
+            3
+        );
+        assert!(has_key_valid_value(&constraint_map_three, 1, 1));
+        assert!(has_key_valid_value(&constraint_map_three, 1, 2));
+        assert!(has_key_valid_value(&constraint_map_three, 1, 3));
+        assert_eq!(
+            constraint_map_three.map.get(&2).unwrap().valid_values.len(),
+            3
+        );
+        assert!(has_key_valid_value(&constraint_map_three, 2, 1));
+        assert!(has_key_valid_value(&constraint_map_three, 2, 2));
+        assert!(has_key_valid_value(&constraint_map_three, 2, 3));
+        assert_eq!(
+            constraint_map_three.map.get(&3).unwrap().valid_values.len(),
+            3
+        );
+        assert!(has_key_valid_value(&constraint_map_three, 3, 1));
+        assert!(has_key_valid_value(&constraint_map_three, 3, 2));
+        assert!(has_key_valid_value(&constraint_map_three, 3, 3));
+        assert_eq!(
+            constraint_map_three.map.get(&4).unwrap().valid_values.len(),
+            3
+        );
+        assert!(has_key_valid_value(&constraint_map_three, 4, 1));
+        assert!(has_key_valid_value(&constraint_map_three, 4, 2));
+        assert!(has_key_valid_value(&constraint_map_three, 4, 3));
     }
 
     #[test]
@@ -116,15 +131,26 @@ mod tests {
 
         let constraint_map_three = constraint_map_one + constraint_map_two;
 
-        assert!(constraint_map_three.map.contains_key(&1));
-        assert!(constraint_map_three.map.contains_key(&2));
-        assert!(constraint_map_three.map.contains_key(&3));
-        assert!(!has_key_valid_value(&constraint_map_three, 2, 1));
-        assert!(!has_key_valid_value(&constraint_map_three, 2, 2));
+        assert_eq!(constraint_map_three.map.len(), 3);
+        assert_eq!(
+            constraint_map_three.map.get(&1).unwrap().valid_values.len(),
+            3
+        );
+        assert!(has_key_valid_value(&constraint_map_three, 1, 1));
+        assert!(has_key_valid_value(&constraint_map_three, 1, 2));
+        assert!(has_key_valid_value(&constraint_map_three, 1, 3));
+        assert_eq!(
+            constraint_map_three.map.get(&2).unwrap().valid_values.len(),
+            1
+        );
         assert!(has_key_valid_value(&constraint_map_three, 2, 3));
-        assert!(!has_key_valid_value(&constraint_map_three, 2, 4));
-        assert!(!has_key_valid_value(&constraint_map_three, 2, 5));
-        assert!(!constraint_map_three.map.contains_key(&4));
+        assert_eq!(
+            constraint_map_three.map.get(&3).unwrap().valid_values.len(),
+            3
+        );
+        assert!(has_key_valid_value(&constraint_map_three, 3, 1));
+        assert!(has_key_valid_value(&constraint_map_three, 3, 2));
+        assert!(has_key_valid_value(&constraint_map_three, 3, 3));
     }
 
     #[test]
@@ -139,23 +165,22 @@ mod tests {
         ]);
         let constraint_map_three = constraint_map_one + constraint_map_two;
 
-        assert!(constraint_map_three.map.contains_key(&1));
-        assert!(!has_key_valid_value(&constraint_map_three, 1, 1));
+        assert_eq!(constraint_map_three.map.len(), 2);
+        assert_eq!(
+            constraint_map_three.map.get(&1).unwrap().valid_values.len(),
+            2
+        );
         assert!(has_key_valid_value(&constraint_map_three, 1, 2));
         assert!(has_key_valid_value(&constraint_map_three, 1, 3));
-        assert!(!has_key_valid_value(&constraint_map_three, 1, 4));
-
-        assert!(constraint_map_three.map.contains_key(&2));
-        assert!(!has_key_valid_value(&constraint_map_three, 2, 1));
-        assert!(!has_key_valid_value(&constraint_map_three, 2, 2));
+        assert_eq!(
+            constraint_map_three.map.get(&2).unwrap().valid_values.len(),
+            1
+        );
         assert!(has_key_valid_value(&constraint_map_three, 2, 3));
-        assert!(!has_key_valid_value(&constraint_map_three, 2, 4));
-        assert!(!has_key_valid_value(&constraint_map_three, 2, 5));
-        assert!(!constraint_map_three.map.contains_key(&4));
     }
 
     #[test]
-    fn combine_no_impossable_options_common() {
+    fn combine_impossable_options_common() {
         let constraint_map_one = ConstraintMap::new_constraint_map(vec![
             Constraint::new_many_item_constraint(1, vec![1, 2, 3]),
             Constraint::new_many_item_constraint(2, vec![1, 2, 3]),
@@ -166,20 +191,16 @@ mod tests {
         ]);
         let constraint_map_three = constraint_map_one + constraint_map_two;
 
-        assert!(constraint_map_three.map.contains_key(&1));
-        assert!(!has_key_valid_value(&constraint_map_three, 1, 1));
+        assert_eq!(constraint_map_three.map.len(), 2);
+        assert_eq!(
+            constraint_map_three.map.get(&1).unwrap().valid_values.len(),
+            2
+        );
         assert!(has_key_valid_value(&constraint_map_three, 1, 2));
         assert!(has_key_valid_value(&constraint_map_three, 1, 3));
-        assert!(!has_key_valid_value(&constraint_map_three, 1, 4));
-
-        assert!(constraint_map_three.map.contains_key(&2));
-        assert!(!has_key_valid_value(&constraint_map_three, 2, 1));
-        assert!(!has_key_valid_value(&constraint_map_three, 2, 2));
-        assert!(!has_key_valid_value(&constraint_map_three, 2, 3));
-        assert!(!has_key_valid_value(&constraint_map_three, 2, 4));
-        assert!(!has_key_valid_value(&constraint_map_three, 2, 5));
-        assert!(!has_key_valid_value(&constraint_map_three, 2, 6));
-
-        assert!(!constraint_map_three.map.contains_key(&4));
+        assert_eq!(
+            constraint_map_three.map.get(&2).unwrap().valid_values.len(),
+            0
+        );
     }
 }

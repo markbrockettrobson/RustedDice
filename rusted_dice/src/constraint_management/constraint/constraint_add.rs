@@ -1,16 +1,6 @@
 use std::ops::Add;
 
-use crate::constraint_management::{Constraint, ValueTypeSet};
-
-pub(crate) fn combine_valid_value_sets(
-    valid_values_one: &ValueTypeSet,
-    valid_values_two: &ValueTypeSet,
-) -> ValueTypeSet {
-    valid_values_one
-        .intersection(valid_values_two)
-        .copied()
-        .collect()
-}
+use crate::constraint_management::{combine_valid_value_sets, Constraint};
 
 impl Add for Constraint {
     type Output = Self;

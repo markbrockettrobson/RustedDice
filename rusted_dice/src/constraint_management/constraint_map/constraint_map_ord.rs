@@ -70,7 +70,7 @@ impl PartialOrd for ConstraintMap {
     /// ```
     /// # use crate::rusted_dice::constraint_management::Constraint;
     /// # use crate::rusted_dice::constraint_management::ConstraintMap;
-    /// # use std::cmp::Ordering;
+    /// # use std::cmp::Ordering::{Equal, Greater, Less};
     /// let constraint_map_one = ConstraintMap::new_constraint_map(
     ///     vec![
     ///        Constraint::new_many_item_constraint(1, vec![1, 2, 3]),
@@ -82,8 +82,9 @@ impl PartialOrd for ConstraintMap {
     ///        Constraint::new_many_item_constraint(1, vec![3, 4, 5])
     ///     ]
     /// );
-    /// assert!(constraint_map_one.partial_cmp(&constraint_map_two) == Some(Ordering::Less));
-    /// assert!(constraint_map_two.partial_cmp(&constraint_map_one) == Some(Ordering::Greater));
+    /// assert!(constraint_map_one.partial_cmp(&constraint_map_two) == Some(Less));
+    /// assert!(constraint_map_one.partial_cmp(&constraint_map_one) == Some(Equal));
+    /// assert!(constraint_map_two.partial_cmp(&constraint_map_one) == Some(Greater));
     /// ```
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(self.cmp(other))
@@ -93,8 +94,7 @@ impl PartialOrd for ConstraintMap {
 #[cfg(test)]
 mod tests {
     use crate::constraint_management::{Constraint, ConstraintMap};
-
-    use super::*;
+    use std::cmp::Ordering::{Equal, Greater, Less};
 
     #[test]
     fn test_cmp_less() {
@@ -106,8 +106,11 @@ mod tests {
             Constraint::new_many_item_constraint(2, vec![1, 2, 3]),
             Constraint::new_many_item_constraint(3, vec![1, 2, 3]),
         ]);
-        let result = constraint_map_one.cmp(&constraint_map_two);
-        assert_eq!(result, Ordering::Less);
+        assert_eq!(constraint_map_one.cmp(&constraint_map_two), Less);
+        assert_eq!(
+            constraint_map_one.partial_cmp(&constraint_map_two),
+            Some(Less)
+        );
     }
 
     #[test]
@@ -121,22 +124,28 @@ mod tests {
             Constraint::new_many_item_constraint(2, vec![1, 2, 3]),
             Constraint::new_many_item_constraint(3, vec![1, 2, 3]),
         ]);
-        let result = constraint_map_one.cmp(&constraint_map_two);
-        assert_eq!(result, Ordering::Less);
+        assert_eq!(constraint_map_one.cmp(&constraint_map_two), Less);
+        assert_eq!(
+            constraint_map_one.partial_cmp(&constraint_map_two),
+            Some(Less)
+        );
     }
 
     #[test]
     fn test_cmp_greater() {
         let constraint_map_one = ConstraintMap::new_constraint_map(vec![
-            Constraint::new_many_item_constraint(1, vec![1, 2, 3]),
-            Constraint::new_many_item_constraint(2, vec![1, 2, 3]),
-        ]);
-        let constraint_map_two = ConstraintMap::new_constraint_map(vec![
             Constraint::new_many_item_constraint(2, vec![1, 2, 3]),
             Constraint::new_many_item_constraint(3, vec![1, 2, 3]),
         ]);
-        let result = constraint_map_two.cmp(&constraint_map_one);
-        assert_eq!(result, Ordering::Greater);
+        let constraint_map_two = ConstraintMap::new_constraint_map(vec![
+            Constraint::new_many_item_constraint(1, vec![1, 2, 3]),
+            Constraint::new_many_item_constraint(2, vec![1, 2, 3]),
+        ]);
+        assert_eq!(constraint_map_one.cmp(&constraint_map_two), Greater);
+        assert_eq!(
+            constraint_map_one.partial_cmp(&constraint_map_two),
+            Some(Greater)
+        );
     }
 
     #[test]
@@ -144,14 +153,17 @@ mod tests {
         let constraint_map_one = ConstraintMap::new_constraint_map(vec![
             Constraint::new_many_item_constraint(1, vec![1, 2, 3]),
             Constraint::new_many_item_constraint(2, vec![1, 2, 3]),
+            Constraint::new_many_item_constraint(3, vec![1, 2, 3]),
         ]);
         let constraint_map_two = ConstraintMap::new_constraint_map(vec![
             Constraint::new_many_item_constraint(1, vec![1, 2, 3]),
             Constraint::new_many_item_constraint(2, vec![1, 2, 3]),
-            Constraint::new_many_item_constraint(3, vec![1, 2, 3]),
         ]);
-        let result = constraint_map_two.cmp(&constraint_map_one);
-        assert_eq!(result, Ordering::Greater);
+        assert_eq!(constraint_map_one.cmp(&constraint_map_two), Greater);
+        assert_eq!(
+            constraint_map_one.partial_cmp(&constraint_map_two),
+            Some(Greater)
+        );
     }
 
     #[test]
@@ -166,7 +178,10 @@ mod tests {
             Constraint::new_many_item_constraint(2, vec![1, 2, 3]),
             Constraint::new_many_item_constraint(3, vec![1, 2, 3]),
         ]);
-        let result = constraint_map_two.cmp(&constraint_map_one);
-        assert_eq!(result, Ordering::Equal);
+        assert_eq!(constraint_map_one.cmp(&constraint_map_two), Equal);
+        assert_eq!(
+            constraint_map_one.partial_cmp(&constraint_map_two),
+            Some(Equal)
+        );
     }
 }

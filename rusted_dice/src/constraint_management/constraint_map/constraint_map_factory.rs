@@ -1,7 +1,8 @@
-use std::collections::hash_map::Entry::{Occupied, Vacant};
 use std::collections::HashMap;
 
 use crate::constraint_management::{Constraint, ConstraintIdToConstraintHashMap, ConstraintMap};
+
+use super::add_constraint_to_map;
 
 #[allow(dead_code)]
 impl ConstraintMap {
@@ -42,7 +43,7 @@ impl ConstraintMap {
     /// ```
     pub fn new_single_constraint_constraint_map(constraint: Constraint) -> ConstraintMap {
         let mut map: ConstraintIdToConstraintHashMap = HashMap::new();
-        map.insert(constraint.id, constraint);
+        add_constraint_to_map(&mut map, constraint);
         ConstraintMap { map }
     }
 
@@ -81,14 +82,7 @@ impl ConstraintMap {
     pub fn new_constraint_map(constraints: impl IntoIterator<Item = Constraint>) -> ConstraintMap {
         let mut map: ConstraintIdToConstraintHashMap = HashMap::new();
         for constraint in constraints {
-            match map.entry(constraint.id) {
-                Occupied(mut entry) => {
-                    *entry.get_mut() += constraint;
-                }
-                Vacant(entry) => {
-                    entry.insert(constraint);
-                }
-            }
+            add_constraint_to_map(&mut map, constraint);
         }
         ConstraintMap { map }
     }

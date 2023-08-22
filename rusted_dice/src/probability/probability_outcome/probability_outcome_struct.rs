@@ -1,5 +1,3 @@
-use std::cmp::{Eq, Ord, PartialOrd};
-
 use crate::{constraint_management::ConstraintMap, ValueType};
 
 /// Represents a [ProbabilityOutcome].
@@ -46,7 +44,7 @@ pub struct ProbabilityOutcome {
 
 #[cfg(test)]
 mod tests {
-    use std::cmp::Ordering;
+    use std::cmp::Ordering::{Equal, Greater, Less};
 
     use crate::constraint_management::{Constraint, ConstraintIdType, ConstraintMap};
     use crate::probability::ProbabilityOutcome;
@@ -274,29 +272,107 @@ mod tests {
         }
 
         #[test]
-        fn test_cmp_less(base_value: SmallValueType, delta: UnsignedSmallValueType) {
+        fn test_cmp_less_value(base_value: SmallValueType, delta: UnsignedSmallValueType) {
             prop_assume!(delta != 0);
             let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(base_value.into());
             let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(ValueType::from(base_value) + ValueType::from(delta));
-            let result = probability_outcome_one.cmp(&probability_outcome_two);
-            assert_eq!(result, Ordering::Less);
+            assert_eq!(probability_outcome_one.cmp(&probability_outcome_two), Less);
+            assert_eq!(probability_outcome_one.partial_cmp(&probability_outcome_two), Some(Less));
         }
 
         #[test]
-        fn test_cmp_greater(base_value: SmallValueType, delta: UnsignedSmallValueType) {
+        fn test_cmp_greater_value(base_value: SmallValueType, delta: UnsignedSmallValueType) {
             prop_assume!(delta != 0);
             let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(ValueType::from(base_value) + ValueType::from(delta));
             let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(base_value.into());
-            let result = probability_outcome_one.cmp(&probability_outcome_two);
-            assert_eq!(result, Ordering::Greater);
+            assert_eq!(probability_outcome_one.cmp(&probability_outcome_two), Greater);
+            assert_eq!(probability_outcome_one.partial_cmp(&probability_outcome_two), Some(Greater));
         }
 
         #[test]
-        fn test_cmp_equal(base_value: SmallValueType) {
+        fn test_cmp_equal_value(base_value: SmallValueType) {
             let probability_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(base_value.into());
             let probability_outcome_two = ProbabilityOutcome::new_with_empty_constraint_map(base_value.into());
-            let result = probability_outcome_one.cmp(&probability_outcome_two);
-            assert_eq!(result, Ordering::Equal);
+            assert_eq!(probability_outcome_one.cmp(&probability_outcome_two), Equal);
+            assert_eq!(probability_outcome_one.partial_cmp(&probability_outcome_two), Some(Equal));
+        }
+
+        #[test]
+        fn test_cmp_less_constraint(base_value: ConstraintIdType) {
+            prop_assume!(base_value != ConstraintIdType::MAX);
+            let probability_outcome_one = ProbabilityOutcome::new_with_constraints(
+                321,
+                vec![Constraint::new_empty_constraint(base_value)]
+            );
+            let probability_outcome_two = ProbabilityOutcome::new_with_constraints(
+                321,
+                vec![Constraint::new_empty_constraint(base_value + 1)]
+            );
+            assert_eq!(probability_outcome_one.cmp(&probability_outcome_two), Less);
+            assert_eq!(probability_outcome_one.partial_cmp(&probability_outcome_two), Some(Less));
+        }
+
+        #[test]
+        fn test_cmp_greater_constraint(base_value: ConstraintIdType) {
+            prop_assume!(base_value != ConstraintIdType::MIN);
+            let probability_outcome_one = ProbabilityOutcome::new_with_constraints(
+                321,
+                vec![Constraint::new_empty_constraint(base_value)]
+            );
+            let probability_outcome_two = ProbabilityOutcome::new_with_constraints(
+                321,
+                vec![Constraint::new_empty_constraint(base_value - 1)]
+            );
+            assert_eq!(probability_outcome_one.cmp(&probability_outcome_two), Greater);
+            assert_eq!(probability_outcome_one.partial_cmp(&probability_outcome_two), Some(Greater));
+        }
+
+        #[test]
+        fn test_cmp_equal_constraint(base_value: ConstraintIdType) {
+            let probability_outcome_one = ProbabilityOutcome::new_with_constraints(
+                321,
+                vec![Constraint::new_empty_constraint(base_value)]
+            );
+            let probability_outcome_two = ProbabilityOutcome::new_with_constraints(
+                321,
+                vec![Constraint::new_empty_constraint(base_value)]
+            );
+            assert_eq!(probability_outcome_one.cmp(&probability_outcome_two), Equal);
+            assert_eq!(probability_outcome_one.partial_cmp(&probability_outcome_two), Some(Equal));
+        }
+
+        #[test]
+        fn test_cmp_less_value_befor_constraint(base_value: SmallValueType, delta: UnsignedSmallValueType, constraint_value: ConstraintIdType) {
+            prop_assume!(constraint_value != ConstraintIdType::MIN);
+            prop_assume!(delta != 0);
+            let probability_outcome_one = ProbabilityOutcome::new_with_constraints(
+                base_value.into(),
+                vec![Constraint::new_empty_constraint(constraint_value)]
+            );
+            let probability_outcome_two = ProbabilityOutcome::new_with_constraints(
+                ValueType::from(base_value) + ValueType::from(delta),
+                vec![Constraint::new_empty_constraint(constraint_value - 1)]
+            );
+
+            assert_eq!(probability_outcome_one.cmp(&probability_outcome_two), Less);
+            assert_eq!(probability_outcome_one.partial_cmp(&probability_outcome_two), Some(Less));
+        }
+
+        #[test]
+        fn test_cmp_greater_value_befor_constraint(base_value: SmallValueType, delta: UnsignedSmallValueType, constraint_value: ConstraintIdType) {
+            prop_assume!(constraint_value != ConstraintIdType::MAX);
+            prop_assume!(delta != 0);
+            let probability_outcome_one = ProbabilityOutcome::new_with_constraints(
+                ValueType::from(base_value) + ValueType::from(delta),
+                vec![Constraint::new_empty_constraint(constraint_value)]
+            );
+            let probability_outcome_two = ProbabilityOutcome::new_with_constraints(
+                base_value.into(),
+                vec![Constraint::new_empty_constraint(constraint_value + 1)]
+            );
+
+            assert_eq!(probability_outcome_one.cmp(&probability_outcome_two), Greater);
+            assert_eq!(probability_outcome_one.partial_cmp(&probability_outcome_two), Some(Greater));
         }
 
         #[test]

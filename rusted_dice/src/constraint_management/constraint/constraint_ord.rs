@@ -51,11 +51,12 @@ impl PartialOrd for Constraint {
     /// # Examples
     /// ```
     /// # use crate::rusted_dice::constraint_management::Constraint;
-    /// # use std::cmp::Ordering;
+    /// # use std::cmp::Ordering::{Equal, Greater, Less};
     /// let constraint_one = Constraint::new_many_item_constraint(1, vec![1, 2, 5]);
     /// let constraint_two = Constraint::new_many_item_constraint(4, vec![2, 5]);
-    /// assert!(constraint_one.partial_cmp(&constraint_two) == Some(Ordering::Less));
-    /// assert!(constraint_two.partial_cmp(&constraint_one) == Some(Ordering::Greater));
+    /// assert!(constraint_one.partial_cmp(&constraint_two) == Some(Less));
+    /// assert!(constraint_one.partial_cmp(&constraint_one) == Some(Equal));
+    /// assert!(constraint_two.partial_cmp(&constraint_one) == Some(Greater));
     /// ```
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(self.cmp(other))
@@ -65,76 +66,77 @@ impl PartialOrd for Constraint {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::cmp::Ordering::{Equal, Greater, Less};
 
     #[test]
     fn test_cmp_less() {
         let constraint_one = Constraint::new_many_item_constraint(1, vec![2, 4]);
         let constraint_two = Constraint::new_many_item_constraint(2, vec![2, 4, 6]);
-        let result = constraint_one.cmp(&constraint_two);
-        assert_eq!(result, Ordering::Less);
+        assert_eq!(constraint_one.cmp(&constraint_two), Less);
+        assert_eq!(constraint_one.partial_cmp(&constraint_two), Some(Less));
     }
 
     #[test]
     fn test_cmp_less_valid_values() {
         let constraint_one = Constraint::new_many_item_constraint(2, vec![2, 4, 5]);
         let constraint_two = Constraint::new_many_item_constraint(2, vec![2, 4, 6]);
-        let result = constraint_one.cmp(&constraint_two);
-        assert_eq!(result, Ordering::Less);
+        assert_eq!(constraint_one.cmp(&constraint_two), Less);
+        assert_eq!(constraint_one.partial_cmp(&constraint_two), Some(Less));
     }
 
     #[test]
     fn test_cmp_less_valid_values_uneven_length() {
         let constraint_one = Constraint::new_many_item_constraint(2, vec![2, 4]);
         let constraint_two = Constraint::new_many_item_constraint(2, vec![2, 4, 6]);
-        let result = constraint_one.cmp(&constraint_two);
-        assert_eq!(result, Ordering::Less);
+        assert_eq!(constraint_one.cmp(&constraint_two), Less);
+        assert_eq!(constraint_one.partial_cmp(&constraint_two), Some(Less));
     }
 
     #[test]
     fn test_cmp_less_valid_values_uneven_length_diferent_values() {
         let constraint_one = Constraint::new_many_item_constraint(2, vec![2, 4, 6]);
         let constraint_two = Constraint::new_many_item_constraint(2, vec![2, 7]);
-        let result = constraint_one.cmp(&constraint_two);
-        assert_eq!(result, Ordering::Less);
+        assert_eq!(constraint_one.cmp(&constraint_two), Less);
+        assert_eq!(constraint_one.partial_cmp(&constraint_two), Some(Less));
     }
 
     #[test]
     fn test_cmp_greater() {
         let constraint_one = Constraint::new_many_item_constraint(3, vec![2, 4, 6, 7]);
         let constraint_two = Constraint::new_many_item_constraint(2, vec![2, 4, 6, 8]);
-        let result = constraint_one.cmp(&constraint_two);
-        assert_eq!(result, Ordering::Greater);
+        assert_eq!(constraint_one.cmp(&constraint_two), Greater);
+        assert_eq!(constraint_one.partial_cmp(&constraint_two), Some(Greater));
     }
 
     #[test]
     fn test_cmp_greater_valid_values() {
         let constraint_one = Constraint::new_many_item_constraint(3, vec![2, 4, 7, 8]);
         let constraint_two = Constraint::new_many_item_constraint(3, vec![2, 4, 6, 8]);
-        let result = constraint_one.cmp(&constraint_two);
-        assert_eq!(result, Ordering::Greater);
+        assert_eq!(constraint_one.cmp(&constraint_two), Greater);
+        assert_eq!(constraint_one.partial_cmp(&constraint_two), Some(Greater));
     }
 
     #[test]
     fn test_cmp_greater_valid_values_uneven_length() {
         let constraint_one = Constraint::new_many_item_constraint(3, vec![2, 4, 6]);
         let constraint_two = Constraint::new_many_item_constraint(3, vec![2, 4]);
-        let result = constraint_one.cmp(&constraint_two);
-        assert_eq!(result, Ordering::Greater);
+        assert_eq!(constraint_one.cmp(&constraint_two), Greater);
+        assert_eq!(constraint_one.partial_cmp(&constraint_two), Some(Greater));
     }
 
     #[test]
     fn test_cmp_greater_valid_values_uneven_length_diferent_values() {
         let constraint_one = Constraint::new_many_item_constraint(3, vec![2, 4, 6]);
         let constraint_two = Constraint::new_many_item_constraint(3, vec![2, 3]);
-        let result = constraint_one.cmp(&constraint_two);
-        assert_eq!(result, Ordering::Greater);
+        assert_eq!(constraint_one.cmp(&constraint_two), Greater);
+        assert_eq!(constraint_one.partial_cmp(&constraint_two), Some(Greater));
     }
 
     #[test]
     fn test_cmp_equal() {
         let constraint_one = Constraint::new_many_item_constraint(321, vec![-3, 2, 4, 6, 89]);
         let constraint_two = Constraint::new_many_item_constraint(321, vec![-3, 2, 4, 6, 89]);
-        let result = constraint_one.cmp(&constraint_two);
-        assert_eq!(result, Ordering::Equal);
+        assert_eq!(constraint_one.cmp(&constraint_two), Equal);
+        assert_eq!(constraint_one.partial_cmp(&constraint_two), Some(Equal));
     }
 }
