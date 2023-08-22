@@ -5,8 +5,8 @@ use crate::constraint_management::ValueTypeSet;
 ///
 /// # Arguments
 ///
-/// * `valid_values_one` - The first set of valid values.
-/// * `valid_values_two` - The second set of valid values.
+/// * `valid_values_one` - The first set of [ValueTypeSet].
+/// * `valid_values_two` - The second set of [ValueTypeSet].
 ///
 /// # Example
 ///

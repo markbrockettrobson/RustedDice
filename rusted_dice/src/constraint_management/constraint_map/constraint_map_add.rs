@@ -1,8 +1,8 @@
-use std::collections::hash_map::Entry::{Occupied, Vacant};
-use std::collections::HashMap;
 use std::ops::Add;
 
 use crate::constraint_management::ConstraintMap;
+
+use super::add_constraint_to_map;
 
 impl Add for ConstraintMap {
     type Output = Self;
@@ -45,19 +45,10 @@ impl Add for ConstraintMap {
     /// ```
 
     fn add(self, other: Self) -> Self {
-        let mut new_map = HashMap::new();
-        new_map.extend(self.map.into_iter());
+        let mut new_map = self.map.clone();
 
-        for (id, value) in other.map {
-            match new_map.entry(id) {
-                Occupied(mut e) => {
-                    let new_value = e.get().clone() + value;
-                    e.insert(new_value);
-                }
-                Vacant(e) => {
-                    e.insert(value);
-                }
-            }
+        for (_, constraint) in other.map {
+            add_constraint_to_map(&mut new_map, constraint);
         }
         ConstraintMap { map: new_map }
     }
