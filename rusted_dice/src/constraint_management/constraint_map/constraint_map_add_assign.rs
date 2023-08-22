@@ -2,8 +2,6 @@ use std::ops::AddAssign;
 
 use crate::constraint_management::ConstraintMap;
 
-use super::add_constraint_to_map;
-
 impl AddAssign for ConstraintMap {
     /// Implements the addition assignment operator for [ConstraintMap]. The intersectoin of maps are maintained
     /// the Constraint of maching keys are added together
@@ -43,7 +41,7 @@ impl AddAssign for ConstraintMap {
     /// ```
     fn add_assign(&mut self, other: Self) {
         for (_, constraint) in other.map {
-            add_constraint_to_map(&mut self.map, constraint);
+            *self += constraint;
         }
     }
 }

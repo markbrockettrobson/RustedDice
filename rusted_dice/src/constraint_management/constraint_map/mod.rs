@@ -1,5 +1,7 @@
 mod constraint_map_add;
 mod constraint_map_add_assign;
+mod constraint_map_add_assign_constraint;
+mod constraint_map_add_constraint;
 mod constraint_map_factory;
 mod constraint_map_ord;
 mod constraint_map_possibility;

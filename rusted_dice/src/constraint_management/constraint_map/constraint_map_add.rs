@@ -180,7 +180,7 @@ mod tests {
     }
 
     #[test]
-    fn combine_no_impossable_options_common() {
+    fn combine_impossable_options_common() {
         let constraint_map_one = ConstraintMap::new_constraint_map(vec![
             Constraint::new_many_item_constraint(1, vec![1, 2, 3]),
             Constraint::new_many_item_constraint(2, vec![1, 2, 3]),
