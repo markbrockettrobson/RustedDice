@@ -7,11 +7,11 @@ echo "run fmt to check formatting"
 echo "runing clippy to check linting and for common errors"
 ( cd rusted_dice && cargo clippy --all-targets --all-features -- -D warnings )
 
-echo "building docs"
-(cd rusted_dice && rustdoc src/lib.rs )
-
 echo "runing doctest"
 ( cd rusted_dice && cargo test --doc . )
+
+echo "building docs"
+(cd rusted_dice && rustdoc src/lib.rs )
 
 echo "runing coverage"
 ( cd rusted_dice && cargo llvm-cov --html && cargo llvm-cov report )
