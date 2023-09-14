@@ -1,75 +1,75 @@
-use polars::{
-    prelude::{DataFrame, NamedFrom},
-    series::Series,
-};
-use std::collections::hash_map::Entry::{Occupied, Vacant};
+use std::collections::HashMap;
 
+use polars::prelude::DataFrame;
+use polars::prelude::NamedFrom;
+use polars::series::Series;
+
+use crate::constraint_management::ConstraintIdType;
 use crate::probability::ProbabilityDistribution;
 use crate::probability::ToDataFrame;
+use crate::CountType;
 use crate::ValueType;
-use crate::{constraint_management::ConstraintIdType, CountType};
 
 impl ToDataFrame for ProbabilityDistribution {
     fn to_dataframe(&self) -> DataFrame {
         let mut value_column: Vec<ValueType> = Vec::with_capacity(self.outcome_counts.len());
         let mut count_column: Vec<CountType> = Vec::with_capacity(self.outcome_counts.len());
-        let mut constraint_columns: Vec<Vec<Option<Vec<ValueType>>>> = Vec::new();
+        let mut constraint_map_columns: HashMap<ConstraintIdType, Vec<Option<String>>> =
+            HashMap::new();
 
-        let mut constraint_columns_headings: Vec<ConstraintIdType> = Vec::new();
-
-        for (outcome, _) in &self.outcome_counts {
-            for (constraint_key, _) in &outcome.constraint_map.map {
-                if !constraint_columns_headings.contains(&constraint_key) {
-                    constraint_columns_headings.push(*constraint_key);
-                    constraint_columns.push(Vec::new());
-                }
-            }
-        }
-
-        for (outcome, count) in &self.outcome_counts {
+        for (index, (outcome, count)) in self.outcome_counts.iter().enumerate() {
             value_column.push(outcome.value);
             count_column.push(*count);
-            for index in 0..constraint_columns_headings.len() {
-                if outcome
-                    .constraint_map
-                    .map
-                    .contains_key(&constraint_columns_headings[index])
-                {
-                    constraint_columns[index]
-                        .push(
-                            Some(outcome
-                                .constraint_map
-                                .map
-                                .get(&constraint_columns_headings[index])
-                                .unwrap()
+
+            for (constraint_name, constraint_value) in outcome.constraint_map.map.iter() {
+                match constraint_map_columns.get_mut(constraint_name) {
+                    Some(column) => {
+                        for _ in column.len()..index - 1 {
+                            column.push(None);
+                        }
+                        column.push(Some(
+                            constraint_value
                                 .valid_values
-                                .clone()
-                                .into_iter()
-                                .collect()
-                            )
-                        );
-                } else {
-                    constraint_columns[index].push(None);
+                                .iter()
+                                .map(|value| value.to_string())
+                                .collect::<Vec<String>>()
+                                .join(", "),
+                        ));
+                    }
+                    None => {
+                        let mut column: Vec<Option<String>> =
+                            Vec::with_capacity(self.outcome_counts.len());
+
+                        for _ in 0..index {
+                            column.push(None);
+                        }
+                        constraint_map_columns.insert(*constraint_name, column);
+                    }
                 }
             }
         }
 
-        let series = &constraint_columns_headings
-        .into_iter()
-        .zip(constraint_columns.into_iter())
-        .map(|(heading, column)| {
-            Series::new(
-                &heading.to_string(),
-                &column
-            )
-        });
+        for (_, column) in constraint_map_columns.iter_mut() {
+            for _ in column.len()..value_column.len() {
+                column.push(None);
+            }
+        }
 
-        DataFrame::new(
-            vec![
-                Series::new("value", value_column),
-                Series::new("count", count_column),
-            ].append(series)
-        ).unwrap()
+        let mut series = vec![
+            Series::new("value", value_column),
+            Series::new("count", count_column),
+        ];
+
+        series.append(
+            &mut constraint_map_columns
+                .iter_mut()
+                .map(|(constraint_name, column)| {
+                    Series::new(constraint_name.to_string().as_str(), column)
+                })
+                .collect::<Vec<Series>>(),
+        );
+
+        DataFrame::new(series).unwrap()
     }
 }
 
@@ -152,7 +152,7 @@ mod tests {
         let df: DataFrame = DataFrame::new(vec![
             Series::new("value", &[12345, 55555, 98766, 12354]),
             Series::new("count", &[67890, 66666, 1, 2]),
-            Series::new("123", &[Some(3), None, None, None]),
+            Series::new("123", &[Some("3"), None, None, None]),
         ])
         .unwrap();
 
@@ -195,7 +195,7 @@ mod tests {
             Series::new("count", &[67890, 66666, 1, 2]),
             Series::new(
                 "123",
-                &[Some(vec![3]), Some(vec![4]), None, Some(vec![1, 2, 3])],
+                &[Some("3"), Some("4"), None, Some("1, 2, 3")],
             ),
         ])
         .unwrap();
@@ -237,9 +237,9 @@ mod tests {
         let df: DataFrame = DataFrame::new(vec![
             Series::new("value", &[12345, 55555, 98766, 12354]),
             Series::new("count", &[67890, 66666, 1, 2]),
-            Series::new("1", &[None, None, None, Some(vec![1, 2, 3])]),
-            Series::new("2", &[None, Some(vec![4]), None, None]),
-            Series::new("3", &[Some(vec![3]), None, None, None]),
+            Series::new("1", &[None, None, None, Some("1, 2, 3")]),
+            Series::new("2", &[None, Some("4"), None, None]),
+            Series::new("3", &[Some("3"), None, None, None]),
         ])
         .unwrap();
 
