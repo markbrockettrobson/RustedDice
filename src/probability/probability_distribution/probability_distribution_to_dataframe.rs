@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use polars::prelude::DataFrame;
 use polars::prelude::NamedFrom;
-use polars::series::Series;
+use polars::prelude::Series;
 
 use crate::constraint_management::ConstraintIdType;
 use crate::probability::ProbabilityDistribution;
