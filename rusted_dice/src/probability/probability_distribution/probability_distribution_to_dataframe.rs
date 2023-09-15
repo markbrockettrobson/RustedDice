@@ -193,10 +193,7 @@ mod tests {
         let df: DataFrame = DataFrame::new(vec![
             Series::new("value", &[12345, 55555, 98766, 12354]),
             Series::new("count", &[67890, 66666, 1, 2]),
-            Series::new(
-                "123",
-                &[Some("3"), Some("4"), None, Some("1, 2, 3")],
-            ),
+            Series::new("123", &[Some("3"), Some("4"), None, Some("1, 2, 3")]),
         ])
         .unwrap();
 
