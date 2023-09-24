@@ -1,7 +1,7 @@
-mod probability_distribution;
-mod probability_outcome;
-mod traits;
-mod types;
+pub mod probability_distribution;
+pub mod probability_outcome;
+pub mod traits;
+pub mod types;
 
 pub use self::probability_distribution::add_outcome_to_map;
 pub use self::probability_distribution::ProbabilityDistribution;

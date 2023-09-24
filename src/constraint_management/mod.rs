@@ -1,7 +1,7 @@
-mod constraint;
-mod constraint_map;
-mod traits;
-mod types;
+pub mod constraint;
+pub mod constraint_map;
+pub mod traits;
+pub mod types;
 
 pub use self::constraint::combine_valid_value_sets;
 pub use self::constraint::Constraint;

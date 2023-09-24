@@ -13,8 +13,8 @@ echo "runing clippy to check linting and for common errors"
 echo "building docs"
 ( rustdoc src/lib.rs )
 
-echo "runing doctest"
-( cargo test --doc . )
+echo "runing tests"
+( cargo test )
 
 echo "runing coverage"
 ( cargo llvm-cov --html && cargo llvm-cov report )
