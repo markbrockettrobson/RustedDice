@@ -21,6 +21,3 @@ echo "runing coverage"
 
 echo "runing mutants, google mutation testing for details on why this is useful"
 ( cargo mutants -- --all-targets --all-features )
-
-echo "runing cargo bench"
-(cargo bench )
