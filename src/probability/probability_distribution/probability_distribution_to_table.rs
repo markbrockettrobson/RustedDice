@@ -11,13 +11,13 @@ pub trait ToTable {
 }
 
 impl ToTable for ProbabilityDistribution {
-    /// converts a [ProbabilityDistribution] into a polars [DataFrame]
+    /// converts a [ProbabilityDistribution] into a [HashMap] <String, [Vec<Option<String>>]>
     ///
     /// # Arguments
     /// * `self` - the [ProbabilityDistribution] to convert
     ///
     /// # Returns
-    /// * a [HashMap] <[str]: heading, [Vec<str>]> with the following columns:
+    /// * a [HashMap] <String, Vec<Option<String>>> with the following columns:
     ///  * value: the value of the outcome
     ///  * count: the number of times the outcome was observed
     ///  * constraint_name: the values of the constraint
@@ -59,11 +59,11 @@ impl ToTable for ProbabilityDistribution {
     ///     ),
     ///     2,
     /// );
-    /// 
+    ///
     /// let result = ProbabilityDistribution {
     ///     outcome_counts: b_tree_map,
     /// }.to_table();
-    /// 
+    ///
     /// let mut table: HashMap<String, Vec<Option<String>>> = HashMap::new();
     /// table.insert("value".to_string(), vec![Some("12345".to_string()), Some("12354".to_string()), Some("55555".to_string()), Some("98766".to_string())]);
     /// table.insert("count".to_string(), vec![Some("67890".to_string()), Some("2".to_string()), Some("66666".to_string()), Some("1".to_string())]);
@@ -86,12 +86,11 @@ impl ToTable for ProbabilityDistribution {
                 let mut values = constraint_value
                     .valid_values
                     .iter()
-                    .map(|&value| value)
+                    .copied()
                     .collect::<Vec<ValueType>>();
-                    
-                values.sort_by(|a, b| a.cmp(b));
-                
-                
+
+                values.sort();
+
                 let value_string = values
                     .iter()
                     .map(|value| value.to_string())
@@ -100,7 +99,7 @@ impl ToTable for ProbabilityDistribution {
 
                 match constraint_map_columns.get_mut(constraint_name) {
                     Some(column) => {
-                        for _ in column.len()..index - 1 {
+                        for _ in column.len()..index {
                             column.push(None);
                         }
                         column.push(Some(value_string));
@@ -125,27 +124,33 @@ impl ToTable for ProbabilityDistribution {
             }
         }
 
-        let mut table: HashMap<String, Vec<Option<String>>>  = HashMap::new();
+        let mut table: HashMap<String, Vec<Option<String>>> = HashMap::new();
 
-        table.insert("value".to_string(), value_column.iter().map(|value| Some(value.to_string())).collect::<Vec<Option<String>>>());
-        table.insert("count".to_string(), count_column.iter().map(|count| Some(count.to_string())).collect::<Vec<Option<String>>>());
-
-
-        let mut constraint_map_counms_: Vec<(String, Vec<Option<String>>)>= constraint_map_columns
-            .iter()
-            .map(|(constraint_name, column)| {
-                    (constraint_name.to_string(), column.to_owned())
-            })
-            .collect();
-
-        constraint_map_counms_.sort_by(
-            |a, b| a.0.cmp(&b.0)
+        table.insert(
+            "value".to_string(),
+            value_column
+                .iter()
+                .map(|value| Some(value.to_string()))
+                .collect::<Vec<Option<String>>>(),
+        );
+        table.insert(
+            "count".to_string(),
+            count_column
+                .iter()
+                .map(|count| Some(count.to_string()))
+                .collect::<Vec<Option<String>>>(),
         );
 
+        let mut constraint_map_counms_: Vec<(String, Vec<Option<String>>)> = constraint_map_columns
+            .iter()
+            .map(|(constraint_name, column)| (constraint_name.to_string(), column.to_owned()))
+            .collect();
+
+        constraint_map_counms_.sort_by(|a, b| a.0.cmp(&b.0));
 
         for (constraint_name, column) in constraint_map_columns.iter() {
             table.insert(constraint_name.to_string(), column.clone());
-        } 
+        }
 
         table
     }
@@ -191,8 +196,24 @@ mod tests {
         .to_table();
 
         let mut table: HashMap<String, Vec<Option<String>>> = HashMap::new();
-        table.insert("value".to_string(), vec![Some("12345".to_string()), Some("12354".to_string()), Some("55555".to_string()), Some("98766".to_string())]);
-        table.insert("count".to_string(), vec![Some("67890".to_string()), Some("2".to_string()), Some("66666".to_string()), Some("1".to_string())]);
+        table.insert(
+            "value".to_string(),
+            vec![
+                Some("12345".to_string()),
+                Some("12354".to_string()),
+                Some("55555".to_string()),
+                Some("98766".to_string()),
+            ],
+        );
+        table.insert(
+            "count".to_string(),
+            vec![
+                Some("67890".to_string()),
+                Some("2".to_string()),
+                Some("66666".to_string()),
+                Some("1".to_string()),
+            ],
+        );
 
         assert_eq!(result, table);
     }
@@ -202,17 +223,29 @@ mod tests {
         let mut b_tree_map = BTreeMap::new();
         b_tree_map.insert(
             ProbabilityOutcome::new_with_constraints(
-                12345,
-                vec![Constraint::new_single_valid_value_constraint(123, 3)],
+                1000,
+                vec![Constraint::new_single_valid_value_constraint(123, 1)],
             ),
-            67890,
+            10,
         );
+        b_tree_map.insert(ProbabilityOutcome::new_with_empty_constraint_map(3000), 30);
+        b_tree_map.insert(ProbabilityOutcome::new_with_empty_constraint_map(4000), 40);
         b_tree_map.insert(
-            ProbabilityOutcome::new_with_empty_constraint_map(55555),
-            66666,
+            ProbabilityOutcome::new_with_constraints(
+                5000,
+                vec![Constraint::new_single_valid_value_constraint(123, 5)],
+            ),
+            50,
         );
-        b_tree_map.insert(ProbabilityOutcome::new_with_empty_constraint_map(98766), 1);
-        b_tree_map.insert(ProbabilityOutcome::new_with_empty_constraint_map(12354), 2);
+        b_tree_map.insert(ProbabilityOutcome::new_with_empty_constraint_map(2000), 20);
+        b_tree_map.insert(ProbabilityOutcome::new_with_empty_constraint_map(6000), 60);
+        b_tree_map.insert(
+            ProbabilityOutcome::new_with_constraints(
+                7000,
+                vec![Constraint::new_single_valid_value_constraint(123, 7)],
+            ),
+            70,
+        );
 
         let result = ProbabilityDistribution {
             outcome_counts: b_tree_map,
@@ -220,9 +253,42 @@ mod tests {
         .to_table();
 
         let mut table: HashMap<String, Vec<Option<String>>> = HashMap::new();
-        table.insert("value".to_string(), vec![Some("12345".to_string()), Some("12354".to_string()), Some("55555".to_string()), Some("98766".to_string())]);
-        table.insert("count".to_string(), vec![Some("67890".to_string()), Some("2".to_string()), Some("66666".to_string()), Some("1".to_string())]);
-        table.insert("123".to_string(), vec![Some("3".to_string()), None, None, None]);
+        table.insert(
+            "value".to_string(),
+            vec![
+                Some("1000".to_string()),
+                Some("2000".to_string()),
+                Some("3000".to_string()),
+                Some("4000".to_string()),
+                Some("5000".to_string()),
+                Some("6000".to_string()),
+                Some("7000".to_string()),
+            ],
+        );
+        table.insert(
+            "count".to_string(),
+            vec![
+                Some("10".to_string()),
+                Some("20".to_string()),
+                Some("30".to_string()),
+                Some("40".to_string()),
+                Some("50".to_string()),
+                Some("60".to_string()),
+                Some("70".to_string()),
+            ],
+        );
+        table.insert(
+            "123".to_string(),
+            vec![
+                Some("1".to_string()),
+                None,
+                None,
+                None,
+                Some("5".to_string()),
+                None,
+                Some("7".to_string()),
+            ],
+        );
 
         assert_eq!(result, table);
     }
@@ -259,9 +325,33 @@ mod tests {
         .to_table();
 
         let mut table: HashMap<String, Vec<Option<String>>> = HashMap::new();
-        table.insert("value".to_string(), vec![Some("12345".to_string()), Some("12354".to_string()), Some("55555".to_string()), Some("98766".to_string())]);
-        table.insert("count".to_string(), vec![Some("67890".to_string()), Some("2".to_string()), Some("66666".to_string()), Some("1".to_string())]);
-        table.insert("123".to_string(), vec![Some("3".to_string()),Some("1, 2, 3".to_string()), Some("4".to_string()), None]);
+        table.insert(
+            "value".to_string(),
+            vec![
+                Some("12345".to_string()),
+                Some("12354".to_string()),
+                Some("55555".to_string()),
+                Some("98766".to_string()),
+            ],
+        );
+        table.insert(
+            "count".to_string(),
+            vec![
+                Some("67890".to_string()),
+                Some("2".to_string()),
+                Some("66666".to_string()),
+                Some("1".to_string()),
+            ],
+        );
+        table.insert(
+            "123".to_string(),
+            vec![
+                Some("3".to_string()),
+                Some("1, 2, 3".to_string()),
+                Some("4".to_string()),
+                None,
+            ],
+        );
 
         assert_eq!(result, table);
     }
@@ -283,8 +373,7 @@ mod tests {
             ),
             66666,
         );
-        b_tree_map.insert(
-            ProbabilityOutcome::new_with_empty_constraint_map(98766), 1);
+        b_tree_map.insert(ProbabilityOutcome::new_with_empty_constraint_map(98766), 1);
         b_tree_map.insert(
             ProbabilityOutcome::new_with_constraints(
                 12354,
@@ -302,11 +391,41 @@ mod tests {
         .to_table();
 
         let mut table: HashMap<String, Vec<Option<String>>> = HashMap::new();
-        table.insert("value".to_string(), vec![Some("12345".to_string()), Some("12354".to_string()), Some("55555".to_string()), Some("98766".to_string())]);
-        table.insert("count".to_string(), vec![Some("67890".to_string()), Some("2".to_string()), Some("66666".to_string()), Some("1".to_string())]);
-        table.insert("1".to_string(), vec![Some("3".to_string()), Some("3, 4, 5".to_string()), None, None]);
-        table.insert("8".to_string(), vec![None, Some("1, 2, 3".to_string()), None, None]);
-        table.insert("9".to_string(), vec![None, None, Some("4".to_string()), None]);
+        table.insert(
+            "value".to_string(),
+            vec![
+                Some("12345".to_string()),
+                Some("12354".to_string()),
+                Some("55555".to_string()),
+                Some("98766".to_string()),
+            ],
+        );
+        table.insert(
+            "count".to_string(),
+            vec![
+                Some("67890".to_string()),
+                Some("2".to_string()),
+                Some("66666".to_string()),
+                Some("1".to_string()),
+            ],
+        );
+        table.insert(
+            "1".to_string(),
+            vec![
+                Some("3".to_string()),
+                Some("3, 4, 5".to_string()),
+                None,
+                None,
+            ],
+        );
+        table.insert(
+            "8".to_string(),
+            vec![None, Some("1, 2, 3".to_string()), None, None],
+        );
+        table.insert(
+            "9".to_string(),
+            vec![None, None, Some("4".to_string()), None],
+        );
 
         assert_eq!(result, table);
     }
