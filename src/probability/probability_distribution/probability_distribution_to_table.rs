@@ -1,67 +1,78 @@
 use std::collections::HashMap;
 
-use polars::prelude::DataFrame;
-use polars::prelude::NamedFrom;
-use polars::prelude::Series;
-
 use crate::constraint_management::ConstraintIdType;
 use crate::probability::ProbabilityDistribution;
-use crate::probability::ToDataFrame;
 use crate::CountType;
 use crate::ValueType;
 
-impl ToDataFrame for ProbabilityDistribution {
+/// A trait for probability distributions to be turned into a Table
+pub trait ToTable {
+    fn to_table(&self) -> HashMap<String, Vec<Option<String>>>;
+}
+
+impl ToTable for ProbabilityDistribution {
     /// converts a [ProbabilityDistribution] into a polars [DataFrame]
     ///
     /// # Arguments
     /// * `self` - the [ProbabilityDistribution] to convert
     ///
     /// # Returns
-    /// * a [DataFrame] with the following columns:
+    /// * a [HashMap] <[str]: heading, [Vec<str>]> with the following columns:
     ///  * value: the value of the outcome
     ///  * count: the number of times the outcome was observed
-    ///  * constraint_name: the name of the constraint
-    ///  * constraint_value: the value of the constraint
+    ///  * constraint_name: the values of the constraint
     ///
     /// # Example
     /// ```
     /// # use std::collections::BTreeMap;
+    /// # use std::collections::HashMap;
     /// # use crate::rusted_dice::probability::ProbabilityDistribution;
+    /// # use crate::rusted_dice::probability::probability_distribution::ToTable;
     /// # use crate::rusted_dice::probability::ProbabilityOutcome;
     /// # use crate::rusted_dice::probability::add_outcome_to_map;
-    /// # use crate::rusted_dice::probability::ToDataFrame;
     /// # use crate::rusted_dice::constraint_management::Constraint;
-    /// # use polars::frame::DataFrame;
-    /// # use polars::series::Series;
-    /// # use polars::prelude::NamedFrom;
     ///
     /// let mut b_tree_map = BTreeMap::new();
     /// b_tree_map.insert(
     ///     ProbabilityOutcome::new_with_constraints(
     ///         12345,
-    ///         vec![Constraint::new_single_valid_value_constraint(123, 3)],
+    ///         vec![Constraint::new_single_valid_value_constraint(1, 3)],
     ///     ),
     ///     67890,
     /// );
     /// b_tree_map.insert(
-    ///     ProbabilityOutcome::new_with_empty_constraint_map(55555),
+    ///     ProbabilityOutcome::new_with_constraints(
+    ///         55555,
+    ///         vec![Constraint::new_single_valid_value_constraint(9, 4)],
+    ///     ),
     ///     66666,
     /// );
-    /// b_tree_map.insert(ProbabilityOutcome::new_with_empty_constraint_map(98766), 1);
-    /// b_tree_map.insert(ProbabilityOutcome::new_with_empty_constraint_map(12354), 2);
+    /// b_tree_map.insert(
+    ///     ProbabilityOutcome::new_with_empty_constraint_map(98766), 1);
+    /// b_tree_map.insert(
+    ///     ProbabilityOutcome::new_with_constraints(
+    ///         12354,
+    ///         vec![
+    ///             Constraint::new_many_item_constraint(8, vec![3, 2, 1]),
+    ///             Constraint::new_many_item_constraint(1, vec![3, 5, 4]),
+    ///         ],
+    ///     ),
+    ///     2,
+    /// );
+    /// 
     /// let result = ProbabilityDistribution {
     ///     outcome_counts: b_tree_map,
-    /// }
-    /// .to_dataframe();
-    /// let df: DataFrame = DataFrame::new(vec![
-    ///     Series::new("value", &[12345, 55555, 98766, 12354]),
-    ///     Series::new("count", &[67890, 66666, 1, 2]),
-    ///     Series::new("123", &[Some("3"), None, None, None]),
-    /// ])
-    /// .unwrap();
-    /// assert_eq!(result, df);
+    /// }.to_table();
+    /// 
+    /// let mut table: HashMap<String, Vec<Option<String>>> = HashMap::new();
+    /// table.insert("value".to_string(), vec![Some("12345".to_string()), Some("12354".to_string()), Some("55555".to_string()), Some("98766".to_string())]);
+    /// table.insert("count".to_string(), vec![Some("67890".to_string()), Some("2".to_string()), Some("66666".to_string()), Some("1".to_string())]);
+    /// table.insert("1".to_string(), vec![Some("3".to_string()), Some("3, 4, 5".to_string()), None, None]);
+    /// table.insert("8".to_string(), vec![None, Some("1, 2, 3".to_string()), None, None]);
+    /// table.insert("9".to_string(), vec![None, None, Some("4".to_string()), None]);
+    /// assert_eq!(result, table);
     /// ```
-    fn to_dataframe(&self) -> DataFrame {
+    fn to_table(&self) -> HashMap<String, Vec<Option<String>>> {
         let mut value_column: Vec<ValueType> = Vec::with_capacity(self.outcome_counts.len());
         let mut count_column: Vec<CountType> = Vec::with_capacity(self.outcome_counts.len());
         let mut constraint_map_columns: HashMap<ConstraintIdType, Vec<Option<String>>> =
@@ -114,55 +125,50 @@ impl ToDataFrame for ProbabilityDistribution {
             }
         }
 
-        let mut series = vec![
-            Series::new("value", value_column),
-            Series::new("count", count_column),
-        ];
+        let mut table: HashMap<String, Vec<Option<String>>>  = HashMap::new();
 
-        let mut constraint_map_series = constraint_map_columns
-            .iter_mut()
+        table.insert("value".to_string(), value_column.iter().map(|value| Some(value.to_string())).collect::<Vec<Option<String>>>());
+        table.insert("count".to_string(), count_column.iter().map(|count| Some(count.to_string())).collect::<Vec<Option<String>>>());
+
+
+        let mut constraint_map_counms_: Vec<(String, Vec<Option<String>>)>= constraint_map_columns
+            .iter()
             .map(|(constraint_name, column)| {
-                Series::new(constraint_name.to_string().as_str(), column)
+                    (constraint_name.to_string(), column.to_owned())
             })
-            .collect::<Vec<Series>>();
-        
-        constraint_map_series.sort_by(
-            |a, b| a.name().cmp(b.name())
+            .collect();
+
+        constraint_map_counms_.sort_by(
+            |a, b| a.0.cmp(&b.0)
         );
 
-        series.append(
-            &mut constraint_map_series
-        );
 
-        let df = DataFrame::new(series).unwrap();
-        df.sort(&["value"], vec![false], false).unwrap()
+        for (constraint_name, column) in constraint_map_columns.iter() {
+            table.insert(constraint_name.to_string(), column.clone());
+        } 
+
+        table
     }
 }
 
 #[cfg(test)]
 mod tests {
     use std::collections::BTreeMap;
-
-    use polars::datatypes::DataType::Int32;
-    use polars::{
-        prelude::{DataFrame, NamedFrom},
-        series::Series,
-    };
+    use std::collections::HashMap;
 
     use crate::constraint_management::Constraint;
-    use crate::probability::{ProbabilityDistribution, ProbabilityOutcome, ToDataFrame};
+    use crate::probability::probability_distribution::probability_distribution_to_table::ToTable;
+    use crate::probability::{ProbabilityDistribution, ProbabilityOutcome};
 
     #[test]
     fn to_dataframe_empty() {
-        let result = ProbabilityDistribution::new_empty_distribution().to_dataframe();
+        let result = ProbabilityDistribution::new_empty_distribution().to_table();
 
-        let df: DataFrame = DataFrame::new(vec![
-            Series::new_empty("value", &Int32),
-            Series::new_empty("count", &Int32),
-        ])
-        .unwrap();
+        let mut table: HashMap<String, Vec<Option<String>>> = HashMap::new();
+        table.insert("value".to_string(), Vec::new());
+        table.insert("count".to_string(), Vec::new());
 
-        assert_eq!(result, df);
+        assert_eq!(result, table);
     }
 
     #[test]
@@ -182,15 +188,13 @@ mod tests {
         let result = ProbabilityDistribution {
             outcome_counts: b_tree_map,
         }
-        .to_dataframe();
+        .to_table();
 
-        let df: DataFrame = DataFrame::new(vec![
-            Series::new("value", &[12345, 12354, 55555, 98766]),
-            Series::new("count", &[67890, 2, 66666, 1]),
-        ])
-        .unwrap();
+        let mut table: HashMap<String, Vec<Option<String>>> = HashMap::new();
+        table.insert("value".to_string(), vec![Some("12345".to_string()), Some("12354".to_string()), Some("55555".to_string()), Some("98766".to_string())]);
+        table.insert("count".to_string(), vec![Some("67890".to_string()), Some("2".to_string()), Some("66666".to_string()), Some("1".to_string())]);
 
-        assert_eq!(result, df);
+        assert_eq!(result, table);
     }
 
     #[test]
@@ -213,16 +217,14 @@ mod tests {
         let result = ProbabilityDistribution {
             outcome_counts: b_tree_map,
         }
-        .to_dataframe();
+        .to_table();
 
-        let df: DataFrame = DataFrame::new(vec![
-            Series::new("value", &[12345, 12354, 55555, 98766]),
-            Series::new("count", &[67890, 2, 66666, 1]),
-            Series::new("123", &[Some("3"), None, None, None]),
-        ])
-        .unwrap();
+        let mut table: HashMap<String, Vec<Option<String>>> = HashMap::new();
+        table.insert("value".to_string(), vec![Some("12345".to_string()), Some("12354".to_string()), Some("55555".to_string()), Some("98766".to_string())]);
+        table.insert("count".to_string(), vec![Some("67890".to_string()), Some("2".to_string()), Some("66666".to_string()), Some("1".to_string())]);
+        table.insert("123".to_string(), vec![Some("3".to_string()), None, None, None]);
 
-        assert_eq!(result, df);
+        assert_eq!(result, table);
     }
 
     #[test]
@@ -254,16 +256,14 @@ mod tests {
         let result = ProbabilityDistribution {
             outcome_counts: b_tree_map,
         }
-        .to_dataframe();
+        .to_table();
 
-        let df: DataFrame = DataFrame::new(vec![
-            Series::new("value", &[12345, 12354, 55555, 98766]),
-            Series::new("count", &[67890, 2, 66666, 1]),
-            Series::new("123", &[Some("3"), Some("1, 2, 3"), Some("4"), None]),
-        ])
-        .unwrap();
+        let mut table: HashMap<String, Vec<Option<String>>> = HashMap::new();
+        table.insert("value".to_string(), vec![Some("12345".to_string()), Some("12354".to_string()), Some("55555".to_string()), Some("98766".to_string())]);
+        table.insert("count".to_string(), vec![Some("67890".to_string()), Some("2".to_string()), Some("66666".to_string()), Some("1".to_string())]);
+        table.insert("123".to_string(), vec![Some("3".to_string()),Some("1, 2, 3".to_string()), Some("4".to_string()), None]);
 
-        assert_eq!(result, df);
+        assert_eq!(result, table);
     }
 
     #[test]
@@ -299,17 +299,15 @@ mod tests {
         let result = ProbabilityDistribution {
             outcome_counts: b_tree_map,
         }
-        .to_dataframe();
+        .to_table();
 
-        let df: DataFrame = DataFrame::new(vec![
-            Series::new("value", &[12345, 12354, 55555, 98766]),
-            Series::new("count", &[67890, 2, 66666, 1]),
-            Series::new("1", &[Some("3"), Some("3, 4, 5"), None, None]),
-            Series::new("8", &[None, Some("1, 2, 3"), None, None]),
-            Series::new("9", &[None, None, Some("4"), None]),
-        ])
-        .unwrap();
+        let mut table: HashMap<String, Vec<Option<String>>> = HashMap::new();
+        table.insert("value".to_string(), vec![Some("12345".to_string()), Some("12354".to_string()), Some("55555".to_string()), Some("98766".to_string())]);
+        table.insert("count".to_string(), vec![Some("67890".to_string()), Some("2".to_string()), Some("66666".to_string()), Some("1".to_string())]);
+        table.insert("1".to_string(), vec![Some("3".to_string()), Some("3, 4, 5".to_string()), None, None]);
+        table.insert("8".to_string(), vec![None, Some("1, 2, 3".to_string()), None, None]);
+        table.insert("9".to_string(), vec![None, None, Some("4".to_string()), None]);
 
-        assert_eq!(result, df);
+        assert_eq!(result, table);
     }
 }
