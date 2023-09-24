@@ -1,7 +1,7 @@
 pub mod constraint_management;
 pub mod probability;
 
-mod types;
+pub mod types;
 
 pub use self::types::CountType;
 pub use self::types::SmallValueType;

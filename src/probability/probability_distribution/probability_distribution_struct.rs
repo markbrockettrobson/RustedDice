@@ -107,6 +107,7 @@ mod tests {
         assert!(result.outcome_counts.get(&test_outcome_one) == Some(&67890));
         assert!(result.outcome_counts.get(&test_outcome_two) == Some(&66666));
     }
+
     #[test]
     fn test_fmt() {
         let test_outcome_one = ProbabilityOutcome::new_with_empty_constraint_map(1111);

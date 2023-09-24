@@ -68,7 +68,7 @@ mod tests {
             Constraint::new_many_item_constraint(1, vec![1]),
             Constraint::new_many_item_constraint(2, vec![2]),
         ]);
-        let different_orders = vec![
+        let different_orders = [
             "ConstraintMap { map: {1: Constraint { id: 1, valid_values: {1} }, 2: Constraint { id: 2, valid_values: {2} }} }",
             "ConstraintMap { map: {2: Constraint { id: 2, valid_values: {2} }, 1: Constraint { id: 1, valid_values: {1} }} }"
         ];

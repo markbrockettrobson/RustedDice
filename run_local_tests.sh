@@ -1,20 +1,26 @@
 #!/bin/bash
 set -e
 
+echo "run cargo build"
+( cargo build )
+
 echo "run fmt to check formatting"
-( cd rusted_dice && cargo fmt)
+( cargo fmt )
 
 echo "runing clippy to check linting and for common errors"
-( cd rusted_dice && cargo clippy --all-targets --all-features -- -D warnings )
+( cargo clippy --all-targets --all-features -- -D warnings )
 
 echo "building docs"
-(cd rusted_dice && rustdoc src/lib.rs )
+( rustdoc src/lib.rs )
 
-echo "runing doctest"
-( cd rusted_dice && cargo test --doc . )
+echo "runing tests"
+( cargo test )
 
 echo "runing coverage"
-( cd rusted_dice && cargo llvm-cov --html && cargo llvm-cov report )
+( cargo llvm-cov --html && cargo llvm-cov report )
 
 echo "runing mutants, google mutation testing for details on why this is useful"
-( cd rusted_dice && cargo mutants -- --all-targets --all-features )
+( cargo mutants -- --all-targets --all-features )
+
+echo "runing cargo bench"
+(cargo bench )
