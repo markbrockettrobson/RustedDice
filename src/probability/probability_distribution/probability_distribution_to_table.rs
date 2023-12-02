@@ -11,13 +11,13 @@ pub trait ToTable {
 }
 
 impl ToTable for ProbabilityDistribution {
-    /// converts a [ProbabilityDistribution] into a [HashMap] <String, [Vec<Option<String>>]>
+    /// converts a [ProbabilityDistribution] into a [HashMap] <String, [`Vec<Option<String>>`]>
     ///
     /// # Arguments
     /// * `self` - the [ProbabilityDistribution] to convert
     ///
     /// # Returns
-    /// * a [HashMap] <String, Vec<Option<String>>> with the following columns:
+    /// * a [HashMap] <String, `Vec<Option<String>>>` with the following columns:
     ///  * value: the value of the outcome
     ///  * count: the number of times the outcome was observed
     ///  * constraint_name: the values of the constraint
