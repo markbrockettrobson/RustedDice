@@ -1,0 +1,4 @@
+{
+    "markiscodecoverage.searchCriteria": "lcov*.info",
+    "markiscodecoverage.coverageThreshold": 100
+}
