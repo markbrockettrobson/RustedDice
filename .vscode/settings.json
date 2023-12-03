@@ -1,4 +1,7 @@
 {
     "markiscodecoverage.searchCriteria": "lcov*.info",
-    "markiscodecoverage.coverageThreshold": 100
+    "markiscodecoverage.coverageThreshold": 100,
+    "cSpell.words": [
+        "prettytable"
+    ]
 }
