@@ -95,6 +95,13 @@ mod tests {
             ),
             Some(&99)
         );
+
+        assert_eq!(
+            probability_distribution_with_constraint
+                .outcome_counts
+                .len(),
+            1
+        );
     }
 
     #[test]
@@ -120,6 +127,13 @@ mod tests {
                 &ProbabilityOutcome::new_with_constraints(1111, vec![constraint_three])
             ),
             Some(&99)
+        );
+
+        assert_eq!(
+            probability_distribution_with_constraint
+                .outcome_counts
+                .len(),
+            1
         );
     }
 
@@ -154,6 +168,13 @@ mod tests {
                 )
             ),
             Some(&99)
+        );
+
+        assert_eq!(
+            probability_distribution_with_constraint
+                .outcome_counts
+                .len(),
+            1
         );
     }
 }
