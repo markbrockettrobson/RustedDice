@@ -11,7 +11,7 @@ echo "runing clippy to check linting and for common errors"
 ( cargo clippy --all-targets --all-features -- -D warnings )
 
 echo "building docs"
-( rustdoc src/lib.rs )
+( cargo doc )
 
 echo "runing tests"
 ( cargo test )
