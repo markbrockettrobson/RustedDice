@@ -6,11 +6,11 @@ use crate::CountType;
 use crate::ValueType;
 
 /// A trait for probability distributions to be turned into a Table
-pub trait ToTable {
-    fn to_table(&self) -> HashMap<String, Vec<Option<String>>>;
+pub trait ToHashMap {
+    fn to_hash_map(&self) -> HashMap<String, Vec<Option<String>>>;
 }
 
-impl ToTable for ProbabilityDistribution {
+impl ToHashMap for ProbabilityDistribution {
     /// converts a [ProbabilityDistribution] into a [HashMap] <String, [`Vec<Option<String>>`]>
     ///
     /// # Arguments
@@ -27,7 +27,7 @@ impl ToTable for ProbabilityDistribution {
     /// # use std::collections::BTreeMap;
     /// # use std::collections::HashMap;
     /// # use crate::rusted_dice::probability::ProbabilityDistribution;
-    /// # use crate::rusted_dice::probability::probability_distribution::ToTable;
+    /// # use crate::rusted_dice::probability::probability_distribution::ToHashMap;
     /// # use crate::rusted_dice::probability::ProbabilityOutcome;
     /// # use crate::rusted_dice::probability::add_outcome_to_map;
     /// # use crate::rusted_dice::constraint_management::Constraint;
@@ -62,17 +62,17 @@ impl ToTable for ProbabilityDistribution {
     ///
     /// let result = ProbabilityDistribution {
     ///     outcome_counts: b_tree_map,
-    /// }.to_table();
+    /// }.to_hash_map();
     ///
-    /// let mut table: HashMap<String, Vec<Option<String>>> = HashMap::new();
-    /// table.insert("value".to_string(), vec![Some("12345".to_string()), Some("12354".to_string()), Some("55555".to_string()), Some("98766".to_string())]);
-    /// table.insert("count".to_string(), vec![Some("67890".to_string()), Some("2".to_string()), Some("66666".to_string()), Some("1".to_string())]);
-    /// table.insert("1".to_string(), vec![Some("3".to_string()), Some("3, 4, 5".to_string()), None, None]);
-    /// table.insert("8".to_string(), vec![None, Some("1, 2, 3".to_string()), None, None]);
-    /// table.insert("9".to_string(), vec![None, None, Some("4".to_string()), None]);
-    /// assert_eq!(result, table);
+    /// let mut map: HashMap<String, Vec<Option<String>>> = HashMap::new();
+    /// map.insert("value".to_string(), vec![Some("12345".to_string()), Some("12354".to_string()), Some("55555".to_string()), Some("98766".to_string())]);
+    /// map.insert("count".to_string(), vec![Some("67890".to_string()), Some("2".to_string()), Some("66666".to_string()), Some("1".to_string())]);
+    /// map.insert("1".to_string(), vec![Some("3".to_string()), Some("3, 4, 5".to_string()), None, None]);
+    /// map.insert("8".to_string(), vec![None, Some("1, 2, 3".to_string()), None, None]);
+    /// map.insert("9".to_string(), vec![None, None, Some("4".to_string()), None]);
+    /// assert_eq!(result, map);
     /// ```
-    fn to_table(&self) -> HashMap<String, Vec<Option<String>>> {
+    fn to_hash_map(&self) -> HashMap<String, Vec<Option<String>>> {
         let mut value_column: Vec<ValueType> = Vec::with_capacity(self.outcome_counts.len());
         let mut count_column: Vec<CountType> = Vec::with_capacity(self.outcome_counts.len());
         let mut constraint_map_columns: HashMap<ConstraintIdType, Vec<Option<String>>> =
@@ -124,16 +124,16 @@ impl ToTable for ProbabilityDistribution {
             }
         }
 
-        let mut table: HashMap<String, Vec<Option<String>>> = HashMap::new();
+        let mut map: HashMap<String, Vec<Option<String>>> = HashMap::new();
 
-        table.insert(
+        map.insert(
             "value".to_string(),
             value_column
                 .iter()
                 .map(|value| Some(value.to_string()))
                 .collect::<Vec<Option<String>>>(),
         );
-        table.insert(
+        map.insert(
             "count".to_string(),
             count_column
                 .iter()
@@ -149,10 +149,10 @@ impl ToTable for ProbabilityDistribution {
         constraint_map_counms_.sort_by(|a, b| a.0.cmp(&b.0));
 
         for (constraint_name, column) in constraint_map_columns.iter() {
-            table.insert(constraint_name.to_string(), column.clone());
+            map.insert(constraint_name.to_string(), column.clone());
         }
 
-        table
+        map
     }
 }
 
@@ -162,12 +162,12 @@ mod tests {
     use std::collections::HashMap;
 
     use crate::constraint_management::Constraint;
-    use crate::probability::probability_distribution::probability_distribution_to_table::ToTable;
+    use crate::probability::probability_distribution::probability_distribution_to_hash_map::ToHashMap;
     use crate::probability::{ProbabilityDistribution, ProbabilityOutcome};
 
     #[test]
-    fn to_dataframe_empty() {
-        let result = ProbabilityDistribution::new_empty_distribution().to_table();
+    fn to_hash_map_empty() {
+        let result = ProbabilityDistribution::new_empty_distribution().to_hash_map();
 
         let mut table: HashMap<String, Vec<Option<String>>> = HashMap::new();
         table.insert("value".to_string(), Vec::new());
@@ -177,7 +177,7 @@ mod tests {
     }
 
     #[test]
-    fn to_dataframe_no_constraints() {
+    fn to_hash_map_no_constraints() {
         let mut b_tree_map = BTreeMap::new();
         b_tree_map.insert(
             ProbabilityOutcome::new_with_empty_constraint_map(12345),
@@ -193,7 +193,7 @@ mod tests {
         let result = ProbabilityDistribution {
             outcome_counts: b_tree_map,
         }
-        .to_table();
+        .to_hash_map();
 
         let mut table: HashMap<String, Vec<Option<String>>> = HashMap::new();
         table.insert(
@@ -219,7 +219,7 @@ mod tests {
     }
 
     #[test]
-    fn to_dataframe_single_example_of_constraint() {
+    fn to_hash_map_single_example_of_constraint() {
         let mut b_tree_map = BTreeMap::new();
         b_tree_map.insert(
             ProbabilityOutcome::new_with_constraints(
@@ -250,7 +250,7 @@ mod tests {
         let result = ProbabilityDistribution {
             outcome_counts: b_tree_map,
         }
-        .to_table();
+        .to_hash_map();
 
         let mut table: HashMap<String, Vec<Option<String>>> = HashMap::new();
         table.insert(
@@ -294,7 +294,7 @@ mod tests {
     }
 
     #[test]
-    fn to_dataframe_many_example_of_single_constraint() {
+    fn to_hash_map_many_example_of_single_constraint() {
         let mut b_tree_map = BTreeMap::new();
         b_tree_map.insert(
             ProbabilityOutcome::new_with_constraints(
@@ -322,7 +322,7 @@ mod tests {
         let result = ProbabilityDistribution {
             outcome_counts: b_tree_map,
         }
-        .to_table();
+        .to_hash_map();
 
         let mut table: HashMap<String, Vec<Option<String>>> = HashMap::new();
         table.insert(
@@ -357,7 +357,7 @@ mod tests {
     }
 
     #[test]
-    fn to_dataframe_many_constraints() {
+    fn to_hash_map_many_constraints() {
         let mut b_tree_map = BTreeMap::new();
         b_tree_map.insert(
             ProbabilityOutcome::new_with_constraints(
@@ -388,7 +388,7 @@ mod tests {
         let result = ProbabilityDistribution {
             outcome_counts: b_tree_map,
         }
-        .to_table();
+        .to_hash_map();
 
         let mut table: HashMap<String, Vec<Option<String>>> = HashMap::new();
         table.insert(
