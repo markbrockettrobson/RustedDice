@@ -1,3 +1,5 @@
+extern crate prettytable;
+
 pub mod constraint_management;
 pub mod probability;
 

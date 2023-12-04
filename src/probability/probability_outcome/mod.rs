@@ -1,4 +1,5 @@
 pub mod probability_outcome_add;
+pub mod probability_outcome_add_constraint;
 pub mod probability_outcome_bitand;
 pub mod probability_outcome_bitor;
 pub mod probability_outcome_bitxor;

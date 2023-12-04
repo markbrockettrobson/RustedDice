@@ -9,6 +9,9 @@ Cargo.lock
 # rustdocs
 doc
 
+# coverage
+lcov.info
+
 # mutants
 mutants.out/
 mutants.out.old/
