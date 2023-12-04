@@ -1,4 +1,5 @@
 use crate::{
+    constraint_management::IsTheoreticallyPossible,
     probability::{BinaryOperation, Combine, ProbabilityDistribution, ProbabilityOutcome},
     CountType, ValueType,
 };
@@ -27,8 +28,10 @@ impl Combine for ProbabilityDistribution {
         for (value_one, count_one) in self.outcome_counts.iter() {
             for (value_two, count_two) in other.outcome_counts.iter() {
                 let new_value = value_one.combine(value_two.clone(), binary_operation);
-                let new_count = *count_one * count_two;
-                add_outcome_to_map(&mut new_outcome_counts, new_value, new_count);
+                if new_value.constraint_map.is_theoretically_possible() {
+                    let new_count = *count_one * count_two;
+                    add_outcome_to_map(&mut new_outcome_counts, new_value, new_count);
+                }
             }
         }
         ProbabilityDistribution {
@@ -619,29 +622,29 @@ mod tests {
             probability_distribution.combine_value_type(321, |lhs, rhs| lhs - rhs);
 
         let out = "\
-        +-------+-------+----+\n\
-        | value | count | 10 |\n\
-        +=======+=======+====+\n\
-        | -320  | 1     | 1  |\n\
-        +-------+-------+----+\n\
-        | -319  | 1     | 2  |\n\
-        +-------+-------+----+\n\
-        | -318  | 1     | 3  |\n\
-        +-------+-------+----+\n\
-        | -317  | 1     | 4  |\n\
-        +-------+-------+----+\n\
-        | -316  | 1     | 5  |\n\
-        +-------+-------+----+\n\
-        | -315  | 1     | 6  |\n\
-        +-------+-------+----+\n\
-        | -314  | 1     | 7  |\n\
-        +-------+-------+----+\n\
-        | -313  | 1     | 8  |\n\
-        +-------+-------+----+\n\
-        | -312  | 1     | 9  |\n\
-        +-------+-------+----+\n\
-        | -311  | 1     | 10 |\n\
-        +-------+-------+----+\n\
+        +-------+-------+-----+\n\
+        | value | count | 100 |\n\
+        +=======+=======+=====+\n\
+        | -320  | 1     | 1   |\n\
+        +-------+-------+-----+\n\
+        | -319  | 1     | 2   |\n\
+        +-------+-------+-----+\n\
+        | -318  | 1     | 3   |\n\
+        +-------+-------+-----+\n\
+        | -317  | 1     | 4   |\n\
+        +-------+-------+-----+\n\
+        | -316  | 1     | 5   |\n\
+        +-------+-------+-----+\n\
+        | -315  | 1     | 6   |\n\
+        +-------+-------+-----+\n\
+        | -314  | 1     | 7   |\n\
+        +-------+-------+-----+\n\
+        | -313  | 1     | 8   |\n\
+        +-------+-------+-----+\n\
+        | -312  | 1     | 9   |\n\
+        +-------+-------+-----+\n\
+        | -311  | 1     | 10  |\n\
+        +-------+-------+-----+\n\
         ";
         assert_eq!(
             combined_probability_distribution
@@ -772,30 +775,6 @@ mod tests {
             .combine(probability_distribution_two, |lhs, rhs| lhs + rhs);
 
         let out = "\
-        +-------+-------+----+--------+\n\
-        | value | count | 10 | 30     |\n\
-        +=======+=======+====+========+\n\
-        | 2     | 1     | 1  | 20, 30 |\n\
-        +-------+-------+----+--------+\n\
-        | 3     | 2     |    | 20, 30 |\n\
-        +-------+-------+----+--------+\n\
-        | 4     | 2     |    | 20, 30 |\n\
-        +-------+-------+----+--------+\n\
-        | 4     | 1     | 2  | 20, 30 |\n\
-        +-------+-------+----+--------+\n\
-        | 5     | 4     |    | 20, 30 |\n\
-        +-------+-------+----+--------+\n\
-        | 6     | 2     |    | 20, 30 |\n\
-        +-------+-------+----+--------+\n\
-        | 6     | 1     | 3  | 20, 30 |\n\
-        +-------+-------+----+--------+\n\
-        | 7     | 2     |    | 20, 30 |\n\
-        +-------+-------+----+--------+\n\
-        | 8     | 1     | 4  | 20, 30 |\n\
-        +-------+-------+----+--------+\n
-        ";
-
-        let _out_should_be = "\
         +-------+-------+----+--------+\n\
         | value | count | 10 | 30     |\n\
         +=======+=======+====+========+\n\
