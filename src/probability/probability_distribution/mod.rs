@@ -5,6 +5,7 @@ pub mod probability_distribution_add_self_value_constraint;
 pub mod probability_distribution_combine;
 pub mod probability_distribution_factory;
 pub mod probability_distribution_struct;
+pub mod probability_distribution_sub;
 pub mod probability_distribution_to_hash_map;
 pub mod probability_distribution_to_table;
 pub mod probability_distribution_total_outcome_count;
