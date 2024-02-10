@@ -7,7 +7,7 @@ use super::add_constraint_to_map;
 impl Add<Constraint> for ConstraintMap {
     type Output = Self;
     /// Implements the addition operator for [ConstraintMap] + [Constraint].
-    /// a Constraint of a maching key is added the existing Constraint
+    /// a Constraint of a matching key is added the existing Constraint
     ///
     /// # Arguments
     ///
@@ -51,7 +51,7 @@ impl Add<Constraint> for ConstraintMap {
 impl Add<ConstraintMap> for Constraint {
     type Output = ConstraintMap;
     /// Implements the addition operator for [Constraint] + [ConstraintMap].
-    /// a Constraint of a maching key is added the existing Constraint
+    /// a Constraint of a matching key is added the existing Constraint
     ///
     /// # Arguments
     ///
@@ -164,7 +164,7 @@ mod tests {
     }
 
     #[test]
-    fn combine_impossable_options_common_constraint_constraint_map() {
+    fn combine_imposable_options_common_constraint_constraint_map() {
         let constraint_map_one = ConstraintMap::new_constraint_map(vec![
             Constraint::new_many_item_constraint(1, vec![1, 2, 3]),
             Constraint::new_many_item_constraint(2, vec![1, 2, 3]),
@@ -240,7 +240,7 @@ mod tests {
     }
 
     #[test]
-    fn combine_impossable_options_common_constraint_map_constraint() {
+    fn combine_imposable_options_common_constraint_map_constraint() {
         let constraint_map_one = ConstraintMap::new_constraint_map(vec![
             Constraint::new_many_item_constraint(1, vec![1, 2, 3]),
             Constraint::new_many_item_constraint(2, vec![1, 2, 3]),

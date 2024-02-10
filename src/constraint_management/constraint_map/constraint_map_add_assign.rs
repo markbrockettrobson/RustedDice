@@ -3,8 +3,8 @@ use std::ops::AddAssign;
 use crate::constraint_management::ConstraintMap;
 
 impl AddAssign for ConstraintMap {
-    /// Implements the addition assignment operator for [ConstraintMap]. The intersectoin of maps are maintained
-    /// the Constraint of maching keys are added together
+    /// Implements the addition assignment operator for [ConstraintMap]. The intersection of maps are maintained
+    /// the Constraint of matching keys are added together
     ///
     /// # Arguments
     ///
@@ -140,7 +140,7 @@ mod tests {
     }
 
     #[test]
-    fn combine_impossable_options() {
+    fn combine_imposable_options() {
         let mut constraint_map = ConstraintMap::new_constraint_map(vec![
             Constraint::new_many_item_constraint(1, vec![1, 2, 3]),
             Constraint::new_many_item_constraint(2, vec![1, 2, 3]),

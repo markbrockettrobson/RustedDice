@@ -4,7 +4,7 @@ use crate::constraint_management::combine_valid_value_sets;
 use crate::constraint_management::Constraint;
 
 impl AddAssign for Constraint {
-    /// Implements the addition assignment operator for [Constraint]. The intersectoin of valid values is maintained
+    /// Implements the addition assignment operator for [Constraint]. The intersection of valid values is maintained
     ///
     /// # Panics
     ///

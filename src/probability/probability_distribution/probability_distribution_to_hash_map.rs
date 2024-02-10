@@ -141,12 +141,13 @@ impl ToHashMap for ProbabilityDistribution {
                 .collect::<Vec<Option<String>>>(),
         );
 
-        let mut constraint_map_counms_: Vec<(String, Vec<Option<String>>)> = constraint_map_columns
-            .iter()
-            .map(|(constraint_name, column)| (constraint_name.to_string(), column.to_owned()))
-            .collect();
+        let mut constraint_map_columns_: Vec<(String, Vec<Option<String>>)> =
+            constraint_map_columns
+                .iter()
+                .map(|(constraint_name, column)| (constraint_name.to_string(), column.to_owned()))
+                .collect();
 
-        constraint_map_counms_.sort_by(|a, b| a.0.cmp(&b.0));
+        constraint_map_columns_.sort_by(|a, b| a.0.cmp(&b.0));
 
         for (constraint_name, column) in constraint_map_columns.iter() {
             map.insert(constraint_name.to_string(), column.clone());

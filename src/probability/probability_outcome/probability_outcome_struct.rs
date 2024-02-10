@@ -4,7 +4,7 @@ use crate::{constraint_management::ConstraintMap, ValueType};
 ///
 /// Each [ProbabilityOutcome] has a [ValueType] ('value') and a [ConstraintMap] (`constraint_map`).
 /// This class represents a single outcome of a ProbabilityDistribution.
-/// The [ConstraintMap] holds infomation on Constraints that may prevent one or more [ProbabilityOutcome]s from being combined
+/// The [ConstraintMap] holds information on Constraints that may prevent one or more [ProbabilityOutcome]s from being combined
 ///
 /// # Examples
 /// #### A [ProbabilityOutcome] with no Constraints
@@ -342,7 +342,7 @@ mod tests {
         }
 
         #[test]
-        fn test_cmp_less_value_befor_constraint(base_value: SmallValueType, delta: UnsignedSmallValueType, constraint_value: ConstraintIdType) {
+        fn test_cmp_less_value_before_constraint(base_value: SmallValueType, delta: UnsignedSmallValueType, constraint_value: ConstraintIdType) {
             prop_assume!(constraint_value != ConstraintIdType::MIN);
             prop_assume!(delta != 0);
             let probability_outcome_one = ProbabilityOutcome::new_with_constraints(
@@ -359,7 +359,7 @@ mod tests {
         }
 
         #[test]
-        fn test_cmp_greater_value_befor_constraint(base_value: SmallValueType, delta: UnsignedSmallValueType, constraint_value: ConstraintIdType) {
+        fn test_cmp_greater_value_before_constraint(base_value: SmallValueType, delta: UnsignedSmallValueType, constraint_value: ConstraintIdType) {
             prop_assume!(constraint_value != ConstraintIdType::MAX);
             prop_assume!(delta != 0);
             let probability_outcome_one = ProbabilityOutcome::new_with_constraints(

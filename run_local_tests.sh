@@ -17,7 +17,7 @@ echo "runing tests"
 ( cargo test )
 
 echo "runing coverage"
-( cargo llvm-cov --lcov --output-path lcov.info  && cargo llvm-cov report )
+( cargo llvm-cov --lcov --output-path lcov.info && cargo llvm-cov report && cargo llvm-cov report --html)
 
 echo "runing mutants, google mutation testing for details on why this is useful"
 ( cargo mutants -- --all-targets --all-features )

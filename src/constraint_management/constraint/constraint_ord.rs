@@ -93,7 +93,7 @@ mod tests {
     }
 
     #[test]
-    fn test_cmp_less_valid_values_uneven_length_diferent_values() {
+    fn test_cmp_less_valid_values_uneven_length_different_values() {
         let constraint_one = Constraint::new_many_item_constraint(2, vec![2, 4, 6]);
         let constraint_two = Constraint::new_many_item_constraint(2, vec![2, 7]);
         assert_eq!(constraint_one.cmp(&constraint_two), Less);
@@ -125,7 +125,7 @@ mod tests {
     }
 
     #[test]
-    fn test_cmp_greater_valid_values_uneven_length_diferent_values() {
+    fn test_cmp_greater_valid_values_uneven_length_different_values() {
         let constraint_one = Constraint::new_many_item_constraint(3, vec![2, 4, 6]);
         let constraint_two = Constraint::new_many_item_constraint(3, vec![2, 3]);
         assert_eq!(constraint_one.cmp(&constraint_two), Greater);

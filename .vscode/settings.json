@@ -2,6 +2,11 @@
     "markiscodecoverage.searchCriteria": "lcov*.info",
     "markiscodecoverage.coverageThreshold": 100,
     "cSpell.words": [
-        "prettytable"
+        "bitand",
+        "codecov",
+        "hashset",
+        "nonminimal",
+        "prettytable",
+        "proptest"
     ]
 }

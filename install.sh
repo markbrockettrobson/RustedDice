@@ -1,6 +1,12 @@
 #!/bin/bash
 set -e
 
+echo "rustup default to nightly"
+( rustup default nightly )
+
+echo "rustup component add rustfmt"
+( rustup component add rustfmt )
+
 echo "rustup component add clippy"
 ( rustup component add clippy )
 

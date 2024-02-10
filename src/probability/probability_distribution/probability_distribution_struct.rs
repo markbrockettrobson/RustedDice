@@ -2,7 +2,7 @@ use crate::probability::types::OutcomeToCountMap;
 
 /// Represents a [ProbabilityDistribution].
 ///
-/// Each [ProbabilityDistribution] has a map of ProbabilityOutcome ('outcome_counts') to the number of ways to creat that outcome.
+/// Each [ProbabilityDistribution] has a map of ProbabilityOutcome ('outcome_counts') to the number of ways to create that outcome.
 ///
 /// # Examples
 /// #### A [ProbabilityDistribution] with no ProbabilityOutcomes

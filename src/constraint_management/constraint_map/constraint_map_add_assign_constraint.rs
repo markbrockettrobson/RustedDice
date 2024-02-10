@@ -6,7 +6,7 @@ use super::add_constraint_to_map;
 
 impl AddAssign<Constraint> for ConstraintMap {
     /// Implements the addition assign operator for [ConstraintMap] += [Constraint].
-    /// a Constraint of a maching key is added the existing Constraint
+    /// a Constraint of a matching key is added the existing Constraint
     ///
     /// # Arguments
     ///
@@ -104,7 +104,7 @@ mod tests {
     }
 
     #[test]
-    fn combine_impossable_options_common() {
+    fn combine_imposable_options_common() {
         let mut constraint_map = ConstraintMap::new_constraint_map(vec![
             Constraint::new_many_item_constraint(1, vec![1, 2, 3]),
             Constraint::new_many_item_constraint(2, vec![1, 2, 3]),
