@@ -2,9 +2,13 @@
     "markiscodecoverage.searchCriteria": "lcov*.info",
     "markiscodecoverage.coverageThreshold": 100,
     "cSpell.words": [
+        "azurecr",
         "bitand",
         "codecov",
+        "devcontainers",
+        "devwasm",
         "hashset",
+        "moby",
         "nonminimal",
         "prettytable",
         "proptest"
