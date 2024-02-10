@@ -6,8 +6,8 @@ use super::add_constraint_to_map;
 
 impl Add for ConstraintMap {
     type Output = Self;
-    /// Implements the addition operator for [ConstraintMap]. The intersectoin of maps are maintained
-    /// the Constraint of maching keys are added together
+    /// Implements the addition operator for [ConstraintMap]. The intersection of maps are maintained
+    /// the Constraint of matching keys are added together
     ///
     /// # Arguments
     ///
@@ -180,7 +180,7 @@ mod tests {
     }
 
     #[test]
-    fn combine_impossable_options_common() {
+    fn combine_imposable_options_common() {
         let constraint_map_one = ConstraintMap::new_constraint_map(vec![
             Constraint::new_many_item_constraint(1, vec![1, 2, 3]),
             Constraint::new_many_item_constraint(2, vec![1, 2, 3]),

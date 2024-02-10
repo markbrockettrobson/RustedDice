@@ -4,7 +4,7 @@ use crate::constraint_management::{combine_valid_value_sets, Constraint};
 
 impl Add for Constraint {
     type Output = Self;
-    /// Implements the addition operator for [Constraint]. The intersectoin of valid values is maintained
+    /// Implements the addition operator for [Constraint]. The intersection of valid values is maintained
     ///
     /// # Panics
     ///

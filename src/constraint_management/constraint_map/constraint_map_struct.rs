@@ -39,7 +39,7 @@ use crate::constraint_management::ConstraintIdToConstraintHashMap;
 /// ```
 ///
 /// #### Raw constructor
-/// not recomended.
+/// not recommended.
 /// take care to correctly use the `Constraint.id` as key in the map.
 /// ```
 /// # use crate::rusted_dice::constraint_management::Constraint;
@@ -159,7 +159,7 @@ mod tests {
 
     #[test]
     #[allow(clippy::nonminimal_bool)]
-    fn test_eq_false_no_overlaping_constraint_id() {
+    fn test_eq_false_no_overlapping_constraint_id() {
         let constraint_map_one = ConstraintMap::new_constraint_map(vec![
             Constraint::new_many_item_constraint(1, vec![1, 2, 3]),
             Constraint::new_many_item_constraint(2, vec![1, 2, 3]),
