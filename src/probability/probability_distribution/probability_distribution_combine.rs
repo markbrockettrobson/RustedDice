@@ -98,16 +98,19 @@ impl Combine for ProbabilityDistribution {
 mod tests {
     use crate::constraint_management::Constraint;
     use crate::probability::probability_distribution::ToTable;
-    use crate::probability::{Combine, ProbabilityDistribution, ProbabilityOutcome};
+    use crate::probability::{
+        BinaryOperation, Combine, ProbabilityDistribution, ProbabilityOutcome,
+    };
 
-    // tests with empty constraint
+    const PANIC_ON_CALL_LAMBDA: BinaryOperation = |_, _| panic!("This should not be called");
+
     #[test]
     fn test_combine_empty_two_probability_distributions() {
         let probability_distribution_one = ProbabilityDistribution::new_empty_distribution();
         let probability_distribution_two = ProbabilityDistribution::new_empty_distribution();
 
         let combined_probability_distribution = probability_distribution_one
-            .combine(probability_distribution_two, |lhs, rhs| lhs - rhs);
+            .combine(probability_distribution_two, PANIC_ON_CALL_LAMBDA);
 
         let out = "\
         +-------+-------+\n\
@@ -129,7 +132,7 @@ mod tests {
         let probability_distribution = ProbabilityDistribution::new_empty_distribution();
 
         let combined_probability_distribution =
-            probability_distribution.combine_value_type(3, |lhs, rhs| lhs - rhs);
+            probability_distribution.combine_value_type(3, PANIC_ON_CALL_LAMBDA);
 
         let out = "\
         +-------+-------+\n\
@@ -151,7 +154,7 @@ mod tests {
         let probability_distribution = ProbabilityDistribution::new_empty_distribution();
 
         let combined_probability_distribution =
-            probability_distribution.value_type_combine(3, |lhs, rhs| lhs - rhs);
+            probability_distribution.value_type_combine(3, PANIC_ON_CALL_LAMBDA);
 
         let out = "\
         +-------+-------+\n\
@@ -176,7 +179,7 @@ mod tests {
         let probability_distribution_two = ProbabilityDistribution::new_empty_distribution();
 
         let combined_probability_distribution = probability_distribution_one
-            .combine(probability_distribution_two, |lhs, rhs| lhs - rhs);
+            .combine(probability_distribution_two, PANIC_ON_CALL_LAMBDA);
 
         let out = "\
         +-------+-------+\n\
@@ -278,7 +281,7 @@ mod tests {
         let probability_distribution_two = ProbabilityDistribution::new_empty_distribution();
 
         let combined_probability_distribution = probability_distribution_one
-            .combine(probability_distribution_two, |lhs, rhs| lhs - rhs);
+            .combine(probability_distribution_two, PANIC_ON_CALL_LAMBDA);
 
         let out = "\
         +-------+-------+\n\
@@ -429,6 +432,56 @@ mod tests {
     }
 
     #[test]
+    fn test_combine_many_outcome_probability_distribution_with_many_outcome_probability_distribution_of_different_counts(
+    ) {
+        let probability_distribution_one = ProbabilityDistribution::new_dice(3);
+        let probability_distribution_two = ProbabilityDistribution::new_dice(3);
+        let probability_distribution_three = ProbabilityDistribution::new_dice(3);
+        let probability_distribution_four = ProbabilityDistribution::new_dice(3);
+
+        let probability_distribution_one_plus_two = probability_distribution_one
+            .combine(probability_distribution_two, |lhs, rhs| lhs + rhs);
+        let probability_distribution_three_plus_four = probability_distribution_three
+            .combine(probability_distribution_four, |lhs, rhs| lhs + rhs);
+
+        let combined_probability_distribution = probability_distribution_one_plus_two
+            .combine(probability_distribution_three_plus_four, |lhs, rhs| {
+                lhs + rhs
+            });
+
+        let out = "\
+        +-------+-------+\n\
+        | value | count |\n\
+        +=======+=======+\n\
+        | 4     | 1     |\n\
+        +-------+-------+\n\
+        | 5     | 4     |\n\
+        +-------+-------+\n\
+        | 6     | 10    |\n\
+        +-------+-------+\n\
+        | 7     | 16    |\n\
+        +-------+-------+\n\
+        | 8     | 19    |\n\
+        +-------+-------+\n\
+        | 9     | 16    |\n\
+        +-------+-------+\n\
+        | 10    | 10    |\n\
+        +-------+-------+\n\
+        | 11    | 4     |\n\
+        +-------+-------+\n\
+        | 12    | 1     |\n\
+        +-------+-------+\n\
+        ";
+        assert_eq!(
+            combined_probability_distribution
+                .to_table()
+                .to_string()
+                .replace("\r\n", "\n"),
+            out
+        );
+    }
+
+    #[test]
     fn test_combine_single_outcome_probability_distribution_with_empty_probability_distribution_with_constraints(
     ) {
         let probability_outcome = ProbabilityOutcome::new_with_constraints(
@@ -440,7 +493,7 @@ mod tests {
         let probability_distribution_two = ProbabilityDistribution::new_empty_distribution();
 
         let combined_probability_distribution = probability_distribution_one
-            .combine(probability_distribution_two, |lhs, rhs| lhs - rhs);
+            .combine(probability_distribution_two, PANIC_ON_CALL_LAMBDA);
 
         let out = "\
         +-------+-------+\n\
@@ -597,7 +650,7 @@ mod tests {
         let probability_distribution_two = ProbabilityDistribution::new_empty_distribution();
 
         let combined_probability_distribution = probability_distribution_one
-            .combine(probability_distribution_two, |lhs, rhs| lhs - rhs);
+            .combine(probability_distribution_two, PANIC_ON_CALL_LAMBDA);
 
         let out = "\
         +-------+-------+\n\
@@ -794,5 +847,11 @@ mod tests {
                 .replace("\r\n", "\n"),
             out
         );
+    }
+
+    #[test]
+    #[should_panic(expected = "This should not be called")]
+    fn test_panic_on_call_lambda_panics() {
+        _ = PANIC_ON_CALL_LAMBDA(1, 1);
     }
 }
