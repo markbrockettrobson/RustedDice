@@ -1,4 +1,5 @@
 pub mod outcome_to_counts_helpers;
+pub mod probability_distribution_add;
 pub mod probability_distribution_add_constraint;
 pub mod probability_distribution_add_self_value_constraint;
 pub mod probability_distribution_combine;
