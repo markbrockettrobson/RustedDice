@@ -90,8 +90,6 @@ impl ConstraintMap {
 
 #[cfg(test)]
 mod tests {
-    use crate::constraint_management::{Constraint, ConstraintIdToConstraintHashMap};
-
     use super::*;
     use std::vec::IntoIter;
 

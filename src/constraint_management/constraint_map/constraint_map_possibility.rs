@@ -90,7 +90,7 @@ impl AreConstraintsCompiledWith for ConstraintMap {
 mod tests {
     use std::collections::HashMap;
 
-    use crate::constraint_management::{Constraint, ConstraintMap};
+    use crate::constraint_management::Constraint;
 
     use super::*;
 
