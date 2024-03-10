@@ -3,6 +3,7 @@ pub mod probability_distribution_add;
 pub mod probability_distribution_add_constraint;
 pub mod probability_distribution_add_self_value_constraint;
 pub mod probability_distribution_combine;
+pub mod probability_distribution_div;
 pub mod probability_distribution_factory;
 pub mod probability_distribution_mul;
 pub mod probability_distribution_struct;
