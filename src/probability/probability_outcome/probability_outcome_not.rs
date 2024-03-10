@@ -6,7 +6,7 @@ impl Not for ProbabilityOutcome {
     type Output = Self;
 
     /// Implements the bitwise not operator for [ProbabilityOutcome].
-    /// values is negated.
+    /// values has the bitwise not implemented.
     /// constraint map is unchanged.
     ///
     /// # Arguments
