@@ -6,6 +6,7 @@ pub mod probability_distribution_combine;
 pub mod probability_distribution_div;
 pub mod probability_distribution_factory;
 pub mod probability_distribution_mul;
+pub mod probability_distribution_rem;
 pub mod probability_distribution_neg;
 pub mod probability_distribution_struct;
 pub mod probability_distribution_sub;
