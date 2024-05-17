@@ -79,7 +79,7 @@ use crate::probability::types::OutcomeToCountMap;
 /// assert_eq!(probability_distribution.outcome_counts.len(), 5);
 /// ```
 #[allow(dead_code)]
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct ProbabilityDistribution {
     pub outcome_counts: OutcomeToCountMap,
 }
