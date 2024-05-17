@@ -2,9 +2,34 @@
 mod tests {
     use crate::probability::{ProbabilityDistribution, ToTable};
 
-    #[test]
-    fn test_add() {
 
+    #[test]
+    fn test_reuse_of_constrained_value_one() {
+        let dice = ProbabilityDistribution::new_dice(6).add_self_value_constraint(1);
+        let value = dice.clone() * 10 + dice;
+        assert_eq!(
+            value.to_table().to_string().replace("\r\n", "\n"),
+            "\
+            +-------+-------+---+\n\
+            | value | count | 1 |\n\
+            +=======+=======+===+\n\
+            | 11    | 1     | 1 |\n\
+            +-------+-------+---+\n\
+            | 22    | 1     | 2 |\n\
+            +-------+-------+---+\n\
+            | 33    | 1     | 3 |\n\
+            +-------+-------+---+\n\
+            | 44    | 1     | 4 |\n\
+            +-------+-------+---+\n\
+            | 55    | 1     | 5 |\n\
+            +-------+-------+---+\n\
+            | 66    | 1     | 6 |\n\
+            +-------+-------+---+\n"
+        );
+    }
+
+    #[test]
+    fn test_reuse_of_constrained_value_two() {
         // roll a 3 sided dice
         //      on a 1 do 0 damage
         //      on a 2 do 2d4 + 5 damage
