@@ -1,6 +1,7 @@
 extern crate prettytable;
 
 pub mod constraint_management;
+mod integration_tests;
 pub mod probability;
 
 pub mod types;
