@@ -15,11 +15,14 @@ crate-type = ["lib"]
 
 
 [dependencies]
+proptest = "1.2.0"
+proptest-derive = "0.4.0"
 mutants = "0.0.3"
 prettytable-rs = "0.10.0"
 
 [dev-dependencies]
 test-case = "3.1.0"
 proptest = "1.2.0"
+proptest-derive = "0.4.0"
 cargo-llvm-cov = "0.6.5"
 mockall = "0.12.1"

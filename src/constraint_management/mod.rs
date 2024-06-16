@@ -5,6 +5,7 @@ pub mod types;
 
 pub use self::constraint::combine_valid_value_sets;
 pub use self::constraint::Constraint;
+pub use self::constraint::ValidValueSetConstraint;
 
 pub use self::constraint_map::add_constraint_to_map;
 pub use self::constraint_map::ConstraintMap;
