@@ -1,10 +1,13 @@
 use core::fmt::Debug;
 use std::{collections::HashSet, hash::Hash};
 
-use crate::constraint_management::ConstraintIdType;
+#[cfg(test)]
 use proptest_derive::Arbitrary;
 
-#[derive(Clone, Eq, PartialEq, Arbitrary)]
+use crate::constraint_management::ConstraintIdType;
+
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(test, derive(Arbitrary))]
 pub struct ValidValueSetConstraint<T>
 where
     T: Eq + Hash + Debug + Ord,
@@ -33,7 +36,7 @@ mod tests {
     use super::*;
     use proptest::prelude::*;
 
-    use crate::test_hash_set_value_strategy;
+    use crate::tests::test_hash_set_value_strategy;
 
     #[test]
     #[allow(clippy::clone_on_copy)]
@@ -80,7 +83,7 @@ mod tests {
             let constraint_two =
                 ValidValueSetConstraint::new_many_item_constraint(
                     test_id,
-                    test_valid_values.iter().collect::<Vec<_>>().to_vec());
+                    test_valid_values.iter().collect::<Vec<_>>());
             assert!(constraint_one != constraint_two);
         }
 

@@ -13,7 +13,7 @@ where
     /// The [ValidValueSetConstraint] is formatted as a struct with the following fields:
     /// - `id` - The [ConstraintIdType] for the [ValidValueSetConstraint].
     /// - `valid_values` - The valid values for the [ValidValueSetConstraint].
-    ///  The valid values are sorted in ascending order.
+    ///     The valid values are sorted in ascending order.
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let mut sorted_valid_values: Vec<&T> = self.valid_values.iter().collect();
         sorted_valid_values.sort();
@@ -33,8 +33,8 @@ mod tests {
     use proptest::prelude::*;
 
     use crate::{
-        constraint_management::ConstraintIdType, proptest_strategy::TestValueTypeEnum,
-        test_value_strategy, test_vec_value_strategy,
+        constraint_management::ConstraintIdType,
+        tests::{test_value_strategy, test_vec_value_strategy, TestValueTypeEnum},
     };
 
     proptest! {
