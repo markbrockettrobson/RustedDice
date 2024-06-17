@@ -1,3 +1,5 @@
+#![allow(non_local_definitions)]
+
 use core::fmt::Debug;
 use std::{collections::HashSet, hash::Hash};
 
@@ -36,7 +38,7 @@ mod tests {
     use super::*;
     use proptest::prelude::*;
 
-    use crate::tests::test_hash_set_value_strategy;
+    use crate::tests::{test_hash_set_value_strategy, test_value_strategy};
 
     #[test]
     #[allow(clippy::clone_on_copy)]
@@ -70,6 +72,30 @@ mod tests {
     }
 
     proptest! {
+        #[test]
+        #[allow(clippy::nonminimal_bool)]
+        fn test_get_id(
+            test_id: ConstraintIdType,
+            test_valid_value in test_value_strategy()
+        ) {
+            let constraint = ValidValueSetConstraint::new_single_valid_value_constraint(test_id, test_valid_value);
+            assert_eq!(constraint.get_id(), test_id);
+        }
+
+
+        #[test]
+        #[allow(clippy::nonminimal_bool)]
+        fn test_get_valid_values(
+            test_id: ConstraintIdType,
+            test_valid_values in test_hash_set_value_strategy(2, 5)
+        ) {
+            let constraint = ValidValueSetConstraint::new_many_item_constraint(test_id, &test_valid_values);
+            assert_eq!(
+                constraint.get_valid_values().clone(),
+                test_valid_values.iter().collect()
+            );
+        }
+
         #[test]
         #[allow(clippy::nonminimal_bool)]
         fn test_eq_false_hashset(
