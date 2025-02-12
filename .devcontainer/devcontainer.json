@@ -1,15 +1,27 @@
 {
-  "image": "mcr.microsoft.com/devcontainers/universal:2",
-  "features": {
-    "ghcr.io/devcontainers/features/rust:1": {
-          "version": "latest"
-    },
-    "devwasm.azurecr.io/dev-wasm/dev-wasm-feature/rust-wasi:0": {
-          "version": "latest"
-    },
-    "ghcr.io/devcontainers/features/docker-in-docker:1": {
-          "version": "latest",
-          "moby": true
-    }
-  }
+      "name": "RustedDiceDevcontainer",
+      "image": "mcr.microsoft.com/vscode/devcontainers/rust",
+      "features": {
+            "devwasm.azurecr.io/dev-wasm/dev-wasm-feature/rust-wasi:0": {
+                  "version": "latest"
+            },
+            "ghcr.io/devcontainers/features/docker-in-docker:1": {
+                  "version": "latest",
+                  "moby": true
+            }
+      },
+      "postCreateCommand": "sh install.sh",
+      "customizations": {
+            "vscode": {
+                  "settings": {},
+                  "extensions": [
+                        "streetsidesoftware.code-spell-checker",
+                        "1YiB.rust-bundle",
+                        "rust-lang.rust-analyzer",
+                        "dustypomerleau.rust-syntax",
+                        "JScearcy.rust-doc-viewer",
+                        "swellaby.vscode-rust-test-adapter"
+                  ]
+            }
+      }
 }

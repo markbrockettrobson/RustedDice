@@ -104,7 +104,6 @@ impl BitXor<ValueType> for ProbabilityOutcome {
     ///
     /// assert_eq!(probability_outcome_one ^ 200, probability_outcome_two);
     /// ```
-
     fn bitxor(self, other: ValueType) -> Self {
         self.combine_value_type(other, _bitxor)
     }

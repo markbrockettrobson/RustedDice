@@ -36,10 +36,10 @@ impl IsTheoreticallyPossible for ConstraintMap {
     /// assert!(!constraint_map_two.is_theoretically_possible());
     /// ```
     fn is_theoretically_possible(&self) -> bool {
-        return !self
+        !self
             .map
             .iter()
-            .any(|(_, constraint)| !constraint.is_theoretically_possible());
+            .any(|(_, constraint)| !constraint.is_theoretically_possible())
     }
 }
 

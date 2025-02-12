@@ -12,8 +12,7 @@ where
     ///
     /// The [ValidValueSetConstraint] is formatted as a struct with the following fields:
     /// - `id` - The [ConstraintIdType] for the [ValidValueSetConstraint].
-    /// - `valid_values` - The valid values for the [ValidValueSetConstraint].
-    ///     The valid values are sorted in ascending order.
+    /// - `valid_values` - The valid values for the [ValidValueSetConstraint]. The valid values are sorted in ascending order.
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let mut sorted_valid_values: Vec<&T> = self.valid_values.iter().collect();
         sorted_valid_values.sort();
