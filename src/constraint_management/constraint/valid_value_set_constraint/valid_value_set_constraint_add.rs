@@ -9,7 +9,8 @@ where
     T: Eq + Hash + Debug + Ord + Copy,
 {
     type Output = Self;
-    /// When adding two [ValidValueSetConstraint]<T> the result will be the subset of both valid values
+
+    /// When adding two [ValidValueSetConstraint] the result will be the subset of both valid values
     ///
     /// # Panics
     ///

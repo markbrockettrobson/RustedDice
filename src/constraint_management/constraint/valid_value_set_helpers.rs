@@ -6,8 +6,8 @@ use std::hash::Hash;
 ///
 /// # Arguments
 ///
-/// * `valid_values_one` - &HashSet<T>.
-/// * `valid_values_two` - &HashSet<T>.
+/// * `valid_values_one` - `&HashSet`.
+/// * `valid_values_two` - `&HashSet``.
 ///
 /// # Example
 ///
