@@ -3,7 +3,7 @@ use crate::{
     ValueType,
 };
 
-impl IsConstraintCompiledWith for Constraint {
+impl IsConstraintCompiledWith<ValueType> for Constraint {
     /// Checks if the [Constraint] is compliant with a specific `value`.
     ///
     /// # Arguments

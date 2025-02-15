@@ -20,7 +20,8 @@
                         "rust-lang.rust-analyzer",
                         "dustypomerleau.rust-syntax",
                         "JScearcy.rust-doc-viewer",
-                        "swellaby.vscode-rust-test-adapter"
+                        "swellaby.vscode-rust-test-adapter",
+                        "GitHub.copilot"
                   ]
             }
       }

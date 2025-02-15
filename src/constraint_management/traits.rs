@@ -1,5 +1,4 @@
 use crate::constraint_management::IdToValueMap;
-use crate::ValueType;
 /// A trait for objects that can determine whether a condition or collection of conditions are theoretically possible.
 pub trait IsTheoreticallyPossible {
     /// Checks whether the condition represented by this object is theoretically possible.
@@ -11,17 +10,18 @@ pub trait IsTheoreticallyPossible {
 }
 
 /// A trait for objects that can determine whether a certain constraint is complied with.
-pub trait IsConstraintCompiledWith {
+pub trait IsConstraintCompiledWith<T> {
     // Checks whether the constraint represented by this object is complied with the given value.
     ///
     /// # Arguments
     ///
-    /// * `value` - The [ValueType] to check compliance against.
+    /// * `value` - Any type to check compliance against.
     ///
     /// # Returns
     ///
     /// Returns `true` if the constraint is complied with the given value, `false` otherwise.
-    fn is_compliant_with(&self, value: ValueType) -> bool;
+    /// Note if the value is not of the expected type, the function will panic.
+    fn is_compliant_with(&self, value: T) -> bool;
 }
 
 /// A trait for objects that can determine whether a set of constraints are complied with.

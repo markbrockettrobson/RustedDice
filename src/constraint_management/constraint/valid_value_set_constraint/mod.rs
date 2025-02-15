@@ -2,6 +2,7 @@ mod valid_value_set_constraint_add;
 mod valid_value_set_constraint_debug;
 mod valid_value_set_constraint_factory;
 mod valid_value_set_constraint_ord;
+mod valid_value_set_constraint_possibility;
 mod valid_value_set_constraint_struct;
 
 pub use valid_value_set_constraint_struct::ValidValueSetConstraint;
