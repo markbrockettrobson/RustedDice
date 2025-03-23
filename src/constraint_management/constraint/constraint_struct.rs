@@ -6,7 +6,7 @@ use crate::constraint_management::{ConstraintIdType, ValueTypeSet};
 /// which contains the allowed values for the [Constraint].
 ///
 /// [Constraint]s are utilized to express values within a ProbabilityDistribution that cannot be combined due to their derivation from the same random event.
-/// see ProbabilityOutcome for use case.   
+/// see ProbabilityOutcome for use case.
 ///
 /// # Examples
 /// #### A [Constraint] with no valid values. Mostly used for testing

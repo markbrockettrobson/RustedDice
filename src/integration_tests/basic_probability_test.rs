@@ -2,7 +2,6 @@
 mod tests {
     use crate::probability::{ProbabilityDistribution, ToTable};
 
-
     #[test]
     fn test_reuse_of_constrained_value_one() {
         let dice = ProbabilityDistribution::new_dice(6).add_self_value_constraint(1);
@@ -37,7 +36,7 @@ mod tests {
         let attack = ProbabilityDistribution::new_dice(3).add_self_value_constraint(1);
         let damage = ProbabilityDistribution::new_multiple_dice(2, 4) + 5;
 
-        let attack_damage = attack.clone()/2 * damage.clone() + attack/3 * (damage * 2);
+        let attack_damage = attack.clone() / 2 * damage.clone() + attack / 3 * (damage * 2);
 
         assert_eq!(
             attack_damage.to_table().to_string().replace("\r\n", "\n"),

@@ -1,12 +1,13 @@
-use crate::constraint_management::ValueTypeSet;
+use std::collections::HashSet;
+use std::hash::Hash;
 
 /// Combine two sets of valid values into one set of valid values.
 /// the intersection of the two sets will be returned.
 ///
 /// # Arguments
 ///
-/// * `valid_values_one` - The first set of [ValueTypeSet].
-/// * `valid_values_two` - The second set of [ValueTypeSet].
+/// * `valid_values_one` - `&HashSet`.
+/// * `valid_values_two` - `&HashSet``.
 ///
 /// # Example
 ///
@@ -24,10 +25,13 @@ use crate::constraint_management::ValueTypeSet;
 ///    0
 /// );
 /// ```
-pub fn combine_valid_value_sets(
-    valid_values_one: &ValueTypeSet,
-    valid_values_two: &ValueTypeSet,
-) -> ValueTypeSet {
+pub fn combine_valid_value_sets<T>(
+    valid_values_one: &HashSet<T>,
+    valid_values_two: &HashSet<T>,
+) -> HashSet<T>
+where
+    T: Eq + Hash + Ord + Copy,
+{
     valid_values_one
         .intersection(valid_values_two)
         .copied()

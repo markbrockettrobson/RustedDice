@@ -43,7 +43,6 @@ impl Add for ConstraintMap {
     ///
     /// assert_eq!(constraint_map_one + constraint_map_two, constraint_map_three);
     /// ```
-
     fn add(self, other: Self) -> Self {
         let mut new_map = self.map.clone();
 
