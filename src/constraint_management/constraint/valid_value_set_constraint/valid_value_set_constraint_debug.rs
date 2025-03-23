@@ -1,12 +1,12 @@
-use core::fmt::Debug;
-use std::hash::Hash;
+use std::fmt::Debug;
 
+use crate::ValueType;
 #[allow(unused_imports)] // ConstraintIdType is used in docs
 use crate::constraint_management::{ConstraintIdType, ValidValueSetConstraint};
 
 impl<T> Debug for ValidValueSetConstraint<T>
 where
-    T: Eq + Hash + Debug + Ord,
+    T: ValueType,
 {
     /// Formats the [ValidValueSetConstraint] as a string.
     ///

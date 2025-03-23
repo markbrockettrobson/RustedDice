@@ -2,12 +2,12 @@ use std::{collections::HashSet, hash::Hash};
 
 use core::fmt::Debug;
 
-use crate::constraint_management::{ConstraintIdType, ValidValueSetConstraint};
+use crate::{constraint_management::{ConstraintIdType, ValidValueSetConstraint}, ValueType};
 
 #[allow(dead_code)]
 impl<T> ValidValueSetConstraint<T>
 where
-    T: Eq + Hash + Debug + Ord,
+    T: ValueType,
 {
     /// Creates a new empty [ValidValueSetConstraint] with the given ID.
     ///

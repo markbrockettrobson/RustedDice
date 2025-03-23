@@ -1,4 +1,7 @@
-use crate::constraint_management::IdToValueMap;
+use std::collections::HashMap;
+use std::collections::HashSet;
+
+use crate::constraint_management::ConstraintIdType;
 /// A trait for objects that can determine whether a condition or collection of conditions are theoretically possible.
 pub trait IsTheoreticallyPossible {
     /// Checks whether the condition represented by this object is theoretically possible.
@@ -25,15 +28,32 @@ pub trait IsConstraintCompiledWith<T> {
 }
 
 /// A trait for objects that can determine whether a set of constraints are complied with.
-pub trait AreConstraintsCompiledWith {
-    /// Checks whether the set of Constraints represented by this object are complied with the given [IdToValueMap].
+pub trait AreConstraintsCompiledWith<T> {
+    /// Checks whether the set of Constraints represented by this object are complied with the given [HashMap<ConstraintIdType, T>].
     ///
     /// # Arguments
     ///
-    /// * `value_map` - [IdToValueMap] to check compliance against.
+    /// * `value_map` - HashMap<ConstraintIdType, T> to check compliance against.
     ///
     /// # Returns
     ///
     /// Returns `true` if all Constraints are complied with the given value map, `false` otherwise.
-    fn is_compliant_with(&self, value_map: IdToValueMap) -> bool;
+    fn is_compliant_with(&self, value_map: HashMap<ConstraintIdType, T>) -> bool;
+}
+
+/// A trait for objects with a set of valid values.
+pub trait GetValidValues<T> {
+    /// Gets the set of valid values.
+    /// # Returns
+    /// Returns a [&HashSet<T>] of valid values.
+
+    fn get_valid_values(&self) -> &HashSet<T>;
+
+}
+
+pub trait GetId {
+    /// Gets the id of the constraint.
+    /// # Returns
+    /// Returns a [ConstraintIdType] of the constraint.
+    fn get_id(&self) -> ConstraintIdType;
 }

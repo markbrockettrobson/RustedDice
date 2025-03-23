@@ -1,12 +1,11 @@
-use std::fmt::Debug;
-use std::hash::Hash;
 use std::ops::Add;
 
+use crate::ValueType;
 use crate::constraint_management::{combine_valid_value_sets, ValidValueSetConstraint};
 
 impl<T> Add for ValidValueSetConstraint<T>
 where
-    T: Eq + Hash + Debug + Ord + Copy,
+    T: ValueType,
 {
     type Output = Self;
 

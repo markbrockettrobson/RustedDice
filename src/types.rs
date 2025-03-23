@@ -1,5 +1,9 @@
+use std::fmt::Debug;
+use std::hash::Hash;
+
 /// The type of a possible state in a probability distribution.
-pub type ValueType = i32;
+pub trait ValueType: Debug + Clone + Copy + Eq + Hash + Ord {}
+impl<T> ValueType for T where T: Debug + Clone + Copy + Eq + Hash + Ord {}
 
 /// NB!
 /// Intended for use in tests that need values safely inside the bounds of valueType.

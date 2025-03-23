@@ -1,13 +1,10 @@
-use std::cmp::Eq;
-use std::fmt::Debug;
-use std::hash::Hash;
-
+use crate::ValueType;
 use crate::constraint_management::constraint::ValidValueSetConstraint;
 use crate::constraint_management::{IsConstraintCompiledWith, IsTheoreticallyPossible};
 
 impl<T> IsConstraintCompiledWith<T> for ValidValueSetConstraint<T>
 where
-    T: Eq + Hash + Debug + Copy + Ord + 'static,
+    T: ValueType+ 'static,
 {
     /// Checks if the [ValidValueSetConstraint] is compliant with a specific `value`.
     ///
@@ -37,7 +34,7 @@ where
 
 impl<T> IsTheoreticallyPossible for ValidValueSetConstraint<T>
 where
-    T: Eq + Hash + Ord + Debug + Copy,
+    T: ValueType + 'static,
 {
     /// Checks if the [ValidValueSetConstraint] is theoretically possible.
     ///

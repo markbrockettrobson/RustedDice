@@ -1,13 +1,13 @@
 use std::cmp::Ordering;
 use std::cmp::Ordering::Equal;
-use std::fmt::Debug;
-use std::hash::Hash;
+
+use crate::ValueType;
 
 use super::ValidValueSetConstraint;
 
 impl<T> Ord for ValidValueSetConstraint<T>
 where
-    T: Ord + PartialOrd + Hash + Debug,
+    T: ValueType,
 {
     /// Compare two [ValidValueSetConstraint]s based on their ID and then valid values.
     ///
@@ -48,7 +48,7 @@ where
 
 impl<T> PartialOrd for ValidValueSetConstraint<T>
 where
-    T: Ord + PartialOrd + Hash + Debug,
+    T: ValueType,
 {
     /// Compare two [ValidValueSetConstraint]s partially based on their ID and valid values.
     ///

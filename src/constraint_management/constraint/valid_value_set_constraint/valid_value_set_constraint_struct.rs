@@ -1,7 +1,9 @@
 #![allow(non_local_definitions)]
 
-use core::fmt::Debug;
-use std::{collections::HashSet, hash::Hash};
+use std::collections::HashSet;
+use crate::ValueType;
+use crate::constraint_management::traits::GetValidValues;
+use crate::constraint_management::traits::GetId;
 
 #[cfg(test)]
 use proptest_derive::Arbitrary;
@@ -12,7 +14,7 @@ use crate::constraint_management::ConstraintIdType;
 #[cfg_attr(test, derive(Arbitrary))]
 pub struct ValidValueSetConstraint<T>
 where
-    T: Eq + Hash + Debug + Ord,
+    T: ValueType,
 {
     pub(in crate::constraint_management::constraint::valid_value_set_constraint) id:
         ConstraintIdType,
@@ -20,16 +22,22 @@ where
         HashSet<T>,
 }
 
-impl<T> ValidValueSetConstraint<T>
+impl<T> GetValidValues<T> for ValidValueSetConstraint<T>
 where
-    T: Eq + Hash + Debug + Ord,
+    T: ValueType,
 {
-    pub fn get_id(&self) -> ConstraintIdType {
-        self.id
-    }
-
-    pub fn get_valid_values(&self) -> &HashSet<T> {
+    fn get_valid_values(&self) -> &HashSet<T> {
         &self.valid_values
+    }
+}
+
+
+impl<T> GetId for ValidValueSetConstraint<T>
+where
+    T: ValueType,
+{
+    fn get_id(&self) -> ConstraintIdType {
+        self.id
     }
 }
 
